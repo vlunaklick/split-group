@@ -9,7 +9,7 @@ async function main () {
       name: 'Admin',
       username: 'admin',
       password: 'password123',
-      UserConfig: {
+      userConfig: {
         create: {
           inviteNotification: true,
           spentNotification: true,
