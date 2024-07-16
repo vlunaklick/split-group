@@ -17,11 +17,11 @@ export async function POST (request: Request) {
 
   const code = crypto.createHash('sha256').update(email).digest('hex')
 
-  let forgotPasswordToken
+  // let forgotPasswordToken
 
   try {
     if (user) {
-      forgotPasswordToken = await db.forgotPassword.create({
+      await db.forgotPassword.create({
         data: {
           userId: user.id,
           code
