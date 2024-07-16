@@ -51,7 +51,7 @@ export const LoginForm = () => {
     }
 
     router.refresh()
-    const redirectUrl = searchParams.get('from') || '/'
+    const redirectUrl = searchParams.get('from') || '/dashboard'
     router.push(redirectUrl)
   }
 
@@ -69,7 +69,7 @@ export const LoginForm = () => {
               <FormControl className='mt-0'>
                 <Input
                   id='username'
-                  placeholder="test"
+                  placeholder="John Doe"
                   className='mt-0'
                   {...field}
                   disabled={isLogging}
