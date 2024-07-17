@@ -8,7 +8,7 @@ import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { useState } from 'react'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -99,7 +99,7 @@ export const LoginForm = () => {
                 <Input
                   id='password'
                   type="password"
-                  placeholder="****"
+                  placeholder="********"
                   className='mt-0'
                   {...field}
                   disabled={isLogging}

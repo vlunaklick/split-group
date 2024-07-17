@@ -6,11 +6,12 @@ import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { useState } from 'react'
 import { IconLoader2 } from '@tabler/icons-react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import { requestChangePassword } from './actions'
+import { toast } from 'sonner'
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Debe ser un correo electrónico válido' })
@@ -18,7 +19,6 @@ const formSchema = z.object({
 
 export const ForgotPasswordForm = () => {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [isWaiting, setIsWaiting] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -31,16 +31,18 @@ export const ForgotPasswordForm = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { email } = values
     setIsWaiting(true)
-    const forgotPasswordToken = await axios.post('/api/users/password', { email })
-    setIsWaiting(false)
+    const forgotPasswordToken = await requestChangePassword(email)
 
     if (!forgotPasswordToken) {
+      setIsWaiting(false)
       return
     }
 
-    router.refresh()
-    const redirectUrl = searchParams.get('from') || '/'
-    router.push(redirectUrl)
+    toast.success('Se ha enviado un correo con las instrucciones para recuperar tu contraseña.')
+    setTimeout(() => {
+      router.refresh()
+      router.push('/login')
+    }, 3000)
   }
 
   return (

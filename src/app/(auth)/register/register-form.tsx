@@ -6,11 +6,12 @@ import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { useState } from 'react'
 import { IconLoader2 } from '@tabler/icons-react'
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { createUser } from './actions'
+import { toast } from 'sonner'
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'El nombre tiene que tener al menos 2 caracteres' }).max(32, { message: 'El nombre no puede tener más de 32 caracteres' }),
@@ -37,35 +38,28 @@ export const RegisterForm = () => {
     const { username, password, name, email } = values
     setIsCreating(true)
 
-    const userCreated = await axios.post('/api/users', {
+    const userCreated = await createUser({
       username,
       password,
       name,
       email
-    }).then(() => true).catch((e) => {
-      if (e.response) {
-        const { data } = e.response
-        if (data.error) {
-          form.setError(data.field, {
-            type: 'manual',
-            message: data.error
-          })
-        }
-      } else {
-        form.setError('name', {
+    })
+
+    if (userCreated?.error) {
+      if (userCreated?.error?.field) {
+        form.setError(userCreated.error?.field as 'name' | 'email' | 'username' | 'password', {
           type: 'manual',
-          message: 'An error ocurred'
+          message: userCreated.error.message
         })
       }
 
-      return false
-    })
+      return setIsCreating(false)
+    }
 
-    setIsCreating(false)
-
-    if (!userCreated) return
-
-    router.push('/login')
+    toast.success('Cuenta creada exitosamente. Serás redirigido a la página de inicio de sesión en 3 segundos.')
+    setTimeout(() => {
+      router.push('/login')
+    }, 3000)
   }
 
   return (
@@ -146,7 +140,7 @@ export const RegisterForm = () => {
                 <Input
                   id='password'
                   type="password"
-                  placeholder="****"
+                  placeholder="********"
                   className='mt-0'
                   {...field}
                   disabled={isCreating}
@@ -156,7 +150,7 @@ export const RegisterForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isCreating}>
+        <Button className="w-full" disabled={isCreating}>
           {isCreating ? <IconLoader2 className="animate-spin" /> : 'Crear cuenta'}
           <span className='sr-only'>Crear cuenta</span>
         </Button>

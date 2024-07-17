@@ -6,11 +6,11 @@ import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { useState } from 'react'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
-import { updatePassword } from '@/lib/actions'
+import { updatePassword } from './actions'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
 const formSchema = z.object({
   password: z.string().min(8, { message: 'La contraseña debe tener al menos 8 caracteres' }).max(32, { message: 'La contraseña debe tener como máximo 32 caracteres' }),

@@ -1,5 +1,5 @@
-import { LoginForm } from '@/components/forms/login-form'
 import Link from 'next/link'
+import { LoginForm } from './login-form'
 
 export default function SignIn () {
   return (

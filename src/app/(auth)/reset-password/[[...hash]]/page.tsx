@@ -1,6 +1,6 @@
-import { ResetPasswordForm } from '@/components/forms/reset-password'
 import { isValidChangePassword } from '@/lib/data'
 import { notFound } from 'next/navigation'
+import { ResetPasswordForm } from './reset-password-form'
 
 export default async function ResetPassword ({ params } : { params: { hash: string[] } }) {
   const code = params?.hash ? params.hash[0] : null
@@ -10,7 +10,7 @@ export default async function ResetPassword ({ params } : { params: { hash: stri
   }
 
   const [requestChangePassword] = await Promise.all([
-    isValidChangePassword(params.hash.join('/'))
+    isValidChangePassword(code)
   ])
 
   if (!requestChangePassword) {

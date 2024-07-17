@@ -1,6 +1,6 @@
 'use server'
 
-import { db } from './db'
+import { db } from '@/lib/db'
 
 export async function updatePassword (password: string, code: string) {
   const requestChangePassword = await db.forgotPassword.findFirst({

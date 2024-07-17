@@ -9,7 +9,7 @@ export default function RootLayout ({
     <main className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px] h-screen">
       <section className="flex items-center justify-center py-12">
         {children}
-        </section>
+      </section>
       <section className="hidden bg-muted lg:block">
         <Image
           src="/login.avif"
