@@ -1,4 +1,10 @@
+import { Metadata } from 'next'
 import { ForgotPasswordForm } from './forgot-password-form'
+
+export const metadata: Metadata = {
+  title: 'Forgot Password',
+  description: 'Forgot your password'
+}
 
 export default function ForgotPassword () {
   return (

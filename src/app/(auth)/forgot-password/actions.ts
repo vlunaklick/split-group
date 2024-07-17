@@ -15,7 +15,7 @@ export async function requestChangePassword (email: string) {
     console.error(e)
   }
 
-  const code = crypto.createHash('sha256').digest('hex')
+  const code = crypto.randomBytes(20).toString('hex')
 
   try {
     if (user) {

@@ -1,4 +1,10 @@
+import { Metadata } from 'next'
 import { RegisterForm } from './register-form'
+
+export const metadata: Metadata = {
+  title: 'Register',
+  description: 'Register your account in Split Group'
+}
 
 export default function Register () {
   return (

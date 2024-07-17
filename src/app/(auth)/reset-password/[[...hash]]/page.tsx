@@ -1,6 +1,12 @@
 import { isValidChangePassword } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import { ResetPasswordForm } from './reset-password-form'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Reset Password',
+  description: 'Reset your password'
+}
 
 export default async function ResetPassword ({ params } : { params: { hash: string[] } }) {
   const code = params?.hash ? params.hash[0] : null
