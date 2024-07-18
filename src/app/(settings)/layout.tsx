@@ -9,9 +9,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { CircleUser, Menu } from 'lucide-react'
 import Link from 'next/link'
-import { SettingsNav } from './nav'
 import { Logo } from '@/components/logo'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { SettingsNav } from './nav'
 
 export default function RootLayout ({
   children
