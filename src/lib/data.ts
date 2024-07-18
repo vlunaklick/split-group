@@ -11,3 +11,13 @@ export async function isValidChangePassword (hash: string) {
 
   return true
 }
+
+export async function getAvailableCurrency () {
+  const currencies = await db.currency.findMany()
+
+  return currencies.map(currency => ({
+    value: currency.id,
+    name: currency.name,
+    symbol: currency.symbol
+  }))
+}
