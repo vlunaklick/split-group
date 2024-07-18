@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -14,8 +16,28 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 export const AlertSettings = () => {
+  const [mounted, setMounted] = useState(false)
+  const [selectedSize, setSelectedSize] = useState('simple')
+
+  useEffect(() => {
+    setMounted(true)
+    const size = localStorage.getItem('alert-size')
+    setSelectedSize(size || 'simple')
+  }, [])
+
+  const handleSave = () => {
+    if (!selectedSize) return
+
+    localStorage.setItem('alert-size', selectedSize)
+    toast.success('Tamaño de alertas guardado correctamente', {
+      duration: 1000
+    })
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -26,20 +48,41 @@ export const AlertSettings = () => {
       </CardHeader>
       <CardContent>
         <form>
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Tamaño" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="simple">Simple</SelectItem>
-              <SelectItem value="advanced">Avanzado</SelectItem>
-            </SelectContent>
-          </Select>
+          {!mounted && (
+            <SelectSkeleton />
+          )}
+
+          {mounted && (
+            <Select value={selectedSize} onValueChange={setSelectedSize} defaultValue={selectedSize}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Tamaño" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="simple">Simple</SelectItem>
+                <SelectItem value="advanced">Avanzado</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
         </form>
       </CardContent>
       <CardFooter className="border-t px-6 py-4 flex justify-end">
-        <Button>Guardar</Button>
+        <Button onClick={handleSave} disabled={!mounted}>
+          Guardar
+        </Button>
       </CardFooter>
     </Card>
   )
 }
+
+export const SelectSkeleton = () => (
+  <Select disabled>
+    <SelectTrigger className="w-[180px]">
+      <SelectValue placeholder="Tamaño" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="loading">
+        Cargando...
+      </SelectItem>
+    </SelectContent>
+  </Select>
+)

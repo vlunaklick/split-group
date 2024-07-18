@@ -18,27 +18,31 @@ import {
 } from '@/components/ui/select'
 import { getAvailableCurrency } from '@/lib/data'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import useSWR from 'swr'
 
 export const CurrencySetting = () => {
-  const { data: currencies } = useSWR('currencies-settings', getAvailableCurrency)
+  const { data: currencies, isLoading } = useSWR('currencies-settings', getAvailableCurrency)
   const [selectedCurrency, setSelectedCurrency] = useState('')
-  const [checked, setChecked] = useState(false)
 
   useEffect(() => {
     const currency = localStorage.getItem('currency')
 
     if (currency) {
       setSelectedCurrency(currency)
+    } else {
+      // DEFAULT CURRENCY ID
+      setSelectedCurrency('clyqdcm9a0003zh07y62b10s0')
     }
-
-    setChecked(true)
   }, [])
 
   const handleSave = () => {
     if (!selectedCurrency) return
 
     localStorage.setItem('currency', selectedCurrency)
+    toast.success('Moneda guardada correctamente', {
+      duration: 1000
+    })
   }
 
   return (
@@ -52,7 +56,7 @@ export const CurrencySetting = () => {
       <CardContent>
         <form>
           {
-            checked
+            !isLoading
               ? (
                 <Select value={selectedCurrency} onValueChange={setSelectedCurrency} defaultValue={selectedCurrency}>
                   <SelectTrigger className="w-[180px]">

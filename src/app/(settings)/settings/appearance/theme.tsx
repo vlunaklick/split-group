@@ -13,6 +13,7 @@ import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
+import { toast } from 'sonner'
 
 export const ThemeSetting = () => {
   const { setTheme, resolvedTheme, systemTheme } = useTheme()
@@ -26,6 +27,9 @@ export const ThemeSetting = () => {
 
   const changeTheme = () => {
     setTheme(selectedTheme)
+    toast.success('Tema guardado correctamente', {
+      duration: 1000
+    })
   }
 
   return (
@@ -49,7 +53,7 @@ export const ThemeSetting = () => {
         </form>
       </CardContent>
       <CardFooter className="border-t px-6 py-4 flex justify-end">
-        <Button onClick={changeTheme}>
+        <Button onClick={changeTheme} disabled={!mounted}>
           Guardar
         </Button>
       </CardFooter>
