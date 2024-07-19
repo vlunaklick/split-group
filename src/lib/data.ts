@@ -23,3 +23,13 @@ export async function getAvailableCurrency () {
     symbol: currency.symbol
   }))
 }
+
+export async function getUserConfiguration (userId: string) {
+  const configuration = await db.userConfig.findFirst({
+    where: {
+      userId
+    }
+  })
+
+  return configuration
+}

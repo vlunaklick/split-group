@@ -31,3 +31,13 @@ export const changeUsernameSchema = z.object({
 export const changeNameSchema = z.object({
   name: z.string().min(2, { message: 'El nombre tiene que tener al menos 2 caracteres' }).max(32, { message: 'El nombre no puede tener más de 32 caracteres' })
 })
+
+export const updateAlertsSettingsSchema = z.object({
+  amount: z.coerce.number().int().min(0, { message: 'El monto no puede ser negativo' })
+})
+
+export const updateNotificationsWantedSettingsSchema = z.object({
+  invitations: z.boolean(),
+  expenses: z.boolean(),
+  payments: z.boolean()
+})
