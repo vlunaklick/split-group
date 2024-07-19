@@ -62,12 +62,11 @@ export const UsernameSettings = ({ userId }: { userId: string }) => {
               control={form.control}
               name="username"
               render={({ field }: any) => (
-                <FormItem className="grid gap-2 space-y-0">
-                  <FormControl className='mt-0'>
+                <FormItem>
+                  <FormControl>
                     <Input
                       id='username'
                       placeholder="@johndoe"
-                      className='mt-0'
                       {...field}
                       disabled={isLoading}
                     />

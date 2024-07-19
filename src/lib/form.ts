@@ -27,3 +27,7 @@ export const resetPasswordSchema = z.object({
 export const changeUsernameSchema = z.object({
   username: z.string().min(2, { message: 'El nombre de usuario tiene que tener al menos 2 caracteres' }).max(32, { message: 'El nombre de usuario no puede tener más de 32 caracteres' }).regex(/^[a-zA-Z0-9äöüÄÖÜ]*$/, { message: 'El nombre de usuario solo puede contener letras y números' })
 })
+
+export const changeNameSchema = z.object({
+  name: z.string().min(2, { message: 'El nombre tiene que tener al menos 2 caracteres' }).max(32, { message: 'El nombre no puede tener más de 32 caracteres' })
+})
