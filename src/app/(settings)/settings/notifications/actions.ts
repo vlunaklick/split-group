@@ -14,3 +14,18 @@ export async function updateLimit ({ userId, newLimit }: { userId: string, newLi
 
   return true
 }
+
+export async function updateNotificationsWanted ({ userId, invitations, payments, spents }: { userId: string, invitations: boolean, payments: boolean, spents: boolean }) {
+  await db.userConfig.update({
+    where: {
+      userId
+    },
+    data: {
+      inviteNotification: invitations,
+      paymentNotification: payments,
+      spentNotification: spents
+    }
+  })
+
+  return true
+}

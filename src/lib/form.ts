@@ -37,7 +37,7 @@ export const updateAlertsSettingsSchema = z.object({
 })
 
 export const updateNotificationsWantedSettingsSchema = z.object({
-  invitations: z.boolean(),
-  expenses: z.boolean(),
-  payments: z.boolean()
+  invitations: z.boolean().default(false).optional(),
+  spents: z.boolean().default(false).optional(),
+  payments: z.boolean().default(false).optional()
 })
