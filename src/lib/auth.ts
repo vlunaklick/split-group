@@ -26,7 +26,8 @@ export const authOptions: NextAuthOptions = {
 
         const user = await db.user.findUnique({
           where: {
-            username
+            username,
+            deleteAt: null
           }
         }).catch(() => null)
 

@@ -9,13 +9,18 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Metadata } from 'next'
+import { DeleteSetting } from './delete'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export const metadata: Metadata = {
   title: 'General',
   description: 'Dashboard'
 }
 
-export default function General () {
+export default async function General () {
+  const session = await getServerSession(authOptions)
+
   return (
     <>
       <Card>
@@ -52,19 +57,7 @@ export default function General () {
         </CardFooter>
       </Card>
 
-      <Card className='border-red-500 dark:border-red-950'>
-        <CardHeader>
-          <CardTitle>Desactivar cuenta</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm">
-            Una vez desactivada, tu cuenta no podrá ser utilizada para acceder a la plataforma.
-          </p>
-        </CardContent>
-        <CardFooter className="border-t px-6 py-4 flex justify-end bg-red-800/20 rounded-b-md dark:border-red-950">
-          <Button variant='destructive'>Desactivar</Button>
-        </CardFooter>
-      </Card>
+      <DeleteSetting userId={session?.user?.id as string} />
     </>
   )
 }

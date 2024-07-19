@@ -19,6 +19,8 @@ import {
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
+// TODO: evaluar si puedo llevar esto a la db
+
 export const AlertSettings = () => {
   const [mounted, setMounted] = useState(false)
   const [selectedSize, setSelectedSize] = useState('simple')
