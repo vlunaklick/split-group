@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
@@ -60,15 +59,13 @@ export const LoginForm = () => {
           render={({ field }: any) => (
             <FormItem className="grid gap-2 space-y-0">
               <FormLabel>
-                <Label htmlFor='username'>Nombre de usuario</Label>
+                Nombre de usuario
               </FormLabel>
               <FormControl className='mt-0'>
                 <Input
-                  id='username'
                   placeholder="John Doe"
-                  className='mt-0'
-                  {...field}
                   disabled={isLogging}
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -82,7 +79,7 @@ export const LoginForm = () => {
             <FormItem className="grid gap-2 space-y-0">
               <div className="flex items-center">
                 <FormLabel>
-                  <Label htmlFor='password'>Contraseña</Label>
+                  Contraseña
                 </FormLabel>
                 <Link
                   href="/forgot-password"
@@ -93,12 +90,10 @@ export const LoginForm = () => {
               </div>
               <FormControl className='mt-0'>
                 <Input
-                  id='password'
-                  type="password"
                   placeholder="********"
-                  className='mt-0'
-                  {...field}
                   disabled={isLogging}
+                  type="password"
+                  {...field}
                 />
               </FormControl>
               <FormMessage />

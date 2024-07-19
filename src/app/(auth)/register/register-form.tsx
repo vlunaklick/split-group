@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -65,15 +64,13 @@ export const RegisterForm = () => {
           render={({ field }: any) => (
             <FormItem className="grid gap-2 space-y-0">
               <FormLabel>
-                <Label htmlFor='name'>Nombre</Label>
+                Nombre
               </FormLabel>
               <FormControl className='mt-0'>
                 <Input
-                  id='name'
                   placeholder="John Doe"
-                  className='mt-0'
-                  {...field}
                   disabled={isCreating}
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -86,15 +83,13 @@ export const RegisterForm = () => {
           render={({ field }: any) => (
             <FormItem className="grid gap-2 space-y-0">
               <FormLabel>
-                <Label htmlFor='username'>Nombre de usuario</Label>
+                Nombre de usuario
               </FormLabel>
               <FormControl className='mt-0'>
                 <Input
-                  id='username'
                   placeholder="@johndoe"
-                  className='mt-0'
-                  {...field}
                   disabled={isCreating}
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -107,15 +102,13 @@ export const RegisterForm = () => {
           render={({ field }: any) => (
             <FormItem className="grid gap-2 space-y-0">
               <FormLabel>
-                <Label htmlFor='email'>Email</Label>
+                Email
               </FormLabel>
               <FormControl className='mt-0'>
                 <Input
-                  id='email'
                   placeholder="johndoe@example.com"
-                  className='mt-0'
-                  {...field}
                   disabled={isCreating}
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -128,16 +121,14 @@ export const RegisterForm = () => {
           render={({ field }: any) => (
             <FormItem className="grid gap-2 space-y-0">
               <FormLabel>
-                <Label htmlFor='password'>Contraseña</Label>
+                Contraseña
               </FormLabel>
               <FormControl className='mt-0'>
                 <Input
-                  id='password'
                   type="password"
                   placeholder="********"
-                  className='mt-0'
-                  {...field}
                   disabled={isCreating}
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
