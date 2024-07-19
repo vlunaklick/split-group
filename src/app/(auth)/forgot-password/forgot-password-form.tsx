@@ -12,23 +12,20 @@ import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { requestChangePassword } from './actions'
 import { toast } from 'sonner'
-
-const formSchema = z.object({
-  email: z.string().email({ message: 'Debe ser un correo electrónico válido' })
-})
+import { forgotPasswordSchema } from '@/lib/form'
 
 export const ForgotPasswordForm = () => {
   const router = useRouter()
   const [isWaiting, setIsWaiting] = useState(false)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof forgotPasswordSchema>>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: ''
     }
   })
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof forgotPasswordSchema>) => {
     const { email } = values
     setIsWaiting(true)
     const forgotPasswordToken = await requestChangePassword(email)

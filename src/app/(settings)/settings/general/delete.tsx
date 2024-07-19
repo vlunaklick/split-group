@@ -26,10 +26,8 @@ export const DeleteSetting = ({ userId }: { userId: string }) => {
   const handleDelete = async () => {
     if (!userId) return
     try {
-      console.log('Deleting user')
       await deleteUser({ userId })
     } catch (error) {
-      console.error(error)
       toast.error('No se ha podido desactivar tu cuenta')
       return
     }

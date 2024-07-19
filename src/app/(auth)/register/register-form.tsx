@@ -12,20 +12,14 @@ import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { createUser } from './actions'
 import { toast } from 'sonner'
-
-const formSchema = z.object({
-  name: z.string().min(2, { message: 'El nombre tiene que tener al menos 2 caracteres' }).max(32, { message: 'El nombre no puede tener más de 32 caracteres' }),
-  email: z.string().email({ message: 'Debe ser un correo electrónico válido' }),
-  username: z.string().min(2, { message: 'El nombre de usuario tiene que tener al menos 2 caracteres' }).max(32, { message: 'El nombre de usuario no puede tener más de 32 caracteres' }).regex(/^[a-zA-Z0-9äöüÄÖÜ]*$/, { message: 'El nombre de usuario solo puede contener letras y números' }),
-  password: z.string().min(8, { message: 'La contraseña tiene que tener al menos 8 caracteres' }).max(32, { message: 'La contraseña no puede tener más de 32 caracteres' })
-})
+import { registerSchema } from '@/lib/form'
 
 export const RegisterForm = () => {
   const router = useRouter()
   const [isCreating, setIsCreating] = useState(false)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: '',
       password: '',
@@ -34,7 +28,7 @@ export const RegisterForm = () => {
     }
   })
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     const { username, password, name, email } = values
     setIsCreating(true)
 

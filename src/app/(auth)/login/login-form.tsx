@@ -12,26 +12,22 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useState } from 'react'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter, useSearchParams } from 'next/navigation'
-
-const formSchema = z.object({
-  username: z.string().min(2, { message: 'El nombre de usuario tiene que tener al menos 2 caracteres' }).max(32, { message: 'El nombre de usuario no puede tener más de 32 caracteres' }),
-  password: z.string().min(8, { message: 'La contraseña tiene que tener al menos 8 caracteres' }).max(32, { message: 'La contraseña no puede tener más de 32 caracteres' })
-})
+import { loginSchema } from '@/lib/form'
 
 export const LoginForm = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isLogging, setIsLogging] = useState(false)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       username: '',
       password: ''
     }
   })
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     const { username, password } = values
     setIsLogging(true)
 

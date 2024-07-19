@@ -11,28 +11,21 @@ import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { updatePassword } from './actions'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-
-const formSchema = z.object({
-  password: z.string().min(8, { message: 'La contraseña debe tener al menos 8 caracteres' }).max(32, { message: 'La contraseña debe tener como máximo 32 caracteres' }),
-  confirmPassword: z.string().min(8, { message: 'La contraseña debe tener al menos 8 caracteres' }).max(32, { message: 'La contraseña debe tener como máximo 32 caracteres' })
-}).refine(data => data.password === data.confirmPassword, {
-  message: 'Las contraseñas no coinciden',
-  path: ['confirmPassword']
-})
+import { resetPasswordSchema } from '@/lib/form'
 
 export const ResetPasswordForm = ({ code }: { code: string }) => {
   const router = useRouter()
   const [isWaiting, setIsWaiting] = useState(false)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof resetPasswordSchema>>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       password: '',
       confirmPassword: ''
     }
   })
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof resetPasswordSchema>) => {
     const { password } = values
     setIsWaiting(true)
     try {
