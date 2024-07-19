@@ -11,7 +11,7 @@ export const SettingsNav = () => {
     <nav
       className="grid gap-4 text-sm text-zinc-400" x-chunk="dashboard-04-chunk-0"
     >
-      <Link href="/settings/general" className={cn(pathname === '/settings/general' && 'font-semibold text-black dark:text-white')}>
+      <Link href="/settings" className={cn(pathname === '/settings' && 'font-semibold text-black dark:text-white')}>
         General
       </Link>
       <Link href="/settings/notifications" className={cn(pathname === '/settings/notifications' && 'font-semibold text-black dark:text-white')}>
