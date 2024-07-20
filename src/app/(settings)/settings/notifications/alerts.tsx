@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import useSWR from 'swr'
 import { getUserConfiguration } from '@/lib/data'
-import { updateAlertsSettingsSchema } from '@/lib/form'
+import { updateAlertLimitSettingsSchema } from '@/lib/form'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -24,8 +24,8 @@ import { toast } from 'sonner'
 export const LimitSetting = ({ userId }: { userId: string }) => {
   const { data: configuration, isLoading: isLoadingConfiguration } = useSWR(`/api/users/${userId}/max-alert`, async () => await getUserConfiguration(userId))
   const [isLoading, setIsLoading] = useState(false)
-  const form = useForm<z.infer<typeof updateAlertsSettingsSchema>>({
-    resolver: zodResolver(updateAlertsSettingsSchema),
+  const form = useForm<z.infer<typeof updateAlertLimitSettingsSchema>>({
+    resolver: zodResolver(updateAlertLimitSettingsSchema),
     defaultValues: {
       amount: 0
     },
@@ -34,7 +34,7 @@ export const LimitSetting = ({ userId }: { userId: string }) => {
     }
   })
 
-  const onSubmit = async (values: z.infer<typeof updateAlertsSettingsSchema>) => {
+  const onSubmit = async (values: z.infer<typeof updateAlertLimitSettingsSchema>) => {
     if (!userId) return
     setIsLoading(true)
     try {

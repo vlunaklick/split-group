@@ -18,7 +18,7 @@ export async function getAvailableCurrency () {
   const currencies = await db.currency.findMany()
 
   return currencies.map(currency => ({
-    value: currency.id,
+    id: currency.id,
     name: currency.name,
     symbol: currency.symbol
   }))

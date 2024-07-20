@@ -1,43 +1,49 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import { useEffect, useState } from 'react'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { updateAlertSizeSettingsSchema } from '@/lib/form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import useSWR from 'swr'
+import { z } from 'zod'
 
 // TODO: evaluar si puedo llevar esto a la db
 
 export const AlertSettings = () => {
-  const [mounted, setMounted] = useState(false)
-  const [selectedSize, setSelectedSize] = useState('simple')
+  const { data: alert, isLoading: isLoadingCurrent } = useSWR('alert-size-setting', async () => {
+    const alert = localStorage.getItem('alert-size')
+    return alert
+  })
+  const [isLoading, setIsLoading] = useState(false)
 
-  useEffect(() => {
-    setMounted(true)
-    const size = localStorage.getItem('alert-size')
-    setSelectedSize(size || 'simple')
-  }, [])
+  const form = useForm<z.infer<typeof updateAlertSizeSettingsSchema>>({
+    resolver: zodResolver(updateAlertSizeSettingsSchema),
+    values: {
+      size: alert || ''
+    }
+  })
 
-  const handleSave = () => {
-    if (!selectedSize) return
+  const onSubmit = async (values: z.infer<typeof updateAlertSizeSettingsSchema>) => {
+    setIsLoading(true)
+    try {
+      localStorage.setItem('alert-size', values.size)
+    } catch (error) {
+      toast.error('Hubo un error al actualizar el tamaño de las alertas', {
+        duration: 3000
+      })
+      setIsLoading(false)
+      return
+    }
 
-    localStorage.setItem('alert-size', selectedSize)
     toast.success('Tamaño de alertas guardado correctamente', {
-      duration: 1000
+      duration: 3000
     })
+    setIsLoading(false)
   }
 
   return (
@@ -48,43 +54,37 @@ export const AlertSettings = () => {
           Personaliza el tamaño de las alertas que se muestran en la aplicación.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form>
-          {!mounted && (
-            <SelectSkeleton />
-          )}
-
-          {mounted && (
-            <Select value={selectedSize} onValueChange={setSelectedSize} defaultValue={selectedSize}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Tamaño" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="simple">Simple</SelectItem>
-                <SelectItem value="advanced">Avanzado</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} key={form.watch('size') ? 0 : 1}>
+          <CardContent className="space-y-4">
+            <FormField
+              control={form.control}
+              name="size"
+              render={({ field }) => (
+                <FormItem>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger disabled={isLoadingCurrent}>
+                        <SelectValue placeholder="Selecciona una moneda" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                    <SelectItem value="simple">Simple</SelectItem>
+                    <SelectItem value="advanced">Avanzado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+          <CardFooter className="border-t px-6 py-4 flex justify-end">
+            <Button type="submit" disabled={isLoading || isLoadingCurrent}>
+              Guardar
+            </Button>
+          </CardFooter>
         </form>
-      </CardContent>
-      <CardFooter className="border-t px-6 py-4 flex justify-end">
-        <Button onClick={handleSave} disabled={!mounted}>
-          Guardar
-        </Button>
-      </CardFooter>
+      </Form>
     </Card>
   )
 }
-
-export const SelectSkeleton = () => (
-  <Select disabled>
-    <SelectTrigger className="w-[180px]">
-      <SelectValue placeholder="Tamaño" />
-    </SelectTrigger>
-    <SelectContent>
-      <SelectItem value="loading">
-        Cargando...
-      </SelectItem>
-    </SelectContent>
-  </Select>
-)
