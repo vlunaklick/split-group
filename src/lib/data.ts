@@ -33,3 +33,26 @@ export async function getUserConfiguration (userId: string) {
 
   return configuration
 }
+
+export async function getUserGroups (userId: string) {
+  const user = await db.user.findUnique({
+    where: {
+      id: userId
+    },
+    include: {
+      groups: true
+    }
+  })
+
+  if (!user) {
+    return []
+  }
+
+  const groups = user.groups.map(group => ({
+    id: group.id,
+    name: group.name,
+    icon: group.icon
+  }))
+
+  return groups
+}

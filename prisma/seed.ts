@@ -58,6 +58,31 @@ async function main () {
 
     console.log(`Created category with id: ${newCategory.id}`)
   }
+
+  const newGroup = await prisma.group.create({
+    data: {
+      name: 'Personal',
+      ownerId: newUser.id,
+      icon: 'alien'
+    }
+  })
+
+  console.log(`Created group with id: ${newGroup.id}`)
+
+  // Add user to group
+
+  await prisma.group.update({
+    where: {
+      id: newGroup.id
+    },
+    data: {
+      users: {
+        connect: {
+          id: newUser.id
+        }
+      }
+    }
+  })
 }
 
 main()

@@ -5,27 +5,21 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { SettingsNav } from './nav'
 import { UserNav } from '@/components/user-nav'
 import { Menu } from 'lucide-react'
+import { SideNav } from '@/components/side-nav'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
-export default function RootLayout ({
+export default async function RootLayout ({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions)
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b dark:border-zinc-800 dark:bg-zinc-950 px-4 md:px-6 bg-white">
-        <nav className="flex-col gap-6 text-lg font-medium hidden md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 text-lg font-semibold md:text-base"
-          >
-            <Logo />
-            <span className="sr-only">Split Group</span>
-          </Link>
-        </nav>
-        {
-          // TODO: update with the correct menu information
-        }
+        {/* Mobile */}
         <Sheet>
           <SheetTrigger asChild>
             <Button
@@ -37,43 +31,15 @@ export default function RootLayout ({
               <span className="sr-only">Alternar navegación</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className='border-zinc-800'>
-            <nav className="grid gap-6 text-lg font-medium">
-              <Link
-                href="#"
-                className="flex items-center gap-2 text-lg font-semibold"
-              >
-                <Logo />
-                <span className="sr-only">Split Group</span>
-              </Link>
-              <Link
-                href="#"
-                className="text-zinc-400 hover:text-foreground"
-              >
-                Dashboard
-              </Link>
-              <Link
-                href="#"
-                className="text-zinc-400 hover:text-foreground"
-              >
-                Orders
-              </Link>
-              <Link
-                href="#"
-                className="text-zinc-400 hover:text-foreground"
-              >
-                Products
-              </Link>
-              <Link
-                href="#"
-                className="text-zinc-400 hover:text-foreground"
-              >
-                Customers
-              </Link>
-              <Link href="#" className="hover:text-foreground">
-                Settings
-              </Link>
-            </nav>
+          <SheetContent side="left" className="flex flex-col dark:border-zinc-800">
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-2 text-lg font-semibold"
+            >
+              <Logo />
+              <span className="sr-only">Split Group</span>
+            </Link>
+            <SideNav userId={session?.user.id as string} />
           </SheetContent>
         </Sheet>
 
