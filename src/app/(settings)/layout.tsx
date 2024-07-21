@@ -19,6 +19,13 @@ export default async function RootLayout ({
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b dark:border-zinc-800 dark:bg-zinc-950 px-4 md:px-6 bg-white">
+        <Link
+          href="/dashboard"
+          className="hidden md:flex items-center gap-2 text-lg font-semibold"
+        >
+          <Logo />
+          <span className="sr-only">Split Group</span>
+        </Link>
         {/* Mobile */}
         <Sheet>
           <SheetTrigger asChild>

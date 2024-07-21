@@ -24,7 +24,7 @@ export const CurrencySetting = () => {
   const form = useForm<z.infer<typeof updateCurrencySettingsSchema>>({
     resolver: zodResolver(updateCurrencySettingsSchema),
     values: {
-      currency: currency || ''
+      currency: currencies?.find((curr) => curr.id === currency)?.id || ''
     }
   })
 

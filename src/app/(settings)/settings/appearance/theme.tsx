@@ -1,28 +1,44 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
-import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
+import { updateThemeSettingsSchema } from '@/lib/form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 export const ThemeSetting = () => {
   const { setTheme, resolvedTheme, systemTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const [selectedTheme, setSelectedTheme] = useState('system')
+  const [isLogging, setIsLogging] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    setSelectedTheme(resolvedTheme || 'system')
   }, [])
 
-  const changeTheme = () => {
-    setTheme(selectedTheme)
-    toast.success('Tema guardado correctamente', {
-      duration: 1000
-    })
+  const form = useForm<z.infer<typeof updateThemeSettingsSchema>>({
+    resolver: zodResolver(updateThemeSettingsSchema),
+    values: {
+      theme: resolvedTheme || 'system'
+    }
+  })
+
+  const onSubmit = async (values: z.infer<typeof updateThemeSettingsSchema>) => {
+    const { theme } = values
+    setIsLogging(true)
+
+    try {
+      setTheme(theme)
+      toast.success('Tema actualizado correctamente')
+    } catch (error) {
+      toast.error('Hubo un error al actualizar el tema')
+    }
+    setIsLogging(false)
   }
 
   return (
@@ -33,77 +49,129 @@ export const ThemeSetting = () => {
           Personaliza la apariencia de la aplicación seleccionando un tema.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" onSubmit={e => e.preventDefault()}>
-          {!mounted && (
-              <ThemeSelectorSkeleton />
-          )}
+      {
+        mounted
+          ? (
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} key={form.watch('theme') ? 1 : 0}>
+                <CardContent className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="theme"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormMessage />
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="grid gap-8 pt-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full"
+                        >
+                          <FormItem>
+                            <FormLabel className="[&:has([data-state=checked])>div]:border-zinc-400">
+                              <FormControl>
+                                <RadioGroupItem value="system" className="sr-only" />
+                              </FormControl>
+                              <ThemeBlock text="Sistema" bgColor={systemTheme === 'dark' ? 'bg-slate-950' : 'bg-[#ecedef]'} textColor={systemTheme === 'dark' ? 'bg-slate-400' : 'bg-[#ecedef]'} cardColor={systemTheme === 'dark' ? 'bg-slate-800' : 'bg-white'} />
+                            </FormLabel>
+                          </FormItem>
 
-          {mounted && (
-            <ThemeSelector selectedTheme={selectedTheme} setSelectedTheme={setSelectedTheme} systemTheme={systemTheme || 'system'} />
-          )}
+                          <FormItem>
+                            <FormLabel className="[&:has([data-state=checked])>div]:border-zinc-400">
+                              <FormControl>
+                                <RadioGroupItem value="light" className="sr-only" />
+                              </FormControl>
+                              <ThemeBlock text="Claro" bgColor="bg-[#ecedef]" textColor="bg-[#ecedef]" cardColor="bg-white" />
+                            </FormLabel>
+                          </FormItem>
 
-        </form>
-      </CardContent>
-      <CardFooter className="border-t px-6 py-4 flex justify-end">
-        <Button onClick={changeTheme} disabled={!mounted}>
-          Guardar
-        </Button>
-      </CardFooter>
+                          <FormItem>
+                            <FormLabel className="[&:has([data-state=checked])>div]:border-zinc-400">
+                              <FormControl>
+                                <RadioGroupItem value="dark" className="sr-only" />
+                              </FormControl>
+                              <ThemeBlock text="Oscuro" bgColor="bg-slate-950" textColor="bg-slate-400" cardColor="bg-slate-800" />
+                            </FormLabel>
+                          </FormItem>
+                        </RadioGroup>
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+                <CardFooter className="border-t px-6 py-4 flex justify-end">
+                  <Button type="submit" disabled={isLogging || !mounted}>
+                    Guardar
+                  </Button>
+                </CardFooter>
+              </form>
+            </Form>
+            )
+          : (
+            <>
+              <CardContent className="grid gap-8 pt-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full">
+                <ThemeBlockSkeleton text="Sistema" />
+                <ThemeBlockSkeleton text="Claro" />
+                <ThemeBlockSkeleton text="Oscuro" />
+              </CardContent>
+              <CardFooter className="border-t px-6 py-4 flex justify-end">
+                <Button type="submit" disabled={isLogging || !mounted}>
+                  Guardar
+                </Button>
+              </CardFooter>
+            </>
+            )
+      }
     </Card>
   )
 }
 
-export const ThemeSelector = ({ systemTheme, setSelectedTheme, selectedTheme }: { setSelectedTheme: (theme: string) => void, selectedTheme: string, systemTheme: string }) => {
-  const system = systemTheme !== 'dark' ? 'bg-white' : 'bg-zinc-800'
-
+const ThemeBlock = ({ text, bgColor, textColor, cardColor }: { text: string, bgColor: string, textColor: string, cardColor: string }) => {
   return (
     <>
-      <ThemeBlock text='Sistema' theme='system' color={system} selected={selectedTheme} setSelected={setSelectedTheme} />
-      <ThemeBlock text='Oscuro' theme='dark' color='bg-zinc-800' selected={selectedTheme} setSelected={setSelectedTheme} />
-      <ThemeBlock text='Claro' theme='light' color='bg-white' selected={selectedTheme} setSelected={setSelectedTheme} />
-    </>
-  )
-}
-
-const ThemeBlock = ({ theme, color, selected, setSelected, text }: { theme: string, color: string, selected: string, setSelected: (theme: string) => void, text: string }) => {
-  return (
-    <label className="flex space-y-2 cursor-pointer flex-col">
-      <div className={cn('w-full h-6 rounded-md border border-zinc-200 dark:border-zinc-700', color)} />
-      <div className="flex items-center space-x-2">
-        <input
-          id={theme}
-          type="radio"
-          name="theme"
-          value={color}
-          checked={selected === theme}
-          onChange={() => setSelected(theme)}
-        />
-        <label htmlFor={theme} className="text-sm">{text}</label>
+      <div className="items-center rounded-md border-2 border-zinc-100 dark:border-zinc-800 p-1 hover:border-zinc-300 dark:hover:border-zinc-600">
+        <div className={`space-y-2 rounded-sm ${bgColor} p-2`}>
+          <div className={`space-y-2 rounded-md ${cardColor} p-2 shadow-sm`}>
+            <div className={`h-2 w-[80px] rounded-lg ${textColor}`} />
+            <div className={`h-2 w-[100px] rounded-lg ${textColor}`} />
+          </div>
+          <div className={`flex items-center space-x-2 rounded-md ${cardColor} p-2 shadow-sm`}>
+            <div className={`h-4 w-4 rounded-full ${textColor}`} />
+            <div className={`h-2 w-[100px] rounded-lg ${textColor}`} />
+          </div>
+          <div className={`flex items-center space-x-2 rounded-md ${cardColor} p-2 shadow-sm`}>
+            <div className={`h-4 w-4 rounded-full ${textColor}`} />
+            <div className={`h-2 w-[100px] rounded-lg ${textColor}`} />
+          </div>
+        </div>
       </div>
-    </label>
-  )
-}
-
-const ThemeSelectorSkeleton = () => {
-  return (
-    <>
-      <SelectorSkeleton />
-      <SelectorSkeleton />
-      <SelectorSkeleton />
+      <span className="block w-full p-2 text-center font-normal">
+        {text}
+      </span>
     </>
   )
 }
 
-const SelectorSkeleton = () => (
-  <label className="flex space-y-2 cursor-pointer flex-col">
-    <div className='w-full h-6 rounded-md border border-zinc-200 dark:border-zinc-700' />
-    <div className="flex items-center space-x-2">
-      <input
-        type="radio"
-        name="theme"
-      />
-      <Skeleton className="w-16 h-5" />
+export const ThemeBlockSkeleton = ({ text }: { text: string }) => {
+  return (
+    <div className='flex flex-col'>
+      <div className="items-center rounded-md border-2 border-zinc-100 dark:border-zinc-800 p-1 hover:border-zinc-300 dark:hover:border-zinc-600 animate-pulse">
+        <div className={'space-y-2 rounded-sm bg-zinc-600 p-2'}>
+          <div className={'space-y-2 rounded-md bg-zinc-500 p-2 shadow-sm'}>
+            <div className={'h-2 w-[80px] rounded-lg bg-zinc-400'} />
+            <div className={'h-2 w-[100px] rounded-lg bg-zinc-400'} />
+          </div>
+          <div className={'flex items-center space-x-2 rounded-md bg-zinc-500 p-2 shadow-sm'}>
+            <div className={'h-4 w-4 rounded-full bg-zinc-400'} />
+            <div className={'h-2 w-[100px] rounded-lg bg-zinc-400'} />
+          </div>
+          <div className={'flex items-center space-x-2 rounded-md bg-zinc-500 p-2 shadow-sm'}>
+            <div className={'h-4 w-4 rounded-full bg-zinc-400'} />
+            <div className={'h-2 w-[100px] rounded-lg bg-zinc-400'} />
+          </div>
+        </div>
+      </div>
+      <span className="block w-full p-2 text-center font-normal text-sm">
+        {text}
+      </span>
     </div>
-  </label>
-)
+  )
+}
