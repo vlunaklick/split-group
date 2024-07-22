@@ -14,9 +14,11 @@ import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { RadioGroup } from '@/components/ui/radio-group'
 import { RadioGroupItem } from '@radix-ui/react-radio-group'
+import { useSWRConfig } from 'swr'
 
 export const CreateGroupFrom = ({ userId }: { userId: string }) => {
   const router = useRouter()
+  const { mutate } = useSWRConfig()
   const [isLogging, setIsLogging] = useState(false)
 
   const form = useForm<z.infer<typeof createGroupFormSchema>>({
@@ -34,6 +36,7 @@ export const CreateGroupFrom = ({ userId }: { userId: string }) => {
 
     try {
       const group = await createGroup({ userId, name, description, icon })
+      mutate('user-groups')
       toast.success('Grupo creado con éxito. Redirigiendo...')
       setTimeout(() => {
         router.push(`/groups/${group.id}`)
