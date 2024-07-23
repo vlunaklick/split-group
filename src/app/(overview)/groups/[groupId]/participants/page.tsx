@@ -16,7 +16,7 @@ export default async function GroupParticipants ({ params } : { params: { groupI
   const session = await getServerSession(authOptions)
   const group = await getGroup(groupId)
 
-  if (!group || !group.users.find(user => user.id === session?.user?.id) || !group.users.find(user => user.userGroupRole.find(g => g.groupId === groupId)?.role === 'ADMIN')) {
+  if (!group || !group.users.find(user => user.id === session?.user?.id)) {
     notFound()
   }
 
