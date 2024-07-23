@@ -43,10 +43,6 @@ export const GroupDetails = ({ groupId, userId }: { groupId: string, userId: str
     toast.success('Grupo actualizado correctamente.')
     setIsLoading(false)
     form.reset()
-    // setTimeout(() => {
-    //   router.refresh()
-    //   router.push('/login')
-    // }, 3000)
   }
 
   const onDelete = async () => {
@@ -65,7 +61,7 @@ export const GroupDetails = ({ groupId, userId }: { groupId: string, userId: str
   }
 
   return (
-    <Card className='md:max-w-[526px] w-full'>
+    <Card className='md:max-w-[526px] w-full h-min'>
       <CardHeader>
         <CardTitle>Detalles del grupo</CardTitle>
         <CardDescription>Información general sobre el grupo</CardDescription>

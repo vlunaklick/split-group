@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 import { GroupDetails } from './group-details'
+import { InviteMembers } from './invite'
 
 export default async function GroupSettings ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId
@@ -39,9 +40,10 @@ export default async function GroupSettings ({ params } : { params: { groupId: s
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-
-      <GroupDetails groupId={groupId} userId={session?.user?.id as string} />
-
+      <div className="flex flex-col gap-6 lg:flex-row flex-wrap">
+        <GroupDetails groupId={groupId} userId={session?.user?.id as string} />
+        <InviteMembers groupId={groupId} userId={session?.user?.id as string} />
+      </div>
     </>
   )
 }
