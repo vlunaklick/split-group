@@ -63,3 +63,8 @@ export const updateThemeSettingsSchema = z.object({
 export const giveAdminPermissionSchema = z.object({
   userId: z.string().min(1, { message: 'Debes seleccionar un usuario' })
 })
+
+export const updateGroupFormSchema = z.object({
+  name: z.string().min(2, { message: 'El nombre del grupo tiene que tener al menos 2 caracteres' }).max(32, { message: 'El nombre del grupo no puede tener más de 32 caracteres' }),
+  description: z.string().max(255, { message: 'La descripción del grupo no puede tener más de 255 caracteres' })
+})
