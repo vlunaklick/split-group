@@ -12,14 +12,16 @@ import { generateInvitationLinkSchema, inviteMemberSchema } from '@/lib/form'
 import { Input } from '@/components/ui/input'
 import { IconLoader2 } from '@tabler/icons-react'
 import { generateInvitationLink, inviteMemberToGroup } from './actions'
+import { useSWRConfig } from 'swr'
 
 export const InviteMembers = ({ groupId, userId }: { groupId: string, userId: string }) => {
   const [isLoading, setIsLoading] = useState(false)
+  const { mutate } = useSWRConfig()
 
   const form = useForm<z.infer<typeof inviteMemberSchema>>({
     resolver: zodResolver(inviteMemberSchema),
     defaultValues: {
-      username: ''
+      email: ''
     }
   })
 
@@ -31,19 +33,24 @@ export const InviteMembers = ({ groupId, userId }: { groupId: string, userId: st
   })
 
   const onSubmit = async (values: z.infer<typeof inviteMemberSchema>) => {
-    const { username } = values
+    const { email } = values
     setIsLoading(true)
 
     try {
-      await inviteMemberToGroup(username, groupId)
+      const response = await inviteMemberToGroup(email, groupId)
+      if (response?.error) {
+        toast.error(response.error)
+        setIsLoading(false)
+        return
+      }
+      toast.success('Miembro invitado correctamente.')
+      setIsLoading(false)
+      mutate(['/api/groups/members/invited', groupId])
+      form.reset()
     } catch (error) {
       console.error(error)
       toast.error('Ha ocurrido un error al invitar al miembro.')
     }
-
-    toast.success('Miembro invitado correctamente.')
-    setIsLoading(false)
-    form.reset()
   }
 
   const onSubmitLink = async (values: z.infer<typeof generateInvitationLinkSchema>) => {
@@ -52,6 +59,7 @@ export const InviteMembers = ({ groupId, userId }: { groupId: string, userId: st
 
     try {
       await generateInvitationLink(groupId, maxUses)
+      mutate(['/api/groups/link', groupId])
     } catch (error) {
       console.error(error)
       toast.error('Ha ocurrido un error al generar el enlace de invitación.')
@@ -73,15 +81,15 @@ export const InviteMembers = ({ groupId, userId }: { groupId: string, userId: st
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2'>
             <FormField
               control={form.control}
-              name="username"
+              name="email"
               render={({ field }: any) => (
                 <FormItem className="grid gap-2 space-y-0">
                   <FormLabel>
-                    Usuario
+                    Email del usuario
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="@usuario"
+                      placeholder="demo@example.com"
                       {...field}
                       disabled={isLoading}
                     />

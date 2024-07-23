@@ -70,7 +70,7 @@ export const updateGroupFormSchema = z.object({
 })
 
 export const inviteMemberSchema = z.object({
-  username: z.string().min(2, { message: 'El nombre de usuario tiene que tener al menos 2 caracteres' }).max(32, { message: 'El nombre de usuario no puede tener más de 32 caracteres' }).regex(/^[a-zA-Z0-9äöüÄÖÜ]*$/, { message: 'El nombre de usuario solo puede contener letras y números' })
+  email: z.string().email({ message: 'Debe ser un correo electrónico válido' })
 })
 
 export const generateInvitationLinkSchema = z.object({

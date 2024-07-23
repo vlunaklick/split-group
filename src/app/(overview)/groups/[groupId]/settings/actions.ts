@@ -3,15 +3,17 @@
 import { db } from '@/lib/db'
 import crypto from 'crypto'
 
-export async function inviteMemberToGroup (username: string, groupId: string) {
+export async function inviteMemberToGroup (email: string, groupId: string) {
   const user = await db.user.findFirst({
     where: {
-      username
+      email
     }
   })
 
   if (!user) {
-    throw new Error('User not found')
+    return {
+      error: 'Usuario no encontrado'
+    }
   }
 
   const group = await db.group.findFirst({
@@ -22,6 +24,20 @@ export async function inviteMemberToGroup (username: string, groupId: string) {
 
   if (!group) {
     throw new Error('Group not found')
+  }
+
+  const notification = await db.notification.findFirst({
+    where: {
+      userId: user.id,
+      groupId,
+      type: 'group_invite'
+    }
+  })
+
+  if (notification) {
+    return {
+      error: 'El usuario ya ha sido invitado'
+    }
   }
 
   await db.notification.create({
@@ -52,6 +68,42 @@ export async function generateInvitationLink (groupId: string, maxUses: number) 
       groupId: group.id,
       maxUses,
       code
+    }
+  })
+}
+
+export async function getInvitationLink (groupId: string) {
+  return db.groupInvite.findMany({
+    where: {
+      groupId
+    }
+  })
+}
+
+export async function getUsersInvitedToGroup (groupId: string) {
+  return db.notification.findMany({
+    where: {
+      groupId
+    },
+    select: {
+      user: true
+    }
+  })
+}
+
+export async function removeInvitationLink (code: string) {
+  return db.groupInvite.delete({
+    where: {
+      code
+    }
+  })
+}
+
+export async function removeUserInvitation (userId: string, groupId: string) {
+  return db.notification.deleteMany({
+    where: {
+      userId,
+      groupId
     }
   })
 }

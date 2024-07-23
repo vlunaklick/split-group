@@ -6,6 +6,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import Link from 'next/link'
 import { GroupDetails } from './group-details'
 import { InviteMembers } from './invite'
+import { LinksGenerated, UsersInvited } from './invitations'
 
 export default async function GroupSettings ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId
@@ -40,9 +41,11 @@ export default async function GroupSettings ({ params } : { params: { groupId: s
           </BreadcrumbList>
         </Breadcrumb>
       </header>
-      <div className="flex flex-col gap-6 lg:flex-row flex-wrap">
+      <div className="flex gap-6 flex-wrap">
         <GroupDetails groupId={groupId} userId={session?.user?.id as string} />
         <InviteMembers groupId={groupId} userId={session?.user?.id as string} />
+        <UsersInvited groupId={groupId} userId={session?.user?.id as string} />
+        <LinksGenerated groupId={groupId} userId={session?.user?.id as string} />
       </div>
     </>
   )
