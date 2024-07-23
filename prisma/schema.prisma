@@ -52,6 +52,7 @@ model Group {
   spendings     Spending[]
   groupInvite   GroupInvite[]
   userGroupRole UserGroupRole[]
+  Notification  Notification[]
 }
 
 model Payers {
@@ -118,15 +119,6 @@ model Category {
   spending    Spending[]
 }
 
-model GroupInvite {
-  id        String   @id @default(cuid())
-  code      String   @unique
-  group     Group    @relation(fields: [groupId], references: [id])
-  groupId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model ForgotPassword {
   id        String   @id @default(cuid())
   code      String   @unique
@@ -136,12 +128,34 @@ model ForgotPassword {
   updatedAt DateTime @updatedAt
 }
 
+// Notifications
+
+enum NotificationType {
+  GENERIC
+  GROUP_INVITE
+}
+
 model Notification {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   type      String
   message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  read      Boolean  @default(false)
+  group     Group?   @relation(fields: [groupId], references: [id])
+  groupId   String?
+  acepted   Boolean?
+}
+
+model GroupInvite {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   String
+  uses      Int      @default(0)
+  maxUses   Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
