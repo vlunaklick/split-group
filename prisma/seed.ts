@@ -1,88 +1,79 @@
 import { PrismaClient } from '@prisma/client'
+import { usersMocks, currenciesMocks, categoriesMocks } from './seed-info'
 
 const prisma = new PrismaClient()
 
 async function main () {
   console.log('Seeding database...')
-  const newUser = await prisma.user.create({
-    data: {
-      email: 'admin@example.com',
-      name: 'Admin',
-      username: 'admin',
-      password: 'contra123',
-      userConfig: {
-        create: {
-          inviteNotification: true,
-          spentNotification: true,
-          paymentNotification: true,
-          limit: 1000
+  const users = []
+  const currencies = []
+  const categories = []
+
+  for (const user of usersMocks) {
+    const newUser = await prisma.user.create({
+      data: {
+        email: user.user.email,
+        name: user.user.name,
+        username: user.user.username,
+        password: user.user.password,
+        userConfig: {
+          create: {
+            inviteNotification: user.user.userConfig.inviteNotification,
+            spentNotification: user.user.userConfig.spentNotification,
+            paymentNotification: user.user.userConfig.paymentNotification,
+            limit: user.user.userConfig.limit
+          }
         }
       }
-    }
-  })
+    })
 
-  console.log(`Created user with id: ${newUser.id}`)
+    console.log(`Created user with id: ${newUser.id}`)
+    users.push(newUser)
+  }
 
-  const currencies = [
-    { label: 'Dólar', symbol: '$' },
-    { label: 'Peso Argentino', symbol: '$' }
-  ]
-
-  for (const currency of currencies) {
+  for (const currency of currenciesMocks) {
     const newCurrency = await prisma.currency.create({
       data: {
-        name: currency.label,
+        name: currency.name,
         symbol: currency.symbol
       }
     })
 
     console.log(`Created currency with id: ${newCurrency.id}`)
+    currencies.push(newCurrency)
   }
 
-  const categories = [
-    { name: 'Comida', description: 'Gastos relacionados con la comida' },
-    { name: 'Transporte', description: 'Gastos relacionados con el transporte' },
-    { name: 'Entretenimiento', description: 'Gastos relacionados con el entretenimiento' },
-    { name: 'Salud', description: 'Gastos relacionados con la salud' },
-    { name: 'Educación', description: 'Gastos relacionados con la educación' },
-    { name: 'Otros', description: 'Gastos que no entran en las categorías anteriores' }
-  ]
-
-  for (const category of categories) {
+  for (const category of categoriesMocks) {
     const newCategory = await prisma.category.create({
       data: {
-        name: category.name,
-        description: category.description
+        name: category.name
       }
     })
 
     console.log(`Created category with id: ${newCategory.id}`)
+    categories.push(newCategory)
   }
 
-  const newGroup = await prisma.group.create({
+  const group = await prisma.group.create({
     data: {
-      name: 'Personal',
-      ownerId: newUser.id,
-      icon: 'alien'
-    }
-  })
-
-  console.log(`Created group with id: ${newGroup.id}`)
-
-  // Add user to group
-
-  await prisma.group.update({
-    where: {
-      id: newGroup.id
-    },
-    data: {
+      name: 'Group 1',
+      icon: 'alien',
+      ownerId: users[0].id,
       users: {
-        connect: {
-          id: newUser.id
-        }
+        connect: users.map(user => ({ id: user.id }))
       }
     }
   })
+
+  for (const user of users) {
+    await prisma.userGroupRole.create({
+      data: {
+        groupId: group.id,
+        userId: user.id,
+        role: user.id === group.ownerId ? 'ADMIN' : 'USER'
+      }
+    })
+  }
 }
 
 main()

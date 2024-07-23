@@ -59,3 +59,7 @@ export const createGroupFormSchema = z.object({
 export const updateThemeSettingsSchema = z.object({
   theme: z.string().min(1, { message: 'Debes seleccionar un tema' })
 })
+
+export const giveAdminPermissionSchema = z.object({
+  userId: z.string().min(1, { message: 'Debes seleccionar un usuario' })
+})
