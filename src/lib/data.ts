@@ -61,6 +61,16 @@ export async function getGroup (groupId: string) {
   const group = await db.group.findUnique({
     where: {
       id: groupId
+    },
+    include: {
+      users: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          userGroupRole: true
+        }
+      }
     }
   })
 

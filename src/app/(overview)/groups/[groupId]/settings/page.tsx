@@ -4,9 +4,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
-import { AdminsList, ParticipantsList } from './list'
 
-export default async function GroupParticipants ({ params } : { params: { groupId: string } }) {
+export default async function GroupSettings ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId
 
   if (!groupId) {
@@ -34,16 +33,12 @@ export default async function GroupParticipants ({ params } : { params: { groupI
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Participantes</BreadcrumbPage>
+              <BreadcrumbPage>Configuración</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </header>
 
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <ParticipantsList groupId={groupId} userId={session?.user?.id as string} />
-        <AdminsList groupId={groupId} userId={session?.user?.id as string} />
-      </div>
     </>
   )
 }
