@@ -16,7 +16,7 @@ export const SideNav = ({ userId }: { userId: string }) => {
   const path = usePathname()
 
   const selectedPath = (href: string) => {
-    return path === href
+    return path.startsWith(href)
   }
 
   return (
