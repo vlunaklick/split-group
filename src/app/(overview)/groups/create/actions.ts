@@ -17,5 +17,21 @@ export const createGroup = async ({ userId, name, description, icon }: { userId:
     }
   })
 
+  await db.userGroupRole.create({
+    data: {
+      role: 'ADMIN',
+      user: {
+        connect: {
+          id: userId
+        }
+      },
+      group: {
+        connect: {
+          id: group.id
+        }
+      }
+    }
+  })
+
   return group
 }
