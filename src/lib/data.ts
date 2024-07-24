@@ -183,9 +183,7 @@ export async function getGroupAdmins (groupId: string) {
 
   const admins = group.users.filter(user => user.userGroupRole.filter(uG => uG.groupId === groupId && uG.role === 'ADMIN').length > 0)
 
-  const adminsAndOwner = [group.owner, ...admins]
-
-  return adminsAndOwner
+  return admins
 }
 
 export async function hasGroupOwnerPermission (userId: string, groupId: string) {
