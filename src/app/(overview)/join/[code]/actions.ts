@@ -53,4 +53,14 @@ export async function joinInvitation (code: string, userId: string) {
       uses: invitation.uses + 1
     }
   })
+
+  await db.notification.updateMany({
+    where: {
+      userId,
+      type: 'GROUP_INVITE'
+    },
+    data: {
+      acepted: true
+    }
+  })
 }

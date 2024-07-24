@@ -15,7 +15,7 @@ import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useSWRConfig } from 'swr'
 
-export const GroupDetails = ({ groupId, userId }: { groupId: string, userId: string }) => {
+export const GroupDetails = ({ groupId, userId, isOwner }: { groupId: string, userId: string, isOwner: boolean }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { mutate } = useSWRConfig()
   const router = useRouter()
@@ -113,9 +113,11 @@ export const GroupDetails = ({ groupId, userId }: { groupId: string, userId: str
           </form>
         </Form>
 
-        <Button variant='destructive' className='w-full' onClick={onDelete} disabled={isLoading}>
-          Eliminar grupo
-        </Button>
+        {isOwner && (
+          <Button variant='destructive' className='w-full' onClick={onDelete} disabled={isLoading}>
+            Eliminar grupo
+          </Button>
+        )}
       </CardContent>
     </Card>
   )

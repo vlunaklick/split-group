@@ -22,6 +22,8 @@ export default async function GroupSettings ({ params } : { params: { groupId: s
     notFound()
   }
 
+  const isOwner = group.ownerId === session?.user?.id
+
   return (
     <>
       <header className="flex md:items-center gap-4 md:gap-6 flex-col md:flex-row">
@@ -42,7 +44,7 @@ export default async function GroupSettings ({ params } : { params: { groupId: s
         </Breadcrumb>
       </header>
       <div className="flex gap-6 flex-wrap">
-        <GroupDetails groupId={groupId} userId={session?.user?.id as string} />
+        <GroupDetails groupId={groupId} userId={session?.user?.id as string} isOwner={isOwner} />
         <InviteMembers groupId={groupId} userId={session?.user?.id as string} />
         <UsersInvited groupId={groupId} userId={session?.user?.id as string} />
         <LinksGenerated groupId={groupId} userId={session?.user?.id as string} />
