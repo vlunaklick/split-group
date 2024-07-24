@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 import { AdminsList, ParticipantsList } from './list'
+import { LeaveGroupButton } from './button'
 
 export default async function GroupParticipants ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId
@@ -19,6 +20,8 @@ export default async function GroupParticipants ({ params } : { params: { groupI
   if (!group || !group.users.find(user => user.id === session?.user?.id)) {
     notFound()
   }
+
+  const isOwner = group.ownerId === session?.user?.id
 
   return (
     <>
@@ -38,6 +41,9 @@ export default async function GroupParticipants ({ params } : { params: { groupI
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+        {!isOwner && (
+          <LeaveGroupButton groupId={groupId} userId={session?.user?.id as string} />
+        )}
       </header>
 
       <div className="flex flex-col gap-6 lg:flex-row">
