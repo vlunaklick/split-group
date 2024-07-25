@@ -386,3 +386,14 @@ export async function deleteGroup (groupId: string) {
     }
   })
 }
+
+export async function getAmountNotifications (userId: string) {
+  const notifications = await db.notification.findMany({
+    where: {
+      userId,
+      read: false
+    }
+  })
+
+  return notifications.length
+}
