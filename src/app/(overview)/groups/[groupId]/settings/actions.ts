@@ -2,6 +2,7 @@
 
 import { db } from '@/lib/db'
 import crypto from 'crypto'
+import { NotificationType } from '../../../../../../prisma/notification-type-enum'
 
 export async function inviteMemberToGroup (email: string, groupId: string) {
   const user = await db.user.findFirst({
@@ -19,6 +20,9 @@ export async function inviteMemberToGroup (email: string, groupId: string) {
   const group = await db.group.findFirst({
     where: {
       id: groupId
+    },
+    include: {
+      users: true
     }
   })
 
@@ -26,11 +30,19 @@ export async function inviteMemberToGroup (email: string, groupId: string) {
     throw new Error('Group not found')
   }
 
+  const isUserInGroup = group.users.some(u => u.id === user.id)
+
+  if (isUserInGroup) {
+    return {
+      error: 'El usuario ya está en el grupo'
+    }
+  }
+
   const notification = await db.notification.findFirst({
     where: {
       userId: user.id,
       groupId,
-      type: 'group_invite'
+      type: NotificationType.GROUP_INVITE
     }
   })
 
@@ -42,10 +54,11 @@ export async function inviteMemberToGroup (email: string, groupId: string) {
 
   await db.notification.create({
     data: {
-      type: 'group_invite',
+      type: NotificationType.GROUP_INVITE,
       userId: user.id,
       groupId,
-      message: `Te han invitado a unirte al grupo *${group.name}*`
+      title: 'Invitación a grupo',
+      message: `Te han invitado a unirte al grupo ${group.name}`
     }
   })
 }

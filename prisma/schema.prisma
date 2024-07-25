@@ -139,7 +139,8 @@ model Notification {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  type      String
+  type      NotificationType
+  title   String?
   message   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
