@@ -1,13 +1,13 @@
 import Link from 'next/link'
-import { Bell, Menu } from 'lucide-react'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Menu } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Logo } from '@/components/logo'
 import { UserNav } from '@/components/user-nav'
 import { SideNav } from '@/components/side-nav'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { cn } from '@/lib/utils'
+import { NotificationsAmount } from '@/components/notifications-amount'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,10 +30,7 @@ export default async function RootLayout ({
               <Logo />
               <span className="sr-only">Split Group</span>
             </Link>
-            <Link className={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'ml-auto')} href="/notifications">
-              <Bell className="h-4 w-4" />
-              <span className="sr-only">Notificaciones</span>
-            </Link>
+            <NotificationsAmount userId={session?.user.id as string} />
           </div>
           <div className="flex-1">
             <SideNav userId={session?.user.id as string} />
