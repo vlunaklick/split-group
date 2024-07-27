@@ -184,9 +184,9 @@ export const AdminsList = ({ groupId, userId }: { groupId: string, userId: strin
                             <SelectContent>
                             {membersWithoutAdmins && membersWithoutAdmins?.length > 0 && (
                               membersWithoutAdmins.map(member => (
-                                    <SelectItem key={member.id} value={member.id}>
-                                      @{member.username}
-                                    </SelectItem>
+                                <SelectItem key={member.id} value={member.id}>
+                                  @{member.username}
+                                </SelectItem>
                               ))
                             )}
                             </SelectContent>

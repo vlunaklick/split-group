@@ -15,13 +15,7 @@ export async function isValidChangePassword (hash: string) {
 }
 
 export async function getAvailableCurrency () {
-  const currencies = await db.currency.findMany()
-
-  return currencies.map(currency => ({
-    id: currency.id,
-    name: currency.name,
-    symbol: currency.symbol
-  }))
+  return await db.currency.findMany()
 }
 
 export async function getUserConfiguration (userId: string) {
@@ -128,6 +122,7 @@ export async function getGroupParticipants (groupId: string) {
           id: true,
           name: true,
           email: true,
+          username: true,
           userGroupRole: {
             where: {
               groupId
@@ -146,6 +141,7 @@ export async function getGroupParticipants (groupId: string) {
     id: user.id,
     name: user.name,
     email: user.email,
+    username: user.username,
     isOwner: group.ownerId === user.id,
     isAdmin: user.userGroupRole.filter(uG => uG.role === 'ADMIN').length > 0
   }))

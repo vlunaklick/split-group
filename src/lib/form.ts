@@ -76,3 +76,12 @@ export const inviteMemberSchema = z.object({
 export const generateInvitationLinkSchema = z.object({
   maxUses: z.coerce.number().int().min(1, { message: 'El número de usos no puede ser menor a 1' }).max(100, { message: 'El número de usos no puede ser mayor a 100' })
 })
+
+export const createSpendingSchema = z.object({
+  name: z.string().min(2, { message: 'El nombre del gasto tiene que tener al menos 2 caracteres' }).max(32, { message: 'El nombre del gasto no puede tener más de 32 caracteres' }),
+  description: z.string().max(255, { message: 'La descripción del gasto no puede tener más de 255 caracteres' }),
+  categoryId: z.string().min(1, { message: 'Debes seleccionar una categoría' }),
+  currencyId: z.string().min(1, { message: 'Debes seleccionar una moneda' }),
+  amount: z.coerce.number().int().min(1, { message: 'El valor del gasto no puede ser menor a 1' }),
+  date: z.date().optional()
+})

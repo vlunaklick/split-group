@@ -149,8 +149,6 @@ model Spending {
   date        DateTime
   category    Category   @relation(fields: [categoryId], references: [id])
   categoryId  String
-  paid        Boolean
-  due         DateTime
   owner       User       @relation(fields: [ownerId], references: [id])
   ownerId     String
   group       Group      @relation(fields: [groupId], references: [id])

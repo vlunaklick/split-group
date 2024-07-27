@@ -1,9 +1,7 @@
 import { getGroup } from '@/lib/data'
 import { notFound } from 'next/navigation'
-import { HeaderButtons, HeaderButtonsMobile } from './header-buttons'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { Spendings } from './spendings'
 
 export default async function GroupId ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId
@@ -25,18 +23,15 @@ export default async function GroupId ({ params } : { params: { groupId: string 
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2 justify-between">
             <h1 className="text-3xl font-semibold">{group.name}</h1>
-            <HeaderButtonsMobile groupId={groupId} userId={session?.user?.id as string} />
           </div>
           <p className="text-balance text-zinc-400">{group.description}</p>
         </div>
 
         <div className="flex gap-2">
-          <HeaderButtons groupId={groupId} userId={session?.user?.id as string} />
         </div>
       </header>
 
       <div className="grid gap-4">
-        <Spendings userId={session?.user?.id as string} groupId={groupId} />
       </div>
     </>
   )
