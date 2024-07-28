@@ -10,6 +10,8 @@ import { useStepper } from '@/components/ui/stepper'
 import { User } from '@prisma/client'
 import { useState } from 'react'
 
+// TODO: Handle better the amount, if its equal in the admin also pays.
+
 export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setFinalData }: { participants?: any[]; isLoading: boolean; totalAmount: number; payers: any; setFinalData: (data: any) => void }) => {
   const { nextStep, prevStep } = useStepper()
   const [error, setError] = useState<string | null>(null)

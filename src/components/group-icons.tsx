@@ -2,17 +2,19 @@ import { IconAlien, IconAnchor, IconAward, IconBat, IconBone, IconBottle, IconBo
 
 export const Icon = ({ type = 'award', className }: { type?: string; className?: string }) => {
   const icons = {
-    award: <IconAward className={className} />,
-    alien: <IconAlien className={className} />,
-    anchor: <IconAnchor className={className} />,
-    bat: <IconBat className={className} />,
-    bottle: <IconBottle className={className} />,
-    bone: <IconBone className={className} />,
-    bow: <IconBow className={className} />,
-    buildings: <IconBuildings className={className} />,
-    burger: <IconBurger className={className} />,
-    default: <IconAlien className={className} />
+    award: IconAward,
+    alien: IconAlien,
+    anchor: IconAnchor,
+    bat: IconBat,
+    bottle: IconBottle,
+    bone: IconBone,
+    bow: IconBow,
+    buildings: IconBuildings,
+    burger: IconBurger,
+    default: IconAlien
   }
 
-  return icons[type as keyof typeof icons] || icons.default
+  const Icon = icons[type as keyof typeof icons] || icons.default
+
+  return <Icon className={className} />
 }

@@ -17,6 +17,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 
+// TODO: Add isLoading
+
 const steps = [
   { label: 'Información del gasto', description: 'Ingresa la información del gasto', icon: IconUser },
   { label: 'Contribuyentes', description: 'Selecciona los contribuyentes', icon: IconCoin },
