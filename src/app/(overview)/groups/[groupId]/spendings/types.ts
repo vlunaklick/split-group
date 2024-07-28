@@ -8,7 +8,7 @@ export interface Debter {
   amount: number
 }
 
-export interface Spending {
+export interface SpendingInfo {
   name: string
   userId: string
   amount: number
@@ -19,3 +19,10 @@ export interface Spending {
   payers: Payer[]
   debters: Debter[]
 }
+
+export const DistributionMode = {
+  EQUAL: 'equal',
+  CUSTOM: 'custom'
+} as const
+
+export type DistributionModeType = typeof DistributionMode[keyof typeof DistributionMode]

@@ -1,21 +1,20 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { useStepper } from '@/components/ui/stepper'
+import { cn } from '@/lib/utils'
 import { User } from '@prisma/client'
 import { useState } from 'react'
+import { DistributionMode, DistributionModeType } from '../types'
 
-// TODO: Handle better the amount, if its equal in the admin also pays.
-
-export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setFinalData }: { participants?: any[]; isLoading: boolean; totalAmount: number; payers: any; setFinalData: (data: any) => void }) => {
+export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setFinalData, mode, setMode }: { participants?: any[]; isLoading: boolean; totalAmount: number; payers: any; setFinalData: (data: any) => void, mode: DistributionModeType, setMode: (mode: DistributionModeType) => void }) => {
   const { nextStep, prevStep } = useStepper()
   const [error, setError] = useState<string | null>(null)
-  const [mode, setMode] = useState<'equal' | 'custom'>('equal')
   const [debters, setDebters] = useState<{
     userId: string
     amount: number
@@ -43,30 +42,19 @@ export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setF
       return
     }
 
-    const totalDebtersAmount = debters.reduce((acc: number, debter: any) => {
-      if (mode === 'equal') {
-        return acc + totalAmount / debters.length
+    if (!(mode === DistributionMode.EQUAL)) {
+      const totalDebtersAmount = debters.reduce((acc: number, debter: any) => acc + debter.amount, 0)
+
+      if (totalDebtersAmount !== totalAmount) {
+        setError('La suma de los montos de los contribuyentes debe ser igual al monto total')
+        return
       }
-
-      return acc + debter.amount
-    }, 0)
-
-    if (totalDebtersAmount > totalAmount) {
-      setError('La suma de los montos de los contribuyentes debe ser igual o menor al monto total')
-      return
     }
 
     setFinalData((prev: any) => {
       return {
         ...prev,
         debters: debters.map((debter: any) => {
-          if (mode === 'equal') {
-            return {
-              userId: debter.userId,
-              amount: totalAmount / debters.length
-            }
-          }
-
           return {
             userId: debter.userId,
             amount: debter.amount
@@ -121,7 +109,7 @@ export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setF
 
         <div className="flex gap-4 items-center">
           <Label>Modo de distribución</Label>
-          <Select onValueChange={(value: string) => setMode(value as 'equal' | 'custom')} defaultValue={mode}>
+          <Select onValueChange={(value: string) => setMode(value as DistributionModeType)} defaultValue={mode}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -135,15 +123,19 @@ export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setF
           <p className="mt-4">No hay deudores seleccionados</p>
         )}
 
-        {debters.length > 0 && mode === 'equal' && (
+        {debters.length > 0 && mode === DistributionMode.EQUAL && (
           <div className="grid gap-4 mt-4">
             {debters.map((debter: any, index: number) => (
-              <div key={index} className="flex items-center w-full">
-                <div className="gap-4 flex items-center border-l border-y border-zinc-800 p-2 rounded-l-md w-3/4">
-                  <p>@{participants?.find((participant: User) => participant.id === debter.userId)?.username}</p>
+              <div key={index} className="flex gap-4 items-center p-2">
+                <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
+                  {participants?.find((participant: User) => participant.id === debter.userId)?.username[0]}
                 </div>
-                <div className="gap-4 flex border border-zinc-800 p-2 rounded-r-md w-1/4 justify-end">
-                  <p>${totalAmount ? (totalAmount / debters.length).toFixed(2) : 0}</p>
+
+                <div className="flex flex-col gap-1">
+                  <span>{participants?.find((participant: User) => participant.id === debter.userId)?.username}</span>
+                  <span className="text-sm text-gray-500">
+                    {participants?.find((participant: User) => participant.id === debter.userId)?.email}
+                  </span>
                 </div>
               </div>
             ))}

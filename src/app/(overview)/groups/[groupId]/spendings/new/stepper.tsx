@@ -1,21 +1,22 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
 import { getAvailableCurrency, getGroupParticipants } from '@/lib/data'
-import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
-import { useState } from 'react'
-import { toast } from 'sonner'
-import useSWR from 'swr'
-import { createSpending, getCategories } from '../actions'
-import { ExpeseInfoForm } from './general-info'
-import { PayersForm } from './payers'
-import { DebtersForm } from './contributors'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { createSpendingSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/button'
+import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import useSWR, { useSWRConfig } from 'swr'
+import { z } from 'zod'
+import { createSpending, getCategories } from '../actions'
+import { DistributionModeType } from '../types'
+import { DebtersForm } from './contributors'
+import { ExpeseInfoForm } from './general-info'
+import { PayersForm } from './payers'
 
 // TODO: Add isLoading
 
@@ -27,7 +28,9 @@ const steps = [
 
 export const CreateSpending = ({ groupId, userId }: { groupId: string; userId: string }) => {
   const [finalData, setFinalData] = useState<any>({})
+  const [mode, setMode] = useState<DistributionModeType>('equal')
   const router = useRouter()
+  const { mutate } = useSWRConfig()
 
   const { data: categories, isLoading: isLoadingCategories } = useSWR(['categories', userId], getCategories)
   const { data: currencies, isLoading: isLoadingCurrencies } = useSWR('currencies', getAvailableCurrency)
@@ -50,12 +53,14 @@ export const CreateSpending = ({ groupId, userId }: { groupId: string; userId: s
     try {
       await createSpending({
         groupId,
+        mode,
         spending: {
           userId,
           ...finalData
         }
       })
       toast.success('Gasto creado correctamente')
+      mutate(['lastSpendings', groupId])
       setTimeout(() => {
         router.push(`/groups/${groupId}/spendings`)
       }, 1000)
@@ -75,7 +80,7 @@ export const CreateSpending = ({ groupId, userId }: { groupId: string; userId: s
           <PayersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} />
         </Step>
         <Step {...steps[2]} key={steps[2].label}>
-          <DebtersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} payers={finalData.payers} />
+          <DebtersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} payers={finalData.payers} mode={mode} setMode={setMode} />
         </Step>
 
         <LastStep onSubmit={createSpendingFinalStep} />
