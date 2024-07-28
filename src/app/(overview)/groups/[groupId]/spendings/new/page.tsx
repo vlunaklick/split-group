@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
-import { CreateSpending } from './create'
+import { CreateSpending } from './stepper'
 
 export default async function GroupId ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId

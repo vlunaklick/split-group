@@ -1,9 +1,9 @@
 'use server'
 
 import { db } from '@/lib/db'
+import { Spending } from './types'
 
-export async function createSpending ({ groupId, spending }: { groupId: string, spending: any }) {
-  // Primero creamos el gasto
+export async function createSpending ({ groupId, spending }: { groupId: string, spending: Spending }) {
   const createdSpending = await db.spending.create({
     data: {
       groupId,
@@ -13,7 +13,7 @@ export async function createSpending ({ groupId, spending }: { groupId: string, 
       description: spending.description,
       categoryId: spending.categoryId,
       currencyId: spending.currencyId,
-      value: spending.value
+      value: spending.amount
     }
   })
 
@@ -29,7 +29,7 @@ export async function createSpending ({ groupId, spending }: { groupId: string, 
   }
 
   // Agregamos quiénes son los que deben y cuánto deben
-  for (const user of spending.debtors) {
+  for (const user of spending.debters) {
     await db.involved.create({
       data: {
         spendingId: createdSpending.id,

@@ -82,6 +82,6 @@ export const createSpendingSchema = z.object({
   description: z.string().max(255, { message: 'La descripción del gasto no puede tener más de 255 caracteres' }),
   categoryId: z.string().min(1, { message: 'Debes seleccionar una categoría' }),
   currencyId: z.string().min(1, { message: 'Debes seleccionar una moneda' }),
-  amount: z.coerce.number().int().min(1, { message: 'El valor del gasto no puede ser menor a 1' }),
-  date: z.date().optional()
+  amount: z.coerce.number().int().min(1, { message: 'El monto no puede ser menor a 1' }),
+  date: z.date({ required_error: 'Debes seleccionar una fecha' })
 })
