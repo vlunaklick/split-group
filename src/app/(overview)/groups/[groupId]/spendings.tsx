@@ -10,6 +10,7 @@ import { SpendingWithOwner } from './types'
 import { SpendingIcon } from '@/components/spending-icons'
 import { formatMoney } from '@/lib/money'
 import { Skeleton } from '@/components/ui/skeleton'
+import { formatDate } from '@/lib/dates'
 
 export const Spendings = ({ userId, groupId }: { userId: string, groupId: string }) => {
   const { data: spendings, isLoading: isLoadingSpendings } = useSWR(['lastSpendings', groupId], async () => {
@@ -56,7 +57,7 @@ const SpendingItem = ({ spending }: { spending: SpendingWithOwner }) => {
           {spending.name}
         </p>
         <p className="text-sm text-zinc-500">
-          Ingresado por <span className="font-medium">{spending.owner.name}</span>
+          {formatDate(spending.createdAt)} · {spending.owner.name}
         </p>
       </div>
       <div className="ml-auto font-medium">{formatMoney(spending.value)}</div>
