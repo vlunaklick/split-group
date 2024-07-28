@@ -19,7 +19,7 @@ export async function createSpending ({ groupId, spending }: { groupId: string, 
 
   // Agregamos quiénes son los que lo pagaron y cuánto pusieron
   for (const user of spending.payers) {
-    await db.payers.create({
+    await db.payment.create({
       data: {
         payerId: user.userId,
         amount: user.amount,
@@ -29,17 +29,18 @@ export async function createSpending ({ groupId, spending }: { groupId: string, 
   }
 
   // Agregamos quiénes son los que deben y cuánto deben
-  for (const user of spending.debters) {
-    await db.involved.create({
-      data: {
-        spendingId: createdSpending.id,
-        amount: user.amount,
-        involvedId: user.userId,
-        paid: false,
-        forgiven: false
-      }
-    })
-  }
+  // TODO: Ver como manejamos esto
+  // for (const user of spending.debters) {
+  //   await db.debt.create({
+  //     data: {
+  //       spendingId: createdSpending.id,
+  //       amount: user.amount,
+  //       debterId: user.userId,
+  //       paid: false,
+  //       forgiven: false
+  //     }
+  //   })
+  // }
 }
 
 export async function updateSpending ({ spendingId, spending }: { spendingId: string, spending: any }) {
@@ -59,13 +60,13 @@ export async function updateSpending ({ spendingId, spending }: { spendingId: st
   })
 
   // borramos los pagadores y los involucrados
-  await db.payers.deleteMany({
+  await db.payment.deleteMany({
     where: {
       spendingId
     }
   })
 
-  await db.involved.deleteMany({
+  await db.debt.deleteMany({
     where: {
       spendingId
     }
@@ -73,7 +74,7 @@ export async function updateSpending ({ spendingId, spending }: { spendingId: st
 
   // Agregamos quiénes son los que lo pagaron y cuánto pusieron
   for (const user of spending.payers) {
-    await db.payers.create({
+    await db.payment.create({
       data: {
         payerId: user.userId,
         amount: user.amount,
@@ -83,17 +84,18 @@ export async function updateSpending ({ spendingId, spending }: { spendingId: st
   }
 
   // Agregamos quiénes son los que deben y cuánto deben
-  for (const user of spending.debtors) {
-    await db.involved.create({
-      data: {
-        spendingId,
-        amount: user.amount,
-        involvedId: user.userId,
-        paid: false,
-        forgiven: false
-      }
-    })
-  }
+  // ver como calcular esto
+  // for (const user of spending.debtors) {
+  //   await db.involved.create({
+  //     data: {
+  //       spendingId,
+  //       amount: user.amount,
+  //       involvedId: user.userId,
+  //       paid: false,
+  //       forgiven: false
+  //     }
+  //   })
+  // }
 }
 
 export async function deleteSpending ({ spendingId }: { spendingId: string }) {
@@ -103,13 +105,13 @@ export async function deleteSpending ({ spendingId }: { spendingId: string }) {
     }
   })
 
-  await db.payers.deleteMany({
+  await db.payment.deleteMany({
     where: {
       spendingId
     }
   })
 
-  await db.involved.deleteMany({
+  await db.debt.deleteMany({
     where: {
       spendingId
     }
@@ -122,8 +124,8 @@ export async function getSpending ({ spendingId }: { spendingId: string }) {
       id: spendingId
     },
     include: {
-      payers: true,
-      involved: true
+      payments: true,
+      debts: true
     }
   })
 }
@@ -158,7 +160,7 @@ export async function deleteComment ({ commentId }: { commentId: string }) {
 }
 
 export async function payDebt ({ debtId }: { debtId: string }) {
-  return db.involved.update({
+  return db.debt.update({
     where: {
       id: debtId
     },
@@ -169,7 +171,7 @@ export async function payDebt ({ debtId }: { debtId: string }) {
 }
 
 export async function forgiveDebt ({ debtId }: { debtId: string }) {
-  return db.involved.update({
+  return db.debt.update({
     where: {
       id: debtId
     },

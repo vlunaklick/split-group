@@ -346,7 +346,7 @@ export async function deleteGroup (groupId: string) {
     }
   })
 
-  await db.payers.deleteMany({
+  await db.payment.deleteMany({
     where: {
       spending: {
         groupId
@@ -368,7 +368,7 @@ export async function deleteGroup (groupId: string) {
     }
   })
 
-  await db.involved.deleteMany({
+  await db.debt.deleteMany({
     where: {
       spending: {
         groupId
