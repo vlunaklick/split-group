@@ -4,6 +4,7 @@ import { HeaderButtons, HeaderButtonsMobile } from './header-buttons'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { Spendings } from './spendings'
+import { Debts } from './debts'
 
 export default async function GroupId ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId
@@ -35,8 +36,9 @@ export default async function GroupId ({ params } : { params: { groupId: string 
         </div>
       </header>
 
-      <div className="grid gap-4">
+      <div className="flex flex-col gap-4 md:flex-row md:gap-8">
         <Spendings userId={session?.user?.id as string} groupId={groupId} />
+        <Debts userId={session?.user?.id as string} groupId={groupId} />
       </div>
     </>
   )

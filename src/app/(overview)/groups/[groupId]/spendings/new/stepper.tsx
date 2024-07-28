@@ -61,6 +61,7 @@ export const CreateSpending = ({ groupId, userId }: { groupId: string; userId: s
       })
       toast.success('Gasto creado correctamente')
       mutate(['lastSpendings', groupId])
+      mutate(['lastDebts', groupId, userId])
       setTimeout(() => {
         router.push(`/groups/${groupId}/spendings`)
       }, 1000)
