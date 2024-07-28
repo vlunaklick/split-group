@@ -1,13 +1,14 @@
-import Link from 'next/link'
-import { Menu } from 'lucide-react'
+import { Logo } from '@/components/logo'
+import { NotificationsAmount } from '@/components/notifications-amount'
+import { SideNav } from '@/components/side-nav'
+import { ThemeSwitcher } from '@/components/theme-switcher'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { Logo } from '@/components/logo'
 import { UserNav } from '@/components/user-nav'
-import { SideNav } from '@/components/side-nav'
-import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { NotificationsAmount } from '@/components/notifications-amount'
+import { Menu } from 'lucide-react'
+import { getServerSession } from 'next-auth'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
@@ -62,6 +63,8 @@ export default async function RootLayout ({
               <SideNav userId={session?.user.id as string} />
             </SheetContent>
           </Sheet>
+
+          <ThemeSwitcher />
 
           <UserNav className="ml-auto" />
         </header>
