@@ -132,3 +132,28 @@ export const getMontlySpentGraph = async ({ userId }: { userId: string }) => {
 
   return monthlySpent
 }
+
+export const getLatestSpendings = async ({ userId }: { userId: string }) => {
+  const latestSpendings = await db.spending.findMany({
+    where: {
+      group: {
+        users: {
+          some: {
+            id: userId
+          }
+        }
+      }
+    },
+    include: {
+      group: true,
+      owner: true,
+      category: true
+    },
+    orderBy: {
+      createdAt: 'desc'
+    },
+    take: 6
+  })
+
+  return latestSpendings
+}

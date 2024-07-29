@@ -2,6 +2,7 @@ import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
 import { MonthlySpent, TotalDebt, TotalRevenue, WeeklySpent } from './stats'
 import { StatsChart } from './chart'
+import { LatestsSpendings } from './latest'
 
 export default async function HomeDashboard () {
   const session = await getServerSession(authOptions)
@@ -17,6 +18,7 @@ export default async function HomeDashboard () {
 
       <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-4">
         <StatsChart userId={session?.user.id as string} />
+        <LatestsSpendings userId={session?.user.id as string} />
       </div>
     </div>
   )
