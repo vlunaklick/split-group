@@ -98,3 +98,37 @@ export const getTotalRevenue = async ({ userId }: { userId: string }) => {
     totalRevenue
   }
 }
+
+export const getMontlySpentGraph = async ({ userId }: { userId: string }) => {
+  // We need to calculate the total spent for each month of the year
+  // and return it in an array of objects
+  // [{ month: 'January', totalSpent: 1000 }, { month: 'February', totalSpent: 2000 }]
+
+  const spent = await db.debt.findMany({
+    where: {
+      debterId: userId
+    },
+    include: {
+      spending: true
+    }
+  })
+
+  const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
+  const monthlySpent = months.map((month, index) => {
+    const totalSpent = spent.reduce((acc, curr) => {
+      if (new Date(curr.spending.createdAt).getMonth() === index) {
+        return acc + curr.amount
+      }
+
+      return acc
+    }, 0)
+
+    return {
+      month,
+      totalSpent
+    }
+  })
+
+  return monthlySpent
+}
