@@ -58,7 +58,7 @@ export const MonthlySpent = ({ userId }: { userId: string }) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Este mes</CardTitle>
+        <CardTitle className="text-sm font-medium">Gasto mensual</CardTitle>
         <IconMoneybag className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
       </CardHeader>
       <CardContent>
