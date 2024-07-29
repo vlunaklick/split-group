@@ -33,7 +33,7 @@ export const WeeklySpent = ({ userId }: { userId: string }) => {
               <>
                 <div className="text-2xl font-bold">{formatMoney(data?.totalSpentThisWeek ?? 0)}</div>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  {percentageDifference === 0 ? '' : percentageDifference > 0 ? '+' : '-'}{percentageDifference.toFixed(1)}% desde la semana pasada
+                  {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde la semana pasada
                 </p>
               </>
               )
@@ -69,7 +69,7 @@ export const MonthlySpent = ({ userId }: { userId: string }) => {
               <>
                 <div className="text-2xl font-bold">{formatMoney(data?.totalSpentThisMonth ?? 0)}</div>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  {percentageDifference === 0 ? '' : percentageDifference > 0 ? '+' : '-'}{percentageDifference.toFixed(1)}% desde el mes pasado
+                  {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde el mes pasado
                 </p>
               </>
               )
