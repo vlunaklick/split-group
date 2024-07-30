@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { LoginForm } from './login-form'
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -16,7 +17,9 @@ export default function SignIn () {
           Ingrese su nombre de usuario y contraseña para acceder a su cuenta
         </p>
       </div>
-      <LoginForm />
+      <Suspense fallback={<div>Loading...</div>}>
+        <LoginForm />
+      </Suspense>
       <div className="mt-4 text-center text-sm">
         No tienes cuenta?{' '}
         <Link href="/register" className="underline">
