@@ -18,7 +18,7 @@ export const Spendings = ({ userId, groupId }: { userId: string, groupId: string
   })
 
   return (
-    <Card className='md:max-w-[526px] w-full'>
+    <Card className='md:max-w-[526px] w-full h-min'>
       <CardHeader className='flex justify-between flex-row items-center'>
         <div className='flex flex-col gap-2'>
           <CardTitle>Gastos</CardTitle>
@@ -38,6 +38,11 @@ export const Spendings = ({ userId, groupId }: { userId: string, groupId: string
           </>
         )}
         {!isLoadingSpendings && spendings?.map((spending) => <SpendingItem key={spending.id} spending={spending} />)}
+
+        {spendings?.length === 0 && (
+          <p className='text-center text-zinc-500'>No hay gastos ingresados</p>
+        )}
+
         <Link href={`/groups/${groupId}/spendings`} className={cn(buttonVariants({ variant: 'default' }), 'w-full')}>
           Ver todos
         </Link>
