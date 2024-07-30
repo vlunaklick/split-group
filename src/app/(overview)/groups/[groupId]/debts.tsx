@@ -1,13 +1,15 @@
 'use client'
 
-import { buttonVariants } from '@/components/ui/button'
+import { buttonVariants, Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
 import { useTimeAgo } from '@/utils/time'
-import useSWR from 'swr'
-import { getDebts } from './actions'
+import useSWR, { useSWRConfig } from 'swr'
+import { getDebts, forgiveAllDebt, payAllDebt } from './actions'
+import { toast } from 'sonner'
+import { useState } from 'react'
 
 export const Debts = ({ userId, groupId }: { userId: string, groupId: string }) => {
   const { data: debts, isLoading: isLoadingDebts } = useSWR(['lastDebts', groupId, userId], async ([_, groupId, userId]) => {
@@ -31,32 +33,78 @@ export const Debts = ({ userId, groupId }: { userId: string, groupId: string }) 
         )}
 
         {!isLoadingDebts && debts && debts.map((debt: any) => (
-          <DebtItem key={debt.id} debt={debt} />
+          <DebtItem key={debt.id + debt.createdAt.getTime()} debt={debt} groupId={groupId} userId={userId} />
         ))}
 
+        {!isLoadingDebts && debts && debts.length === 0 && (
+          <p className="text-center text-zinc-500">No tienes deudas pendientes</p>
+        )}
       </CardContent>
     </Card>
   )
 }
 
-const DebtItem = ({ debt }: { debt: { name: string, userId: string, amount: number, isDebter: boolean, createdAt: Date } }) => {
+const DebtItem = ({ debt, groupId, userId }: { debt: { name: string, userId: string, amount: number, isDebter: boolean, createdAt: Date }, groupId: string, userId: string }) => {
   const { timeAgo } = useTimeAgo(debt.createdAt.getTime())
+  const { mutate } = useSWRConfig()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handlePayDebt = async () => {
+    setIsLoading(true)
+    try {
+      await payAllDebt({ groupId, userId, crediterId: debt.userId })
+      toast.success('Deuda pagada')
+      mutate(['lastDebts', groupId, userId])
+    } catch (error) {
+      toast.error('No se pudo pagar la deuda')
+    }
+    setIsLoading(false)
+  }
+
+  const handleForgiveDebt = async () => {
+    setIsLoading(true)
+    try {
+      await forgiveAllDebt({ groupId, userId, debterId: debt.userId })
+      toast.success('Deuda perdonada')
+      mutate(['lastDebts', groupId, userId])
+    } catch (error) {
+      toast.error('No se pudo perdonar la deuda')
+    }
+    setIsLoading(false)
+  }
 
   return (
-    <div className="flex items-center gap-4">
-      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
-        {debt.name[0]}
+    <div className="flex min-[500px]:items-center gap-4 min-[500px]:flex-row flex-col">
+      <div className="flex items-center gap-4 w-full">
+        <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
+          {debt.name[0]}
+        </div>
+        <div className="grid gap-1">
+          <p className="text-sm font-medium leading-none">
+            {debt.name}
+          </p>
+          <p className="text-sm text-zinc-500">
+            {debt.isDebter ? 'Te debe' : 'Le debes'} · {timeAgo.toLocaleLowerCase()}
+          </p>
+        </div>
       </div>
-      <div className="grid gap-1">
-        <p className="text-sm font-medium leading-none">
-          {debt.name}
-        </p>
-        <p className="text-sm text-zinc-500">
-          {debt.isDebter ? 'Te debe' : 'Le debes'} · {timeAgo.toLocaleLowerCase()}
-        </p>
-      </div>
-      <div className={cn('ml-auto font-medium', debt.isDebter ? 'text-green-500' : 'text-red-500')}>
-        {formatMoney(debt.isDebter ? debt.amount : -debt.amount)}
+
+      <div className="flex flex-row gap-4 min-[500px]:ml-auto items-center ml-14">
+        <div className={cn('font-medium', debt.isDebter ? 'text-green-500' : 'text-red-500')}>
+          {formatMoney(debt.isDebter ? debt.amount : -debt.amount)}
+        </div>
+
+        {!debt.isDebter && (
+          <Button onClick={handlePayDebt} variant='secondary' disabled={isLoading}>
+            Pagar
+          </Button>
+        )}
+
+        {debt.isDebter && (
+          <Button onClick={handleForgiveDebt} variant='secondary' disabled={isLoading}>
+            Perdonar
+          </Button>
+        )}
       </div>
     </div>
   )
@@ -64,16 +112,23 @@ const DebtItem = ({ debt }: { debt: { name: string, userId: string, amount: numb
 
 const DebtItemSkeleton = () => {
   return (
-    <div className="flex items-center gap-4">
-      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
-        <Skeleton className="w-8 h-8 rounded-full" />
+    <div className="flex min-[500px]:items-center gap-4 min-[500px]:flex-row flex-col">
+      <div className="flex items-center gap-4 w-full">
+        <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
+          <Skeleton className="w-8 h-8 rounded-full" />
+        </div>
+        <div className="grid gap-1">
+          <Skeleton className="w-20 h-4" />
+          <Skeleton className="w-20 h-4" />
+        </div>
       </div>
-      <div className="grid gap-1">
-        <Skeleton className="w-20 h-4" />
-        <Skeleton className="w-20 h-4" />
-      </div>
-      <div className="ml-auto font-medium">
-        <Skeleton className="w-8 h-4" />
+
+      <div className="flex flex-row gap-4 min-[500px]:ml-auto items-center ml-14">
+        <div className="font-medium">
+          <Skeleton className="w-8 h-4" />
+        </div>
+
+        <Skeleton className="w-20 h-8" />
       </div>
     </div>
   )

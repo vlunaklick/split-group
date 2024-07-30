@@ -74,7 +74,9 @@ export const getWeeklySpent = async ({ userId }: { userId: string }) => {
 export const getTotalDebt = async ({ userId }: { userId: string }) => {
   const debts = await db.debt.findMany({
     where: {
-      debterId: userId
+      debterId: userId,
+      paid: false,
+      forgiven: false
     }
   })
 
@@ -88,7 +90,9 @@ export const getTotalDebt = async ({ userId }: { userId: string }) => {
 export const getTotalRevenue = async ({ userId }: { userId: string }) => {
   const revenues = await db.debt.findMany({
     where: {
-      creditorId: userId
+      creditorId: userId,
+      paid: false,
+      forgiven: false
     }
   })
 
