@@ -8,7 +8,7 @@ import { getMontlySpentGraph } from './actions'
 
 const chartConfig = {
   totalSpent: {
-    label: 'Total Spent',
+    label: 'Gastado',
     color: '#3b82f6'
   }
 } satisfies ChartConfig
@@ -21,7 +21,7 @@ export const StatsChart = ({ userId }: { userId: string }) => {
   return (
     <Card className='xl:col-span-2'>
       <CardHeader>
-        <CardTitle>Gasto mensual</CardTitle>
+        <CardTitle>Gasto anual</CardTitle>
         <CardDescription>
           Gasto mensual en los últimos 12 meses
         </CardDescription>
@@ -46,7 +46,8 @@ export const StatsChart = ({ userId }: { userId: string }) => {
             />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="dot" hideLabel />}
+              labelClassName='mr-2'
+              content={<ChartTooltipContent indicator="dot" />}
             />
             <Area
               dataKey="totalSpent"
