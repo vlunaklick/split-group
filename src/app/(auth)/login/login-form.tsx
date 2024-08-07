@@ -12,11 +12,12 @@ import { useState } from 'react'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { loginSchema } from '@/lib/form'
+import { toast } from 'sonner'
 
 export const LoginForm = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [isLogging, setIsLogging] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -28,7 +29,7 @@ export const LoginForm = () => {
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     const { username, password } = values
-    setIsLogging(true)
+    setIsLoading(true)
 
     const signInResult = await signIn('credentials', {
       username,
@@ -36,15 +37,16 @@ export const LoginForm = () => {
       redirect: false
     })
 
-    setIsLogging(false)
-
     if (!signInResult?.ok) {
+      setIsLoading(false)
+
       return form.setError('password', {
         type: 'manual',
         message: 'Credenciales inválidas'
       })
     }
 
+    toast.success('Bienvenido de vuelta!')
     router.refresh()
     const redirectUrl = searchParams.get('from') || '/dashboard'
     router.push(redirectUrl)
@@ -64,7 +66,7 @@ export const LoginForm = () => {
               <FormControl className='mt-0'>
                 <Input
                   placeholder="John Doe"
-                  disabled={isLogging}
+                  disabled={isLoading}
                   {...field}
                 />
               </FormControl>
@@ -91,7 +93,7 @@ export const LoginForm = () => {
               <FormControl className='mt-0'>
                 <Input
                   placeholder="********"
-                  disabled={isLogging}
+                  disabled={isLoading}
                   type="password"
                   {...field}
                 />
@@ -100,8 +102,8 @@ export const LoginForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLogging}>
-          {isLogging ? <IconLoader2 className="animate-spin" /> : 'Iniciar sesión'}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? <IconLoader2 className="animate-spin" /> : 'Iniciar sesión'}
           <span className='sr-only'>Iniciar sesión</span>
         </Button>
       </form>

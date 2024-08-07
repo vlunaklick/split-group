@@ -1,3 +1,4 @@
+import { ThemeSwitcher } from '@/components/theme-switcher'
 import Image from 'next/image'
 
 export default function RootLayout ({
@@ -10,7 +11,7 @@ export default function RootLayout ({
       <section className="flex items-center justify-center py-12">
         {children}
       </section>
-      <section className="hidden bg-muted lg:block">
+      <section className="hidden bg-muted lg:block relative">
         <Image
           src="/login.avif"
           alt="Image"
@@ -18,6 +19,7 @@ export default function RootLayout ({
           height="1080"
           className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
+        <ThemeSwitcher className="absolute top-4 right-4" />
       </section>
     </main>
   )
