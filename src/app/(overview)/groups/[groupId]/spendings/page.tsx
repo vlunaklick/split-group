@@ -2,6 +2,8 @@ import { getGroup } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import Link from 'next/link'
 
 export default async function GroupId ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId
@@ -19,16 +21,24 @@ export default async function GroupId ({ params } : { params: { groupId: string 
 
   return (
     <>
-      <header className="flex md:justify-between md:items-center gap-4 flex-col md:flex-row">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2 justify-between">
-            <h1 className="text-3xl font-semibold">{group.name}</h1>
-          </div>
-          <p className="text-balance text-zinc-400">{group.description}</p>
-        </div>
+      <header className="flex md:items-center gap-4 flex-col md:flex-row">
+        <h1 className="text-3xl font-semibold">
+          {group.name}
+        </h1>
 
-        <div className="flex gap-2">
-        </div>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href={`/groups/${groupId}`}>Grupo</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Gastos</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </header>
 
       <div className="grid gap-4">
