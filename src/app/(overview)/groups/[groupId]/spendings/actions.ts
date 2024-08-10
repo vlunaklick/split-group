@@ -191,3 +191,31 @@ export async function forgiveDebt ({ debtId }: { debtId: string }) {
 export async function getCategories () {
   return db.category.findMany()
 }
+
+export async function getSpendingsTable ({ groupId, userId }: { groupId: string, userId: string }) {
+  const spendings = await db.spending.findMany({
+    where: {
+      groupId
+    },
+    include: {
+      payments: true,
+      debts: true,
+      category: true
+    },
+    orderBy: [{
+      date: 'desc'
+    }, {
+      createdAt: 'desc'
+    }]
+  })
+
+  return spendings.map(spending => ({
+    id: spending.id,
+    name: spending.name,
+    date: spending.date,
+    amount: spending.value,
+    category: spending.category.name,
+    hasDebt: spending.debts.some(debt => debt.debterId === userId && !debt.paid && !debt.forgiven),
+    someoneOwesYou: spending.debts.some(debt => debt.creditorId === userId && !debt.paid && !debt.forgiven)
+  }))
+}

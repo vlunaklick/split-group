@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
+import { SpendingsList } from './list'
 
 export default async function GroupId ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId
@@ -42,6 +43,7 @@ export default async function GroupId ({ params } : { params: { groupId: string 
       </header>
 
       <div className="grid gap-4">
+        <SpendingsList groupId={groupId} userId={session?.user?.id as string} />
       </div>
     </>
   )

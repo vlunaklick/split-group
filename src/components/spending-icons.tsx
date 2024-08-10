@@ -1,6 +1,8 @@
 import { IconCheese, IconFirstAidKit, IconBackpack, IconMap2, IconCube } from '@tabler/icons-react'
 
-export const SpendingIcon = ({ type, className }: { className?: string, type: 'Comida' | 'Transporte' | 'Entretenimiento' | 'Salud' | 'Educación' | 'Otros' }) => {
+export type SpendingTypes = 'Comida' | 'Transporte' | 'Entretenimiento' | 'Salud' | 'Educación' | 'Otros'
+
+export const SpendingIcon = ({ type, className }: { className?: string, type: SpendingTypes }) => {
   const icons = {
     Comida: IconCheese,
     Transporte: IconMap2,
