@@ -5,7 +5,7 @@ import { useTheme } from 'next-themes'
 import { Button } from './ui/button'
 import { useEffect, useState } from 'react'
 
-export function ThemeSwitcher () {
+export function ThemeSwitcher ({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
