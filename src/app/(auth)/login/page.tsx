@@ -13,7 +13,7 @@ export default function SignIn () {
     <div className="mx-auto grid w-[350px] gap-6">
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Iniciar sesión</h1>
-        <p className="text-balance text-zinc-400">
+        <p className="text-balance text-muted-foreground">
           Ingrese su nombre de usuario y contraseña para acceder a su cuenta
         </p>
       </div>

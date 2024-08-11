@@ -4,6 +4,7 @@ import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from './ui/button'
 import { useEffect, useState } from 'react'
+import { cn } from '@/lib/utils'
 
 export function ThemeSwitcher ({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
@@ -12,7 +13,7 @@ export function ThemeSwitcher ({ className }: { className?: string }) {
   useEffect(() => setMounted(true), [])
 
   return (
-    <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} variant="ghost" className="px-3">
+    <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} variant="ghost" className={cn('px-3', className)}>
       {mounted && theme === 'dark'
         ? (<Moon className="size-4" />)
         : (<Sun className="size-4" />)

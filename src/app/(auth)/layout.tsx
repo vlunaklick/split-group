@@ -11,6 +11,7 @@ export default function RootLayout ({
       <section className="flex items-center justify-center py-12">
         {children}
       </section>
+
       <section className="hidden bg-muted lg:block relative">
         <Image
           src="/login.avif"
@@ -19,6 +20,7 @@ export default function RootLayout ({
           height="1080"
           className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
+
         <ThemeSwitcher className="absolute top-4 right-4" />
       </section>
     </main>
