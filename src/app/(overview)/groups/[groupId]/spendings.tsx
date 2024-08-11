@@ -61,7 +61,7 @@ const SpendingItem = ({ spending }: { spending: SpendingWithOwner }) => {
         <p className="text-sm font-medium leading-none">
           {spending.name}
         </p>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground/70">
           {formatDate(spending.createdAt)} · {spending.owner.name}
         </p>
       </div>

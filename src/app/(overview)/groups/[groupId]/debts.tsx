@@ -83,7 +83,7 @@ const DebtItem = ({ debt, groupId, userId }: { debt: { name: string, userId: str
           <p className="text-sm font-medium leading-none">
             {debt.name}
           </p>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-muted-foreground/70">
             {debt.isDebter ? 'Te debe' : 'Le debes'} · {timeAgo.toLocaleLowerCase()}
           </p>
         </div>
