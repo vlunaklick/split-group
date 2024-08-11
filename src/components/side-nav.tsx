@@ -21,15 +21,17 @@ export const SideNav = ({ userId }: { userId: string }) => {
 
   return (
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4 space-y-2">
-      <p className="text-zinc-400 text-xs font-medium tracking-wide">General</p>
+      <p className="text-muted-foreground text-xs font-medium tracking-wide">
+        General
+      </p>
       <SideNavLink href="/dashboard" isSelected={selectedPath('/dashboard')}>
         <Home className="h-4 w-4" />
         Dashboard
       </SideNavLink>
 
       <Separator />
-      <p className="text-zinc-400 text-xs font-medium tracking-wide">Grupos</p>
-      <SideNavLink href="/groups/create" isSelected={selectedPath('/groups/create')} className='dark:border-zinc-800 border-zinc-200'>
+      <p className="text-muted-foreground text-xs font-medium tracking-wide">Grupos</p>
+      <SideNavLink href="/groups/create" isSelected={selectedPath('/groups/create')} className='border-muted'>
         <IconCirclePlus className="h-4 w-4" />
         Crear grupo
       </SideNavLink>
@@ -48,8 +50,8 @@ export const SideNav = ({ userId }: { userId: string }) => {
 
 const SideNavLink = ({ href, children, className, isSelected }: { href: string; children: React.ReactNode; className?: string; isSelected?: boolean }) => {
   return (
-    <Link href={href} className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all dark:hover:text-white hover:text-black border border-transparent',
-      isSelected ? 'text-black dark:text-white bg-zinc-50 dark:bg-zinc-950' : 'text-zinc-500 dark:text-zinc-400', className)}
+    <Link href={href} className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary border border-transparent',
+      isSelected ? 'text-primary bg-zinc-50 bg-muted' : 'text-muted-foreground', className)}
     >
       {children}
     </Link>
