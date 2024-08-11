@@ -23,8 +23,8 @@ export function SiteHeader () {
         </span>
       </Link>
 
-      <Link href="/calculator" className={cn("transition-colors hover:text-foreground/80 text-sm hidden md:block",
-        pathname === '/calculator' ? "text-foreground" : "text-foreground/60"
+      <Link href="/calculator" className={cn('transition-colors hover:text-foreground/80 text-sm hidden md:block',
+        pathname === '/calculator' ? 'text-foreground' : 'text-foreground/60'
       )}>
         Calculadora
       </Link>

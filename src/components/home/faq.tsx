@@ -1,4 +1,4 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion'
 
 export const FaqPage = () => {
   return (
@@ -11,7 +11,7 @@ export const FaqPage = () => {
           Aquí encontrarás las preguntas más comunes sobre nuestro producto.
         </p>
       </div>
-      
+
       <div className="container my-10 sm:my-0 lg:my-0 md:my-0 flex max-w-[58rem] flex-col items-center justify-between gap-4 py-0 w-full">
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="item-1">
@@ -32,7 +32,7 @@ export const FaqPage = () => {
               Nos encontramos trabajando en esta funcionalidad. Pronto podrás exportar tus gastos en formato CSV u otro formato que prefieras.
             </AccordionContent>
           </AccordionItem>
-        </Accordion>   
+        </Accordion>
       </div>
     </section>
   )
