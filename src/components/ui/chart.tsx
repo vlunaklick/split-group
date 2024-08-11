@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 'use client'
 
 import * as React from 'react'
@@ -10,6 +9,7 @@ import { cn } from '@/lib/utils'
 const THEMES = { light: '', dark: '.dark' } as const
 
 export type ChartConfig = {
+  // eslint-disable-next-line no-unused-vars
   [k in string]: {
     label?: React.ReactNode
     icon?: React.ComponentType
@@ -53,7 +53,7 @@ const ChartContainer = React.forwardRef<
         data-chart={chartId}
         ref={ref}
         className={cn(
-          "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-zinc-500 [&_.recharts-cartesian-axis-tick_text]:dark:fill-zinc-500 [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-zinc-200/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-zinc-200 [&_.recharts-cartesian-grid_line[stroke='#ccc']]:dark:stroke-zinc-800/50 [&_.recharts-curve.recharts-tooltip-cursor]:dark:stroke-zinc-800 [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-zinc-200 [&_.recharts-polar-grid_[stroke='#ccc']]:dark:stroke-zinc-800 [&_.recharts-radial-bar-background-sector]:fill-zinc-100 [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-zinc-100 [&_.recharts-radial-bar-background-sector]:dark:fill-zinc-900 [&_.recharts-rectangle.recharts-tooltip-cursor]:dark:fill-zinc-900 [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none",
+          "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none",
           className
         )}
         {...props}
@@ -180,7 +180,7 @@ const ChartTooltipContent = React.forwardRef<
       <div
         ref={ref}
         className={cn(
-          'grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-zinc-200 border-zinc-200/50 bg-white px-2.5 py-1.5 text-xs shadow-xl dark:border-zinc-800 dark:border-zinc-800/50 dark:bg-zinc-950',
+          'grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl',
           className
         )}
       >
@@ -195,7 +195,7 @@ const ChartTooltipContent = React.forwardRef<
               <div
                 key={item.dataKey}
                 className={cn(
-                  'flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-zinc-500 dark:[&>svg]:text-zinc-400',
+                  'flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground',
                   indicator === 'dot' && 'items-center'
                 )}
               >
@@ -239,12 +239,12 @@ const ChartTooltipContent = React.forwardRef<
                     >
                       <div className="grid gap-1.5">
                         {nestLabel ? tooltipLabel : null}
-                        <span className="text-zinc-500 dark:text-zinc-400">
+                        <span className="text-muted-foreground">
                           {itemConfig?.label || item.name}
                         </span>
                       </div>
                       {item.value && (
-                        <span className="font-mono font-medium tabular-nums text-zinc-950 dark:text-zinc-50">
+                        <span className="font-mono font-medium tabular-nums text-foreground">
                           {item.value.toLocaleString()}
                         </span>
                       )}
@@ -298,7 +298,7 @@ const ChartLegendContent = React.forwardRef<
             <div
               key={item.value}
               className={cn(
-                'flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-zinc-500 dark:[&>svg]:text-zinc-400'
+                'flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground'
               )}
             >
               {itemConfig?.icon && !hideIcon
