@@ -32,7 +32,7 @@ export const LatestsSpendings = ({ userId }: { userId: string }) => {
         )}
 
         {!isLoading && data?.length === 0 && (
-          <p className="text-sm text-zinc-500">No hay gastos registrados</p>
+          <p className="text-sm text-muted-foreground/50">No hay gastos registrados</p>
         )}
 
         {!isLoading && data && data?.length > 0 && (
@@ -58,7 +58,7 @@ const SpendingItem = ({ spending }: { spending: SpendingWithOwnerAndGroup }) => 
         <p className="text-sm font-medium leading-none">
           {spending.name}
         </p>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-muted-foreground/50">
           {formatDate(spending.createdAt)} · Grupo: {spending.group.name}
         </p>
       </div>

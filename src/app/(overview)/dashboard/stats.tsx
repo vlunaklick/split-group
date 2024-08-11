@@ -23,7 +23,7 @@ export const WeeklySpent = ({ userId }: { userId: string }) => {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">Gasto semanal</CardTitle>
-        <IconCashBanknote className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+        <IconCashBanknote className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
         {
@@ -32,7 +32,7 @@ export const WeeklySpent = ({ userId }: { userId: string }) => {
             : (
               <>
                 <div className="text-2xl font-bold">{formatMoney(data?.totalSpentThisWeek ?? 0)}</div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs text-muted-foreground/60">
                   {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde la semana pasada
                 </p>
               </>
@@ -59,7 +59,7 @@ export const MonthlySpent = ({ userId }: { userId: string }) => {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">Gasto mensual</CardTitle>
-        <IconMoneybag className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+        <IconMoneybag className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
         {
@@ -68,7 +68,7 @@ export const MonthlySpent = ({ userId }: { userId: string }) => {
             : (
               <>
                 <div className="text-2xl font-bold">{formatMoney(data?.totalSpentThisMonth ?? 0)}</div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs text-muted-foreground/60">
                   {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde el mes pasado
                 </p>
               </>
@@ -86,7 +86,7 @@ export const TotalDebt = ({ userId }: { userId: string }) => {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">Deuda total</CardTitle>
-        <IconTransferOut className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+        <IconTransferOut className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
         {
@@ -94,7 +94,7 @@ export const TotalDebt = ({ userId }: { userId: string }) => {
             ? <Skeleton className="h-8 w-20" />
             : <div className="text-2xl font-bold">{formatMoney(data?.totalDebt ?? 0)}</div>
         }
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">Valor entre todos los grupos</p>
+        <p className="text-xs text-muted-foreground/60">Valor entre todos los grupos</p>
       </CardContent>
     </Card>
   )
@@ -107,7 +107,7 @@ export const TotalRevenue = ({ userId }: { userId: string }) => {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">Total a cobrar</CardTitle>
-        <IconTransferIn className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+        <IconTransferIn className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
         {
@@ -115,7 +115,7 @@ export const TotalRevenue = ({ userId }: { userId: string }) => {
             ? <Skeleton className="h-8 w-20" />
             : <div className="text-2xl font-bold">{formatMoney(data?.totalRevenue ?? 0)}</div>
         }
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">Valor entre todos los grupos</p>
+        <p className="text-xs text-muted-foreground/60">Valor entre todos los grupos</p>
       </CardContent>
     </Card>
   )

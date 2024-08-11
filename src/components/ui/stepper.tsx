@@ -1008,7 +1008,7 @@ const StepLabel = ({
         <span
           className={cn(
             'stepper__step-description',
-            'text-zinc-500 dark:text-zinc-400',
+            'text-zinc-500 dark:text-muted-foreground',
             descriptionVariants({ size }),
             styles?.['step-description']
           )}
