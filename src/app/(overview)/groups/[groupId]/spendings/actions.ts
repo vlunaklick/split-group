@@ -200,7 +200,8 @@ export async function getSpendingsTable ({ groupId, userId }: { groupId: string,
     include: {
       payments: true,
       debts: true,
-      category: true
+      category: true,
+      owner: true
     },
     orderBy: [{
       date: 'desc'
@@ -212,8 +213,10 @@ export async function getSpendingsTable ({ groupId, userId }: { groupId: string,
   return spendings.map(spending => ({
     id: spending.id,
     name: spending.name,
+    description: spending.description,
     date: spending.date,
     amount: spending.value,
+    createdBy: spending.owner.name,
     category: spending.category.name,
     hasDebt: spending.debts.some(debt => debt.debterId === userId && !debt.paid && !debt.forgiven),
     someoneOwesYou: spending.debts.some(debt => debt.creditorId === userId && !debt.paid && !debt.forgiven)

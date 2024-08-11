@@ -8,13 +8,17 @@ import { formatDate } from '@/lib/dates'
 import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
 import { SpendingIcon, SpendingTypes } from '@/components/spending-icons'
+import { cn } from '@/lib/utils'
+import { formatMoney } from '@/lib/money'
 
 type SpendingTable = {
   id: string
   name: string
+  description: string | null
   date: Date
   amount: number
   category: string
+  createdBy: string | null
   hasDebt: boolean
   someoneOwesYou: boolean
 }
@@ -26,7 +30,10 @@ export const SpendingsList = ({ groupId, userId }: { groupId: string, userId: st
   if (!data) return <div>Loading...</div>
 
   return (
-    <TableDisplay data={data} groupId={groupId} userId={userId} />
+    <>
+      <TableDisplay data={data} groupId={groupId} userId={userId} />
+      <MobileTableDisplay data={data} groupId={groupId} userId={userId} />
+    </>
   )
 }
 
@@ -56,9 +63,9 @@ const TableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], groupI
             </TableCell>
             <TableCell>{formatDate(spending.date)}</TableCell>
             <TableCell>
-              {spending.hasDebt && <Badge variant='destructive'>Debes</Badge>}
-              {spending.someoneOwesYou && <Badge variant="secondary">Te deben</Badge>}
-              {!spending.someoneOwesYou && !spending.hasDebt && <Badge variant="default">-</Badge>}
+              {spending.hasDebt && <Badge variant='destructive' className='w-max'>Debes</Badge>}
+              {spending.someoneOwesYou && <Badge variant="secondary" className='w-max'>Te deben</Badge>}
+              {!spending.someoneOwesYou && !spending.hasDebt && <Badge variant="default" className='w-max'>-</Badge>}
             </TableCell>
             <TableCell className="text-right">{spending.amount}</TableCell>
             <TableCell>
@@ -70,5 +77,52 @@ const TableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], groupI
         ))}
       </TableBody>
     </Table>
+  )
+}
+
+const MobileTableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], groupId: string, userId: string }) => {
+  return (
+    <section className='sm:hidden flex flex-col gap-4'>
+      {data.map((spending: SpendingTable) => (
+        <article key={spending.id} className='flex flex-col justify-center gap-4 p-4 border border-zinc-200 dark:border-zinc-700 rounded-md'>
+          <header className='flex items-center gap-4'>
+            <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
+              <SpendingIcon type={spending.category as SpendingTypes} className='text-zinc-500 dark:text-zinc-400' />
+            </div>
+
+            <div>
+              <h3 className='font-bold'>{spending.name}</h3>
+              <div className='text-sm text-zinc-500 dark:text-zinc-400'>{formatDate(spending.date)}</div>
+            </div>
+          </header>
+
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-zinc-500 dark:text-zinc-400'>
+              Creada por:{' '}
+              <span className='font-bold'>
+                {spending.createdBy || 'Anónimo'}
+              </span>
+            </p>
+
+            {spending.description && (
+              <p className='text-sm text-zinc-500 dark:text-zinc-400'>Descripción: {spending.description}</p>
+            )}
+
+            <div className='flex items-center gap-4 justify-between'>
+              <div className='font-bold'>{formatMoney(spending.amount)}</div>
+              {spending.hasDebt && <Badge variant='destructive'>Debes</Badge>}
+              {spending.someoneOwesYou && <Badge variant="secondary">Te deben</Badge>}
+              {!spending.someoneOwesYou && !spending.hasDebt && <Badge variant="default">-</Badge>}
+            </div>
+          </div>
+
+          <footer>
+            <Link href={`/groups/${groupId}/spendings/${spending.id}`} className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
+              Ver
+            </Link>
+          </footer>
+        </article>
+      ))}
+    </section>
   )
 }
