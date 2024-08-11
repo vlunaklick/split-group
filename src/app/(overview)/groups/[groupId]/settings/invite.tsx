@@ -105,10 +105,10 @@ export const InviteMembers = ({ groupId, userId }: { groupId: string, userId: st
         </Form>
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-zinc-800 dark:border-zinc-700" />
+            <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="px-2 bg-white text-zinc-400 dark:text-zinc-500 dark:bg-black">
+            <span className="px-2 bg-card text-muted-foreground">
               O
             </span>
           </div>

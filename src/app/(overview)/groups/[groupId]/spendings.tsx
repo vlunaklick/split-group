@@ -40,7 +40,7 @@ export const Spendings = ({ userId, groupId }: { userId: string, groupId: string
         {!isLoadingSpendings && spendings?.map((spending) => <SpendingItem key={spending.id} spending={spending} />)}
 
         {spendings?.length === 0 && (
-          <p className='text-center text-zinc-500'>No hay gastos ingresados</p>
+          <p className='text-center text-muted-foreground'>No hay gastos ingresados</p>
         )}
 
         <Link href={`/groups/${groupId}/spendings`} className={cn(buttonVariants({ variant: 'default' }), 'w-full')}>
@@ -61,7 +61,7 @@ const SpendingItem = ({ spending }: { spending: SpendingWithOwner }) => {
         <p className="text-sm font-medium leading-none">
           {spending.name}
         </p>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-muted-foreground">
           {formatDate(spending.createdAt)} · {spending.owner.name}
         </p>
       </div>

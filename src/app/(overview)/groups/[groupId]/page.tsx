@@ -28,7 +28,7 @@ export default async function GroupId ({ params } : { params: { groupId: string 
             <h1 className="text-3xl font-semibold">{group.name}</h1>
             <HeaderButtonsMobile groupId={groupId} userId={session?.user?.id as string} />
           </div>
-          <p className="text-balance text-zinc-400">{group.description}</p>
+          <p className="text-balance text-muted-foreground">{group.description}</p>
         </div>
 
         <div className="flex gap-2">

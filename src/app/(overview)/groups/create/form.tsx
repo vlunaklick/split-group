@@ -16,6 +16,45 @@ import { RadioGroup } from '@/components/ui/radio-group'
 import { RadioGroupItem } from '@radix-ui/react-radio-group'
 import { useSWRConfig } from 'swr'
 
+const icons = [
+  {
+    name: 'alien',
+    Icon: IconAlien
+  },
+  {
+    name: 'anchor',
+    Icon: IconAnchor
+  },
+  {
+    name: 'award',
+    Icon: IconAward
+  },
+  {
+    name: 'bat',
+    Icon: IconBat
+  },
+  {
+    name: 'bone',
+    Icon: IconBone
+  },
+  {
+    name: 'bottle',
+    Icon: IconBottle
+  },
+  {
+    name: 'bow',
+    Icon: IconBow
+  },
+  {
+    name: 'buildings',
+    Icon: IconBuildings
+  },
+  {
+    name: 'burger',
+    Icon: IconBurger
+  }
+]
+
 export const CreateGroupFrom = ({ userId }: { userId: string }) => {
   const router = useRouter()
   const { mutate } = useSWRConfig()
@@ -100,104 +139,20 @@ export const CreateGroupFrom = ({ userId }: { userId: string }) => {
                 defaultValue={field.value}
                 className="flex gap-3 flex-wrap"
               >
-                <FormItem>
-                  <FormLabel className="dark:[&:has([data-state=checked])>div]:border-zinc-400 dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
-                    <FormControl>
-                      <RadioGroupItem value="alien" className="sr-only" />
-                    </FormControl>
-                    <IconSelector>
-                      <IconAlien />
-                    </IconSelector>
-                  </FormLabel>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel className="dark:[&:has([data-state=checked])>div]:border-zinc-400 dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
-                    <FormControl>
-                      <RadioGroupItem value="award" className="sr-only" />
-                    </FormControl>
-                    <IconSelector>
-                      <IconAward />
-                    </IconSelector>
-                  </FormLabel>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel className="dark:[&:has([data-state=checked])>div]:border-zinc-400 dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
-                    <FormControl>
-                      <RadioGroupItem value="anchor" className="sr-only" />
-                    </FormControl>
-                    <IconSelector>
-                      <IconAnchor />
-                    </IconSelector>
-                  </FormLabel>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel className="dark:[&:has([data-state=checked])>div]:border-zinc-400 dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
-                    <FormControl>
-                      <RadioGroupItem value="bat" className="sr-only" />
-                    </FormControl>
-                    <IconSelector>
-                      <IconBat />
-                    </IconSelector>
-                  </FormLabel>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel className="dark:[&:has([data-state=checked])>div]:border-zinc-400 dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
-                    <FormControl>
-                      <RadioGroupItem value="bone" className="sr-only" />
-                    </FormControl>
-                    <IconSelector>
-                      <IconBone />
-                    </IconSelector>
-                  </FormLabel>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel className="dark:[&:has([data-state=checked])>div]:border-zinc-400 dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
-                    <FormControl>
-                      <RadioGroupItem value="bottle" className="sr-only" />
-                    </FormControl>
-                    <IconSelector>
-                      <IconBottle />
-                    </IconSelector>
-                  </FormLabel>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel className="dark:[&:has([data-state=checked])>div]:border-zinc-400 dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
-                    <FormControl>
-                      <RadioGroupItem value="bow" className="sr-only" />
-                    </FormControl>
-                    <IconSelector>
-                      <IconBow />
-                    </IconSelector>
-                  </FormLabel>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel className="dark:[&:has([data-state=checked])>div]:border-zinc-400 dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
-                    <FormControl>
-                      <RadioGroupItem value="buildings" className="sr-only" />
-                    </FormControl>
-                    <IconSelector>
-                      <IconBuildings />
-                    </IconSelector>
-                  </FormLabel>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel className="dark:[&:has([data-state=checked])>div]:border-zinc-400 dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
-                    <FormControl>
-                      <RadioGroupItem value="burger" className="sr-only" />
-                    </FormControl>
-                    <IconSelector>
-                      <IconBurger />
-                    </IconSelector>
-                  </FormLabel>
-                </FormItem>
+                {
+                  icons.map(({ name, Icon }) => (
+                    <FormItem key={name}>
+                      <FormLabel className="dark:[&:has([data-state=checked])>div]:border-muted-foreground dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
+                        <FormControl>
+                          <RadioGroupItem value={name} className="sr-only" />
+                        </FormControl>
+                        <IconSelector>
+                          <Icon />
+                        </IconSelector>
+                      </FormLabel>
+                    </FormItem>
+                  ))
+                }
               </RadioGroup>
             </FormItem>
           )}
@@ -213,7 +168,7 @@ export const CreateGroupFrom = ({ userId }: { userId: string }) => {
 
 export const IconSelector = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex justify-center items-center w-12 h-12 rounded-md border dark:border-zinc-800 text-zinc-400 border-zinc-400 dark:text-zinc-600 cursor-pointer">
+    <div className="flex justify-center items-center w-12 h-12 rounded-md border text-muted-foreground/80 border-muted-foreground/80 cursor-pointer">
       {children}
     </div>
   )

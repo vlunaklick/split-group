@@ -43,6 +43,7 @@ export default async function GroupSettings ({ params } : { params: { groupId: s
           </BreadcrumbList>
         </Breadcrumb>
       </header>
+
       <div className="flex gap-6 flex-wrap">
         <GroupDetails groupId={groupId} userId={session?.user?.id as string} isOwner={isOwner} />
         <InviteMembers groupId={groupId} userId={session?.user?.id as string} />

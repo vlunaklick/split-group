@@ -70,11 +70,11 @@ export const ParticipantsList = ({ groupId, userId }: { groupId: string, userId:
             </div>
             <div>
               <h2 className='text-lg font-semibold'>{member.name}</h2>
-              <p className='text-sm text-gray-500'>{member.email}</p>
+              <p className='text-sm text-muted-foreground/60'>{member.email}</p>
             </div>
             <div className='ml-auto'>
               {member.id === userId && (
-                <span className='text-sm text-gray-500'>Tú</span>
+                <span className='text-sm text-muted-foreground/60'>Tú</span>
               )}
               {((isOwner && member.id !== userId) || ((hasPermission && member.id !== userId && !member.isAdmin && !member.isOwner))) && (
                 <Button variant='outline' onClick={() => removeMember(member.id)} disabled={isLoading}>Eliminar</Button>
@@ -220,11 +220,11 @@ export const AdminsList = ({ groupId, userId }: { groupId: string, userId: strin
             </div>
             <div>
               <h2 className='text-lg font-semibold'>{admin.name}</h2>
-              <p className='text-sm text-gray-500'>{admin.email}</p>
+              <p className='text-sm text-muted-foreground/60'>{admin.email}</p>
             </div>
             <div className='ml-auto'>
               {admin.id === userId && (
-                <span className='text-sm text-gray-500'>Tú</span>
+                <span className='text-sm text-muted-foreground/60'>Tú</span>
               )}
               {admin.id !== userId && hasPermission && (
                 <Button variant='outline' onClick={() => revokeAdminPermission(admin.id)} disabled={isLoading}>Remover</Button>
@@ -240,7 +240,7 @@ export const AdminsList = ({ groupId, userId }: { groupId: string, userId: strin
 const RowSkeleton = () => {
   return (
     <div className='flex items-center gap-4 animate-pulse'>
-      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full bg-gray-200')} />
+      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full bg-zinc-200')} />
       <div className='flex gap-2 flex-1 flex-col'>
         <Skeleton className='h-6 w-1/2' />
         <Skeleton className='h-4 w-1/4' />

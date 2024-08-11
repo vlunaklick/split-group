@@ -52,6 +52,9 @@ export const UsersInvited = ({ groupId, userId }: { groupId: string, userId: str
             <RowSkeleton />
           </>
         )}
+        {invitations?.length === 0 && (
+          <p className='text-sm text-muted-foreground/50'>No has invitado a ningún miembro a unirse a este grupo.</p>
+        )}
         {invitations?.map(invitation => (
           <div key={invitation.user.id} className='flex items-center gap-4'>
             <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
@@ -59,7 +62,7 @@ export const UsersInvited = ({ groupId, userId }: { groupId: string, userId: str
             </div>
             <div>
               <h2 className='text-lg font-semibold'>{invitation.user.name}</h2>
-              <p className='text-sm text-gray-500'>{invitation.user.email}</p>
+              <p className='text-sm text-muted-foreground'>{invitation.user.email}</p>
             </div>
             <div className='ml-auto'>
               <Button variant='outline' onClick={() => onRemove(invitation.user.id)} disabled={isLoading}>Eliminar</Button>
@@ -74,7 +77,7 @@ export const UsersInvited = ({ groupId, userId }: { groupId: string, userId: str
 const RowSkeleton = () => {
   return (
     <div className='flex items-center gap-4 animate-pulse'>
-      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full bg-gray-200')} />
+      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full bg-zinc-200')} />
       <div className='flex gap-2 flex-1 flex-col'>
         <Skeleton className='h-6 w-1/2' />
         <Skeleton className='h-4 w-1/4' />
@@ -139,6 +142,10 @@ export const LinksGenerated = ({ groupId, userId }: { groupId: string, userId: s
             <RowSkeleton />
           </>
         )}
+        {invitations?.length === 0 && (
+          <p className='text-sm text-muted-foreground/50'>No has generado ningún enlace de invitación para este grupo.</p>
+        )}
+
         {invitations?.map(invitation => (
           <div key={invitation.code} className='flex items-center gap-4'>
             <p className='text-base font-semibold truncate'>
@@ -147,7 +154,7 @@ export const LinksGenerated = ({ groupId, userId }: { groupId: string, userId: s
               {invitation.code.slice(-4)}
             </p>
 
-            <p className='text-sm text-gray-500'>{invitation.uses} usos de {invitation.maxUses}</p>
+            <p className='text-sm text-muted-foreground'>{invitation.uses} usos de {invitation.maxUses}</p>
 
             <div className='ml-auto flex gap-4 items-center'>
               <Button variant='outline' size='icon' onClick={() => onCopy(invitation.code)} disabled={isLoading}>

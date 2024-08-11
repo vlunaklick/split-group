@@ -11,7 +11,7 @@ export default async function GroupCreate () {
         Creación de grupo
       </h1>
 
-      <p className="text-balance text-zinc-500 text-center">
+      <p className="text-balance text-muted-foreground text-center">
         Crea un nuevo grupo, invita a tus amigos y comienza a dividir gastos.
       </p>
 

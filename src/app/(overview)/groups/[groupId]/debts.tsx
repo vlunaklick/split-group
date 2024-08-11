@@ -37,7 +37,7 @@ export const Debts = ({ userId, groupId }: { userId: string, groupId: string }) 
         ))}
 
         {!isLoadingDebts && debts && debts.length === 0 && (
-          <p className="text-center text-zinc-500">No tienes deudas pendientes</p>
+          <p className="text-center text-muted-foreground">No tienes deudas pendientes</p>
         )}
       </CardContent>
     </Card>

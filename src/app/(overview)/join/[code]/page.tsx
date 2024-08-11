@@ -33,7 +33,7 @@ export default async function JoinInvitation ({ params } : { params: { code: str
       </header>
 
       <div className="grid gap-2 text-center">
-        <p className="text-balance text-zinc-400">
+        <p className="text-balance text-muted-foreground">
           Usted ha sido invitado a unirse a {invitation?.group.name}. Una vez que se una, podrá ver y compartir gastos con los miembros del grupo.
         </p>
 

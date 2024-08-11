@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { inputVariants } from '@/components/ui/input'
+import { inputStyle } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { useStepper } from '@/components/ui/stepper'
@@ -126,7 +126,7 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData 
                   <CurrencyInput
                     name={payer.userId}
                     placeholder="$0.00"
-                    className={inputVariants}
+                    className={inputStyle}
                     decimalsLimit={2}
                     onChange={(e) => handleAmountChange(e.target.value, payer.userId)}
                   />

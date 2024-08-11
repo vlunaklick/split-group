@@ -57,7 +57,7 @@ const TableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], groupI
             <TableCell>{spending.name}</TableCell>
             <TableCell>
               <div className='flex items-center gap-4'>
-                <SpendingIcon type={spending.category as SpendingTypes} className='text-zinc-500 dark:text-zinc-400' />
+                <SpendingIcon type={spending.category as SpendingTypes} className='text-muted-foreground/80' />
                 {spending.category}
               </div>
             </TableCell>
@@ -84,20 +84,20 @@ const MobileTableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], 
   return (
     <section className='sm:hidden flex flex-col gap-4'>
       {data.map((spending: SpendingTable) => (
-        <article key={spending.id} className='flex flex-col justify-center gap-4 p-4 border border-zinc-200 dark:border-zinc-700 rounded-md'>
+        <article key={spending.id} className='flex flex-col justify-center gap-4 p-4 border rounded-md'>
           <header className='flex items-center gap-4'>
             <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
-              <SpendingIcon type={spending.category as SpendingTypes} className='text-zinc-500 dark:text-zinc-400' />
+              <SpendingIcon type={spending.category as SpendingTypes} className='text-muted-foreground/80' />
             </div>
 
             <div>
               <h3 className='font-bold'>{spending.name}</h3>
-              <div className='text-sm text-zinc-500 dark:text-zinc-400'>{formatDate(spending.date)}</div>
+              <div className='text-sm text-muted-foreground/80'>{formatDate(spending.date)}</div>
             </div>
           </header>
 
           <div className='flex flex-col gap-2'>
-            <p className='text-sm text-zinc-500 dark:text-zinc-400'>
+            <p className='text-sm text-muted-foreground/80'>
               Creada por:{' '}
               <span className='font-bold'>
                 {spending.createdBy || 'Anónimo'}
@@ -105,7 +105,7 @@ const MobileTableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], 
             </p>
 
             {spending.description && (
-              <p className='text-sm text-zinc-500 dark:text-zinc-400'>Descripción: {spending.description}</p>
+              <p className='text-sm text-muted-foreground/80'>Descripción: {spending.description}</p>
             )}
 
             <div className='flex items-center gap-4 justify-between'>

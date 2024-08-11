@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input, inputVariants } from '@/components/ui/input'
+import { Input, inputStyle } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useStepper } from '@/components/ui/stepper'
@@ -117,8 +117,8 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
                       <CurrencyInput
                         name='amount'
                         placeholder="$0.00"
-                        className={inputVariants}
                         decimalsLimit={2}
+                        className={inputStyle}
                         onChange={(value) => field.onChange(value)}
                       />
                     </FormControl>
@@ -166,7 +166,7 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
                           variant={'outline'}
                           className={cn(
                             'w-full pl-3 text-left font-normal',
-                            !field.value && 'text-zinc-400'
+                            !field.value && 'text-muted-foreground'
                           )}
                         >
                           {field.value
