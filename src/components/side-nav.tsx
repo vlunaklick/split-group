@@ -51,7 +51,7 @@ export const SideNav = ({ userId }: { userId: string }) => {
 const SideNavLink = ({ href, children, className, isSelected }: { href: string; children: React.ReactNode; className?: string; isSelected?: boolean }) => {
   return (
     <Link href={href} className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary border border-transparent',
-      isSelected ? 'text-primary bg-zinc-50 bg-muted' : 'text-muted-foreground', className)}
+      isSelected ? 'text-primary bg-muted' : 'text-muted-foreground', className)}
     >
       {children}
     </Link>
