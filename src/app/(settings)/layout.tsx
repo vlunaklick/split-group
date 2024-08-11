@@ -17,7 +17,7 @@ export default async function RootLayout ({
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <header className="sticky top-0 flex h-16 items-center gap-4 border-b dark:border-zinc-800 dark:bg-zinc-950 px-4 md:px-6 bg-white">
+      <header className="sticky top-0 flex h-16 items-center gap-4 border-b px-4 md:px-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <Link
           href="/dashboard"
           className="hidden md:flex items-center gap-2 text-lg font-semibold"
@@ -37,7 +37,7 @@ export default async function RootLayout ({
               <span className="sr-only">Alternar navegación</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="flex flex-col dark:border-zinc-800">
+          <SheetContent side="left" className="flex flex-col">
             <Link
               href="/dashboard"
               className="flex items-center gap-2 text-lg font-semibold"

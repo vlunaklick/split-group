@@ -9,15 +9,15 @@ export const SettingsNav = () => {
 
   return (
     <nav
-      className="grid gap-4 text-sm text-zinc-400" x-chunk="dashboard-04-chunk-0"
+      className="grid gap-4 text-sm text-muted-foreground" x-chunk="dashboard-04-chunk-0"
     >
-      <Link href="/settings" className={cn(pathname === '/settings' && 'font-semibold text-black dark:text-white')}>
+      <Link href="/settings" className={cn(pathname === '/settings' && 'font-semibold text-primary')}>
         General
       </Link>
-      <Link href="/settings/notifications" className={cn(pathname === '/settings/notifications' && 'font-semibold text-black dark:text-white')}>
+      <Link href="/settings/notifications" className={cn(pathname === '/settings/notifications' && 'font-semibold text-primary')}>
         Notificaciones
       </Link>
-      <Link href="/settings/appearance" className={cn(pathname === '/settings/appearance' && 'font-semibold text-black dark:text-white')}>
+      <Link href="/settings/appearance" className={cn(pathname === '/settings/appearance' && 'font-semibold text-primary')}>
         Apariencia
       </Link>
     </nav>

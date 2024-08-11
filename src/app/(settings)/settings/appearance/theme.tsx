@@ -67,16 +67,16 @@ export const ThemeSetting = () => {
                           className="grid gap-8 pt-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full"
                         >
                           <FormItem>
-                            <FormLabel className="[&:has([data-state=checked])>div]:border-zinc-400">
+                            <FormLabel className="[&:has([data-state=checked])>div]:border-muted-foreground">
                               <FormControl>
                                 <RadioGroupItem value="system" className="sr-only" />
                               </FormControl>
-                              <ThemeBlock text="Sistema" bgColor={systemTheme === 'dark' ? 'bg-slate-950' : 'bg-[#ecedef]'} textColor={systemTheme === 'dark' ? 'bg-slate-400' : 'bg-[#ecedef]'} cardColor={systemTheme === 'dark' ? 'bg-slate-800' : 'bg-white'} />
+                              <ThemeBlock text="Sistema" bgColor={systemTheme === 'dark' ? 'bg-zinc-950' : 'bg-[#ecedef]'} textColor={systemTheme === 'dark' ? 'bg-zinc-400' : 'bg-[#ecedef]'} cardColor={systemTheme === 'dark' ? 'bg-zinc-800' : 'bg-white'} />
                             </FormLabel>
                           </FormItem>
 
                           <FormItem>
-                            <FormLabel className="[&:has([data-state=checked])>div]:border-zinc-400">
+                            <FormLabel className="[&:has([data-state=checked])>div]:border-muted-foreground">
                               <FormControl>
                                 <RadioGroupItem value="light" className="sr-only" />
                               </FormControl>
@@ -85,11 +85,11 @@ export const ThemeSetting = () => {
                           </FormItem>
 
                           <FormItem>
-                            <FormLabel className="[&:has([data-state=checked])>div]:border-zinc-400">
+                            <FormLabel className="[&:has([data-state=checked])>div]:border-muted-foreground">
                               <FormControl>
                                 <RadioGroupItem value="dark" className="sr-only" />
                               </FormControl>
-                              <ThemeBlock text="Oscuro" bgColor="bg-slate-950" textColor="bg-slate-400" cardColor="bg-slate-800" />
+                              <ThemeBlock text="Oscuro" bgColor="bg-zinc-950" textColor="bg-zinc-400" cardColor="bg-zinc-800" />
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>
@@ -127,7 +127,7 @@ export const ThemeSetting = () => {
 const ThemeBlock = ({ text, bgColor, textColor, cardColor }: { text: string, bgColor: string, textColor: string, cardColor: string }) => {
   return (
     <>
-      <div className="items-center rounded-md border-2 border-zinc-100 dark:border-zinc-800 p-1 hover:border-zinc-300 dark:hover:border-zinc-600">
+      <div className="items-center rounded-md border-2 border-border p-1 hover:border-zinc-300 dark:hover:border-zinc-600">
         <div className={`space-y-2 rounded-sm ${bgColor} p-2`}>
           <div className={`space-y-2 rounded-md ${cardColor} p-2 shadow-sm`}>
             <div className={`h-2 w-[80px] rounded-lg ${textColor}`} />
@@ -156,16 +156,16 @@ export const ThemeBlockSkeleton = ({ text }: { text: string }) => {
       <div className="items-center rounded-md border-2 border-zinc-100 dark:border-zinc-800 p-1 hover:border-zinc-300 dark:hover:border-zinc-600 animate-pulse">
         <div className={'space-y-2 rounded-sm bg-zinc-600 p-2'}>
           <div className={'space-y-2 rounded-md bg-zinc-500 p-2 shadow-sm'}>
-            <div className={'h-2 w-[80px] rounded-lg bg-zinc-400'} />
-            <div className={'h-2 w-[100px] rounded-lg bg-zinc-400'} />
+            <div className={'h-2 w-[80px] rounded-lg bg-muted-foreground'} />
+            <div className={'h-2 w-[100px] rounded-lg bg-muted-foreground'} />
           </div>
           <div className={'flex items-center space-x-2 rounded-md bg-zinc-500 p-2 shadow-sm'}>
-            <div className={'h-4 w-4 rounded-full bg-zinc-400'} />
-            <div className={'h-2 w-[100px] rounded-lg bg-zinc-400'} />
+            <div className={'h-4 w-4 rounded-full bg-muted-foreground'} />
+            <div className={'h-2 w-[100px] rounded-lg bg-muted-foreground'} />
           </div>
           <div className={'flex items-center space-x-2 rounded-md bg-zinc-500 p-2 shadow-sm'}>
-            <div className={'h-4 w-4 rounded-full bg-zinc-400'} />
-            <div className={'h-2 w-[100px] rounded-lg bg-zinc-400'} />
+            <div className={'h-4 w-4 rounded-full bg-muted-foreground'} />
+            <div className={'h-2 w-[100px] rounded-lg bg-muted-foreground'} />
           </div>
         </div>
       </div>

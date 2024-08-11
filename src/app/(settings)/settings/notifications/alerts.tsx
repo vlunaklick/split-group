@@ -64,7 +64,7 @@ export const LimitSetting = ({ userId }: { userId: string }) => {
                 <FormItem>
                   <FormControl>
                     <div className="flex">
-                      <div className="flex items-center px-3 bg-zinc-800 text-zinc-400 rounded-l-md">
+                      <div className="flex items-center px-3 bg-border text-muted-foreground rounded-l-md">
                         $
                       </div>
                       <Input
