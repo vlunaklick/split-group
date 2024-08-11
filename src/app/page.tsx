@@ -27,14 +27,13 @@ export default function Home () {
           <img
             src="/dashboard-dark.png"
             alt="Hero Image"
-            className="hidden lg:max-w-[1000px]  rounded-[inherit] border object-contain shadow-lg dark:block overflow-hidden md:overflow-auto lg:overflow-auto"
+            className="hidden lg:max-w-[1000px] rounded-[inherit] border object-contain shadow-lg dark:block overflow-hidden md:overflow-auto lg:overflow-auto"
           />
           <img
             src="/dashboard-light.png"
             alt="Hero Image"
-            className="block lg:hidden rounded-[inherit] border object-contain shadow-lg dark:hidden overflow-hidden md:overflow-auto lg:overflow-auto"
+            className="dark:hidden lg:max-w-[1000px] rounded-[inherit] border object-contain shadow-lg block overflow-hidden md:overflow-auto lg:overflow-auto"
           />
-
           <BorderBeam size={250} duration={12} delay={9} />
         </section>
 
