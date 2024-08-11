@@ -3,9 +3,9 @@ import { CSSProperties, FC, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
 interface AnimatedShinyTextProps {
-  children: ReactNode;
-  className?: string;
-  shimmerWidth?: number;
+  children: ReactNode
+  className?: string
+  shimmerWidth?: number
 }
 
 const AnimatedShinyText: FC<AnimatedShinyTextProps> = ({
