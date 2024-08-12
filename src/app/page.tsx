@@ -23,19 +23,14 @@ export default function Home () {
 
         <TrustedBy />
 
-        <section className="relative rounded-xl mx-auto justify-center flex flex-col items-center lg:max-w-[1000px] overflow-hidden md:overflow-auto lg:overflow-auto">
-          <img
-            src="/dashboard-dark.png"
-            alt="Hero Image"
-            className="hidden lg:max-w-[1000px] rounded-[inherit] border object-contain shadow-lg dark:block overflow-hidden md:overflow-auto lg:overflow-auto"
-          />
-          <img
-            src="/dashboard-light.png"
-            alt="Hero Image"
-            className="dark:hidden lg:max-w-[1000px] rounded-[inherit] border object-contain shadow-lg block overflow-hidden md:overflow-auto lg:overflow-auto"
-          />
-          <BorderBeam size={250} duration={12} delay={9} />
-        </section>
+        <div className="relative rounded-xl mx-auto justify-center flex flex-col items-center lg:max-w-[1000px] overflow-hidden border border-transparent">
+
+          <img src="/dashboard-dark.png" alt="Hero Image" className="hidden lg:max-w-[1000px] rounded-[inherit] border object-contain shadow-lg dark:block overflow-hidden md:overflow-auto lg:overflow-auto" />
+
+          <img src="/dashboard-light.png" alt="Hero Image" className="block lg:max-w-[1000px] rounded-[inherit] border object-contain shadow-lg dark:hidden overflow-hidden md:overflow-auto lg:overflow-auto" />
+
+          <BorderBeam size={250} duration={12} delay={9} colorFrom='#3b82f6' colorTo='#581c87' anchor={4} />
+        </div>
 
         <FaqPage />
       </div>
