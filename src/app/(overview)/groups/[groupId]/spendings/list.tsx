@@ -67,7 +67,7 @@ const TableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], groupI
               {spending.someoneOwesYou && <Badge variant="secondary" className='w-max'>Te deben</Badge>}
               {!spending.someoneOwesYou && !spending.hasDebt && <Badge variant="default" className='w-max'>-</Badge>}
             </TableCell>
-            <TableCell className="text-right">{spending.amount}</TableCell>
+            <TableCell className="text-right">{formatMoney(spending.amount)}</TableCell>
             <TableCell>
               <Link href={`/groups/${groupId}/spendings/${spending.id}`} className={buttonVariants({ variant: 'outline' })}>
                 Ver

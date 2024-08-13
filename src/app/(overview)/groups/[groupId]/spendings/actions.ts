@@ -132,7 +132,10 @@ export async function getSpending ({ spendingId }: { spendingId: string }) {
     },
     include: {
       payments: true,
-      debts: true
+      debts: true,
+      category: true,
+      owner: true,
+      currency: true
     }
   })
 }
