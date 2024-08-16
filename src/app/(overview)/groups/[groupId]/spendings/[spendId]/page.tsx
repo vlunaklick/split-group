@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { getSpending } from '../actions'
 import { SpendInfo } from './info'
 import { SpendDebts, SpendDebtsOwned } from './debts'
+import { Contributors } from './contributors'
 
 export default async function GroupId ({ params } : { params: { groupId: string, spendId: string } }) {
   const { groupId, spendId } = params
@@ -49,11 +50,21 @@ export default async function GroupId ({ params } : { params: { groupId: string,
         </Breadcrumb>
       </header>
 
-      <div className="flex gap-4 w-full">
-        <div className="flex flex-col-reverse gap-4 md:flex-col max-w-[400px] w-full">
+      <div className="flex gap-4 w-full md:justify-start justify-center flex-col md:flex-row">
+        <div className="flex gap-4 flex-col w-full">
+          <div className="flex flex-col md:hidden gap-4">
+            <SpendDebtsOwned groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
+            <SpendDebts groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
+          </div>
           <SpendInfo groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
+        </div>
+
+        <div className="flex flex-col gap-4 w-full">
+          <Contributors groupId={groupId} spendId={spendId} />
+          <div className="hidden md:flex flex-col gap-4">
           <SpendDebtsOwned groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
           <SpendDebts groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
+          </div>
         </div>
       </div>
     </>

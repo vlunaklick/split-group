@@ -33,7 +33,7 @@ export const SpendDebts = ({ groupId, spendId, userId }: { groupId: string, spen
       <CardHeader>
         <CardTitle>Deudas actuales</CardTitle>
         <CardDescription>
-          Deudas que tienes pendientes
+          Estas son las personas a las que les debes dinero.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -77,7 +77,7 @@ export const SpendDebtsOwned = ({ groupId, spendId, userId }: { groupId: string,
       <CardHeader>
         <CardTitle>Adeudan</CardTitle>
         <CardDescription>
-          Dinero que te deben
+          Estas son las personas que te deben dinero.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

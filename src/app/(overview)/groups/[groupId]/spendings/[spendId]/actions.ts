@@ -39,3 +39,47 @@ export const getOwedDebts = async ({ groupId, userId, spendId }: { groupId: stri
 
   return debts
 }
+
+export const getPayers = async ({ groupId, spendId }: { groupId: string, spendId: string }) => {
+  const spends = await db.payment.findMany({
+    where: {
+      spending: {
+        id: spendId,
+        groupId
+      }
+    },
+    include: {
+      payer: true
+    }
+  })
+
+  return spends
+}
+
+export const getParticipants = async ({ groupId, spendId }: { groupId: string, spendId: string }) => {
+  const debts = await db.debt.findMany({
+    where: {
+      spending: {
+        id: spendId,
+        groupId
+      }
+    },
+    include: {
+      debter: true
+    }
+  })
+
+  if (!debts.length) {
+    return []
+  }
+
+  const uniqueParticipants = new Set(debts.map(debt => debt.debter))
+
+  const payers = await getPayers({ groupId, spendId })
+
+  payers.forEach(payer => {
+    uniqueParticipants.delete(payer.payer)
+  })
+
+  return Array.from(uniqueParticipants)
+}
