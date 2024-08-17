@@ -1,8 +1,8 @@
 import { authOptions } from '@/lib/auth'
 import { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
-import { ListNotifications } from './list'
-import { MarkAllAsRead } from './buttons'
+import { ListNotifications } from './notifications-lists'
+import { MarkAllAsRead } from './notifications-buttons'
 
 export const metadata: Metadata = {
   title: 'Notifications',

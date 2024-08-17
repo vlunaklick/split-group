@@ -1,25 +1,22 @@
 'use client'
 
-import useSWR, { useSWRConfig } from 'swr'
-import { getNotifications, deleteNotification, joinGroup, markAsRead, rejectGroup, getGroupNotifications } from './actions'
-import { IconUsers } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
-import { NotificationWithGroups } from './types'
-import { useTimeAgo } from '@/utils/time'
-import { toast } from 'sonner'
-import { Notification } from '@prisma/client'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useState } from 'react'
+import { useGetGroupNotifications, useGetNotifications } from '@/data/notifications'
 import { cn } from '@/lib/utils'
+import { useTimeAgo } from '@/utils/time'
+import { Notification } from '@prisma/client'
+import { IconUsers } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { useSWRConfig } from 'swr'
+import { deleteNotification, joinGroup, markAsRead, rejectGroup } from './actions'
+import { NotificationWithGroups } from './types'
 
 export const ListNotifications = ({ userId }: { userId: string }) => {
-  const { data: notifications, isLoading: isLoadingNotifications } = useSWR(['notifications', userId], async ([_, userId]) => {
-    return await getNotifications(userId)
-  })
-  const { data: groupNotifications, isLoading: isGroupNotifications } = useSWR(['group-notifications', userId], async ([_, userId]) => {
-    return await getGroupNotifications(userId)
-  })
+  const { data: notifications, isLoading: isLoadingNotifications } = useGetNotifications({ userId })
+  const { data: groupNotifications, isLoading: isGroupNotifications } = useGetGroupNotifications({ userId })
 
   return (
     <>

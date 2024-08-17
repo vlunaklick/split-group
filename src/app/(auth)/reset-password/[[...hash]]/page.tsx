@@ -15,11 +15,9 @@ export default async function ResetPassword ({ params } : { params: { hash: stri
     notFound()
   }
 
-  const [requestChangePassword] = await Promise.all([
-    isValidChangePassword(code)
-  ])
+  const isValidCode = await isValidChangePassword(code)
 
-  if (!requestChangePassword) {
+  if (!isValidCode) {
     notFound()
   }
 
