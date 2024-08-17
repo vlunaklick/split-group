@@ -1,21 +1,21 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import useSWR from 'swr'
-import { getUserConfiguration } from '@/lib/data'
+import { useGetUserConfiguration } from '@/data/settings'
 import { updateAlertLimitSettingsSchema } from '@/lib/form'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { updateLimit } from './actions'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { z } from 'zod'
+import { updateLimit } from './actions'
 
 export const LimitSetting = ({ userId }: { userId: string }) => {
-  const { data: configuration, isLoading: isLoadingConfiguration } = useSWR(`/api/users/${userId}/max-alert`, async () => await getUserConfiguration(userId))
+  const { data: configuration, isLoading: isLoadingConfiguration } = useGetUserConfiguration({ userId })
+
   const [isLoading, setIsLoading] = useState(false)
   const form = useForm<z.infer<typeof updateAlertLimitSettingsSchema>>({
     resolver: zodResolver(updateAlertLimitSettingsSchema),

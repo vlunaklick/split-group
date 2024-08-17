@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
-import { ThemeSetting } from './theme'
-import { CurrencySetting } from './currency'
-import { AlertSettings } from './alert'
+import { ThemeSetting } from './theme-setting'
+import { CurrencySetting } from './currency-setting'
+import { AlertSettings } from './alert-setting'
 
 // TODO: Change the title and description
 export const metadata: Metadata = {

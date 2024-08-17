@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
-import { LimitSetting } from './alerts'
-import { NotificationsWantedSettings } from './notifications-wanted'
+import { LimitSetting } from './limits-setting'
+import { NotificationsWantedSettings } from './notifications-wanted-setting'
 import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
 

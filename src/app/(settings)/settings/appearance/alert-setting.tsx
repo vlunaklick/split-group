@@ -2,23 +2,21 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useGetAlertsSizeSelected } from '@/data/settings'
 import { updateAlertSizeSettingsSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import useSWR from 'swr'
 import { z } from 'zod'
 
 // TODO: evaluar si puedo llevar esto a la db
 
 export const AlertSettings = () => {
-  const { data: alert, isLoading: isLoadingCurrent } = useSWR('alert-size-setting', async () => {
-    const alert = localStorage.getItem('alert-size')
-    return alert
-  })
+  const { data: alert, isLoading: isLoadingCurrent } = useGetAlertsSizeSelected()
+
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof updateAlertSizeSettingsSchema>>({

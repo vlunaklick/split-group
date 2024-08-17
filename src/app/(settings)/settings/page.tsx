@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
-import { DeleteSetting } from './delete'
+import { DeleteSetting } from './delete-user-setting'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { UsernameSettings } from './username'
-import { NameSettings } from './name'
+import { UsernameSettings } from './username-setting'
+import { NameSettings } from './name-setting'
 
 export const metadata: Metadata = {
   title: 'General',

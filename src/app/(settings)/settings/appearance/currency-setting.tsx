@@ -2,23 +2,19 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { getAvailableCurrency } from '@/lib/data'
+import { useGetAvailableCurrencies, useGetSelectedCurrency } from '@/data/settings'
 import { updateCurrencySettingsSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import useSWR from 'swr'
 import { z } from 'zod'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 
 export const CurrencySetting = () => {
-  const { data: currencies, isLoading: isLoadingAvailables } = useSWR('currencies-settings', getAvailableCurrency)
-  const { data: currency, isLoading: isLoadingCurrent } = useSWR('currency-setting', async () => {
-    const currency = localStorage.getItem('currency')
-    return currency
-  })
+  const { data: currencies, isLoading: isLoadingAvailables } = useGetAvailableCurrencies()
+  const { data: currency, isLoading: isLoadingCurrent } = useGetSelectedCurrency()
 
   const [isLoading, setIsLoading] = useState(false)
   const form = useForm<z.infer<typeof updateCurrencySettingsSchema>>({

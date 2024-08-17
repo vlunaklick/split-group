@@ -14,20 +14,6 @@ export async function isValidChangePassword (hash: string) {
   return true
 }
 
-export async function getAvailableCurrency () {
-  return await db.currency.findMany()
-}
-
-export async function getUserConfiguration (userId: string) {
-  const configuration = await db.userConfig.findFirst({
-    where: {
-      userId
-    }
-  })
-
-  return configuration
-}
-
 export async function getUserGroups (userId: string) {
   const user = await db.user.findUnique({
     where: {

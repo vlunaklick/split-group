@@ -1,21 +1,21 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
-import useSWR from 'swr'
-import { getUserConfiguration } from '@/lib/data'
-import { useState } from 'react'
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { updateNotificationsWantedSettingsSchema } from '@/lib/form'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { z } from 'zod'
 import { updateNotificationsWanted } from './actions'
+import { useGetUserConfiguration } from '@/data/settings'
 
 export const NotificationsWantedSettings = ({ userId }: { userId: string }) => {
-  const { data: configuration, isLoading: isLoadingConfiguration } = useSWR(`/api/users/${userId}/notifications-wanted`, async () => await getUserConfiguration(userId))
+  const { data: configuration, isLoading: isLoadingConfiguration } = useGetUserConfiguration({ userId })
+
   const [isLoading, setIsLoading] = useState(false)
   const form = useForm<z.infer<typeof updateNotificationsWantedSettingsSchema>>({
     resolver: zodResolver(updateNotificationsWantedSettingsSchema),
