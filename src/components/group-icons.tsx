@@ -18,3 +18,42 @@ export const Icon = ({ type = 'award', className }: { type?: string; className?:
 
   return <Icon className={className} />
 }
+
+export const GROUP_ICONS = [
+  {
+    name: 'alien',
+    Icon: IconAlien
+  },
+  {
+    name: 'anchor',
+    Icon: IconAnchor
+  },
+  {
+    name: 'award',
+    Icon: IconAward
+  },
+  {
+    name: 'bat',
+    Icon: IconBat
+  },
+  {
+    name: 'bone',
+    Icon: IconBone
+  },
+  {
+    name: 'bottle',
+    Icon: IconBottle
+  },
+  {
+    name: 'bow',
+    Icon: IconBow
+  },
+  {
+    name: 'buildings',
+    Icon: IconBuildings
+  },
+  {
+    name: 'burger',
+    Icon: IconBurger
+  }
+]

@@ -7,7 +7,6 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createGroupFormSchema } from '@/lib/form'
 import { createGroup } from './actions'
-import { IconAlien, IconAnchor, IconAward, IconBat, IconBone, IconBottle, IconBow, IconBuildings, IconBurger, IconLoader2 } from '@tabler/icons-react'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -15,45 +14,8 @@ import { useRouter } from 'next/navigation'
 import { RadioGroup } from '@/components/ui/radio-group'
 import { RadioGroupItem } from '@radix-ui/react-radio-group'
 import { useSWRConfig } from 'swr'
-
-const icons = [
-  {
-    name: 'alien',
-    Icon: IconAlien
-  },
-  {
-    name: 'anchor',
-    Icon: IconAnchor
-  },
-  {
-    name: 'award',
-    Icon: IconAward
-  },
-  {
-    name: 'bat',
-    Icon: IconBat
-  },
-  {
-    name: 'bone',
-    Icon: IconBone
-  },
-  {
-    name: 'bottle',
-    Icon: IconBottle
-  },
-  {
-    name: 'bow',
-    Icon: IconBow
-  },
-  {
-    name: 'buildings',
-    Icon: IconBuildings
-  },
-  {
-    name: 'burger',
-    Icon: IconBurger
-  }
-]
+import { GROUP_ICONS } from '@/components/group-icons'
+import { IconLoader2 } from '@tabler/icons-react'
 
 export const CreateGroupFrom = ({ userId }: { userId: string }) => {
   const router = useRouter()
@@ -140,7 +102,7 @@ export const CreateGroupFrom = ({ userId }: { userId: string }) => {
                 className="flex gap-3 flex-wrap"
               >
                 {
-                  icons.map(({ name, Icon }) => (
+                  GROUP_ICONS.map(({ name, Icon }) => (
                     <FormItem key={name}>
                       <FormLabel className="dark:[&:has([data-state=checked])>div]:border-muted-foreground dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
                         <FormControl>

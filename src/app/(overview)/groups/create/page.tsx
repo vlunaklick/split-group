@@ -1,6 +1,6 @@
 import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
-import { CreateGroupFrom } from './form'
+import { CreateGroupFrom } from './create-group-form'
 
 export default async function GroupCreate () {
   const session = await getServerSession(authOptions)
