@@ -106,12 +106,6 @@ export async function updateSpending ({ spendingId, spending, mode }: { spending
 }
 
 export async function deleteSpending ({ spendingId }: { spendingId: string }) {
-  await db.spending.delete({
-    where: {
-      id: spendingId
-    }
-  })
-
   await db.payment.deleteMany({
     where: {
       spendingId
@@ -121,6 +115,12 @@ export async function deleteSpending ({ spendingId }: { spendingId: string }) {
   await db.debt.deleteMany({
     where: {
       spendingId
+    }
+  })
+
+  await db.spending.delete({
+    where: {
+      id: spendingId
     }
   })
 }

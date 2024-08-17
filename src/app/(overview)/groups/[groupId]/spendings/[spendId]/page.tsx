@@ -8,6 +8,8 @@ import { getSpending } from '../actions'
 import { SpendInfo } from './info'
 import { SpendDebts, SpendDebtsOwned } from './debts'
 import { Contributors } from './contributors'
+import { EditSpendSheet } from './edit-spend-sheet'
+import { DeleteSpendDialog } from './delete-spend-dialog'
 
 export default async function GroupId ({ params } : { params: { groupId: string, spendId: string } }) {
   const { groupId, spendId } = params
@@ -48,6 +50,15 @@ export default async function GroupId ({ params } : { params: { groupId: string,
             </BreadcrumbPage>
           </BreadcrumbList>
         </Breadcrumb>
+
+        {
+          session?.user?.id === spend.ownerId && (
+            <div className="ml-auto space-x-4">
+              <DeleteSpendDialog groupId={groupId} spendId={spendId} />
+              <EditSpendSheet groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
+            </div>
+          )
+        }
       </header>
 
       <div className="flex gap-4 w-full md:justify-start justify-center flex-col md:flex-row">
