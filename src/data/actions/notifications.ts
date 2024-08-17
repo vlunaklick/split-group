@@ -31,3 +31,14 @@ export async function getGroupNotifications (userId: string) {
     }
   })
 }
+
+export async function getAmountNotifications (userId: string) {
+  const notifications = await db.notification.findMany({
+    where: {
+      userId,
+      read: false
+    }
+  })
+
+  return notifications.length
+}

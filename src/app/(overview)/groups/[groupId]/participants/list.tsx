@@ -1,31 +1,30 @@
 'use client'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
-import { getGroupAdmins, getGroupParticipants, getMembersWithoutAdministrator, giveAdminPermission, hasGroupAdminPermission, hasGroupOwnerPermission, removeAdminPermission, removeMemberFromGroup } from '@/lib/data'
-import { cn } from '@/lib/utils'
-import useSWR, { useSWRConfig } from 'swr'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { IconCrown, IconLoader2 } from '@tabler/icons-react'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useGetGroupAdmins, useGetGroupParticipnts, useGetMembersWithoutAdministrator, useHasGroupAdminPermission } from '@/data/groups'
+import { useHasGroupOwnerPermission } from '@/data/permissions'
+import { giveAdminPermissionSchema } from '@/lib/form'
+import { cn } from '@/lib/utils'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { IconCrown, IconLoader2 } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { giveAdminPermissionSchema } from '@/lib/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
+import { useSWRConfig } from 'swr'
+import { z } from 'zod'
+import { giveAdminPermission, removeAdminPermission, removeMemberFromGroup } from './actions'
 
 export const ParticipantsList = ({ groupId, userId }: { groupId: string, userId: string }) => {
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
-  const { data: members, isLoading: isLoadingMembers } = useSWR(['/api/groups/members', groupId], async ([url, groupId]) => {
-    return await getGroupParticipants(groupId)
-  })
-  const { data: hasPermission } = useSWR(['/api/groups/permissions', groupId, userId], async ([url, groupId, userId]) => {
-    return await hasGroupAdminPermission(userId, groupId)
-  })
+  const { data: members, isLoading: isLoadingMembers } = useGetGroupParticipnts({ groupId })
+
+  const { data: hasPermission } = useHasGroupAdminPermission({ userId, groupId })
 
   const isOwner = hasPermission && members?.find(member => member.id === userId)?.isOwner
 
@@ -88,15 +87,12 @@ export const ParticipantsList = ({ groupId, userId }: { groupId: string, userId:
 }
 
 export const AdminsList = ({ groupId, userId }: { groupId: string, userId: string }) => {
-  const { data: admins, isLoading: isLoadingAdmins } = useSWR(['/api/groups/admins', groupId], async ([url, groupId]) => {
-    return await getGroupAdmins(groupId)
-  })
-  const { data: hasPermission } = useSWR(['/api/groups/permissions/owner', groupId, userId], async ([url, groupId, userId]) => {
-    return await hasGroupOwnerPermission(userId, groupId)
-  })
-  const { data: membersWithoutAdmins, isLoading: isLoadingMembersWithoutAdmin } = useSWR(['/api/groups/members-without-admins', groupId], async ([url, groupId]) => {
-    return await getMembersWithoutAdministrator(groupId)
-  })
+  const { data: admins, isLoading: isLoadingAdmins } = useGetGroupAdmins({ groupId })
+
+  const { data: hasPermission } = useHasGroupOwnerPermission({ userId, groupId })
+
+  const { data: membersWithoutAdmins, isLoading: isLoadingMembersWithoutAdmin } = useGetMembersWithoutAdministrator({ groupId })
+
   const [isLoading, setIsLoading] = useState(false)
   const { mutate } = useSWRConfig()
 

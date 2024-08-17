@@ -6,13 +6,12 @@ import { Separator } from './ui/separator'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { IconCirclePlus } from '@tabler/icons-react'
-import useSWR from 'swr'
-import { getUserGroups } from '@/lib/data'
 import { Icon } from './group-icons'
 import { Skeleton } from './ui/skeleton'
+import { useGetUserGroups } from '@/data/groups'
 
 export const SideNav = ({ userId }: { userId: string }) => {
-  const { data: groups = [], isLoading } = useSWR('user-groups', async () => await getUserGroups(userId))
+  const { data: groups = [], isLoading } = useGetUserGroups({ userId })
   const path = usePathname()
 
   const selectedPath = (href: string) => {

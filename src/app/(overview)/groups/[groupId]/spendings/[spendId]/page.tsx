@@ -1,4 +1,3 @@
-import { getGroup } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -10,6 +9,7 @@ import { SpendDebts, SpendDebtsOwned } from './debts'
 import { Contributors } from './contributors'
 import { EditSpendSheet } from './edit-spend-sheet'
 import { DeleteSpendDialog } from './delete-spend-dialog'
+import { getGroup } from '@/data/actions/groups'
 
 export default async function GroupId ({ params } : { params: { groupId: string, spendId: string } }) {
   const { groupId, spendId } = params

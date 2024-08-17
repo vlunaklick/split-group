@@ -9,11 +9,11 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { updateGroupFormSchema } from '@/lib/form'
-import { deleteGroup, updateGroup } from '@/lib/data'
 import { Input } from '@/components/ui/input'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useSWRConfig } from 'swr'
+import { deleteGroup, updateGroup } from './actions'
 
 export const GroupDetails = ({ groupId, userId, isOwner }: { groupId: string, userId: string, isOwner: boolean }) => {
   const [isLoading, setIsLoading] = useState(false)

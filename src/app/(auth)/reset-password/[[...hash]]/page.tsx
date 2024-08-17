@@ -1,7 +1,7 @@
-import { isValidChangePassword } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import { ResetPasswordForm } from './reset-password-form'
 import { Metadata } from 'next'
+import { isValidChangePassword } from './actions'
 
 export const metadata: Metadata = {
   title: 'Reset Password',

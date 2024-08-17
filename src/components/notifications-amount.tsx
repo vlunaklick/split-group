@@ -1,16 +1,13 @@
 'use client'
 
-import { getAmountNotifications } from '@/lib/data'
-import useSWR from 'swr'
-import { buttonVariants } from './ui/button'
+import { useGetAmountNotifications } from '@/data/notifications'
 import { cn } from '@/lib/utils'
-import Link from 'next/link'
 import { Bell } from 'lucide-react'
+import Link from 'next/link'
+import { buttonVariants } from './ui/button'
 
 export const NotificationsAmount = ({ userId }: { userId: string }) => {
-  const { data: amountNotifications, isLoading } = useSWR(['/api/notifications/amount', userId], async ([_, userId]) => {
-    return await getAmountNotifications(userId)
-  })
+  const { data: amountNotifications, isLoading } = useGetAmountNotifications({ userId })
 
   return (
     <Link className={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'ml-auto relative')} href="/notifications">

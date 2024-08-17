@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
-import { getAvailableCurrency, getGroupParticipants } from '@/lib/data'
+import { useGetGroupParticipnts } from '@/data/groups'
 import { createSpendingSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
@@ -17,6 +17,7 @@ import { DistributionModeType } from '../types'
 import { DebtersForm } from './contributors'
 import { ExpeseInfoForm } from './general-info'
 import { PayersForm } from './payers'
+import { useGetAvailableCurrencies } from '@/data/settings'
 
 // TODO: Add isLoading
 
@@ -33,10 +34,8 @@ export const CreateSpending = ({ groupId, userId }: { groupId: string; userId: s
   const { mutate } = useSWRConfig()
 
   const { data: categories, isLoading: isLoadingCategories } = useSWR(['categories', userId], getCategories)
-  const { data: currencies, isLoading: isLoadingCurrencies } = useSWR('currencies', getAvailableCurrency)
-  const { data: participants, isLoading: isLoadingParticipants } = useSWR(['groupParticipants', groupId], async () => {
-    return await getGroupParticipants(groupId)
-  })
+  const { data: currencies, isLoading: isLoadingCurrencies } = useGetAvailableCurrencies()
+  const { data: participants, isLoading: isLoadingParticipants } = useGetGroupParticipnts({ groupId })
 
   const form = useForm<z.infer<typeof createSpendingSchema>>({
     resolver: zodResolver(createSpendingSchema),

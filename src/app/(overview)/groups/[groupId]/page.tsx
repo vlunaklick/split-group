@@ -1,10 +1,10 @@
-import { getGroup } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import { HeaderButtons, HeaderButtonsMobile } from './header-buttons'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { Spendings } from './spendings'
 import { Debts } from './debts'
+import { getGroup } from '@/data/actions/groups'
 
 export default async function GroupId ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId

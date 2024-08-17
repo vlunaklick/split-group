@@ -1,16 +1,13 @@
 'use client'
 
 import { Button, buttonVariants } from '@/components/ui/button'
-import { hasGroupAdminPermission } from '@/lib/data'
+import { useHasGroupAdminPermission } from '@/data/groups'
 import { cn } from '@/lib/utils'
 import { IconSettings, IconUsersGroup } from '@tabler/icons-react'
 import Link from 'next/link'
-import useSWR from 'swr'
 
 export const HeaderButtons = ({ groupId, userId }: { groupId: string, userId: string }) => {
-  const { data: hasPermission } = useSWR(['user-group-admin-permission', userId, groupId], async ([url, userId, groupId]) => {
-    return await hasGroupAdminPermission(userId, groupId)
-  })
+  const { data: hasPermission } = useHasGroupAdminPermission({ userId, groupId })
 
   return (
     <>
@@ -31,9 +28,7 @@ export const HeaderButtons = ({ groupId, userId }: { groupId: string, userId: st
 }
 
 export const HeaderButtonsMobile = ({ groupId, userId }: { groupId: string, userId: string }) => {
-  const { data: hasPermission } = useSWR(['user-group-admin-permission', userId, groupId], async ([url, userId, groupId]) => {
-    return await hasGroupAdminPermission(userId, groupId)
-  })
+  const { data: hasPermission } = useHasGroupAdminPermission({ userId, groupId })
 
   return (
     <div className="flex gap-2 md:hidden">

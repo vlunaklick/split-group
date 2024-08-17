@@ -120,3 +120,65 @@ export async function removeUserInvitation (userId: string, groupId: string) {
     }
   })
 }
+
+export async function deleteGroup (groupId: string) {
+  await db.userGroupRole.deleteMany({
+    where: {
+      groupId
+    }
+  })
+
+  await db.spending.deleteMany({
+    where: {
+      groupId
+    }
+  })
+
+  await db.payment.deleteMany({
+    where: {
+      spending: {
+        groupId
+      }
+    }
+  })
+
+  await db.groupInvite.deleteMany({
+    where: {
+      groupId
+    }
+  })
+
+  await db.comment.deleteMany({
+    where: {
+      spending: {
+        groupId
+      }
+    }
+  })
+
+  await db.debt.deleteMany({
+    where: {
+      spending: {
+        groupId
+      }
+    }
+  })
+
+  await db.group.delete({
+    where: {
+      id: groupId
+    }
+  })
+}
+
+export async function updateGroup (groupId: string, name: string, description: string) {
+  return await db.group.update({
+    where: {
+      id: groupId
+    },
+    data: {
+      name,
+      description
+    }
+  })
+}

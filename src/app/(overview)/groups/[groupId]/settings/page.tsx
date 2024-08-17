@@ -1,4 +1,3 @@
-import { getGroup } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -7,6 +6,7 @@ import Link from 'next/link'
 import { GroupDetails } from './group-details'
 import { InviteMembers } from './invite'
 import { LinksGenerated, UsersInvited } from './invitations'
+import { getGroup } from '@/data/actions/groups'
 
 export default async function GroupSettings ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId

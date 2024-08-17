@@ -1,21 +1,22 @@
 'use client'
 
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
-import { getAvailableCurrency, getGroupParticipants } from '@/lib/data'
-import useSWR, { useSWRConfig } from 'swr'
-import { getCategories, getSpending, updateSpending } from '../actions'
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
+import { useGetGroupParticipnts } from '@/data/groups'
+import { useGetAvailableCurrencies } from '@/data/settings'
+import { useMediaQuery } from '@/hooks/use-media-query'
 import { updateSpendingSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
-import { DistributionModeType } from '../types'
-import { useState } from 'react'
 import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import useSWR, { useSWRConfig } from 'swr'
+import { z } from 'zod'
+import { getCategories, getSpending, updateSpending } from '../actions'
+import { DistributionModeType } from '../types'
 import { DebtersForm, ExpeseInfoForm, PayersForm } from './steps'
 
 export function EditSpendSheet ({ spendId, userId, groupId, className }: { spendId: string, userId: string, groupId: string, className?: string }) {
@@ -80,10 +81,8 @@ const EditSpendForm = ({ spendId, userId, groupId, setIsOpen }: { spendId: strin
   const { mutate } = useSWRConfig()
 
   const { data: categories, isLoading: isLoadingCategories } = useSWR(['categories', userId], getCategories)
-  const { data: currencies, isLoading: isLoadingCurrencies } = useSWR('currencies', getAvailableCurrency)
-  const { data: participants, isLoading: isLoadingParticipants } = useSWR(['groupParticipants', groupId], async () => {
-    return await getGroupParticipants(groupId)
-  })
+  const { data: currencies, isLoading: isLoadingCurrencies } = useGetAvailableCurrencies()
+  const { data: participants, isLoading: isLoadingParticipants } = useGetGroupParticipnts({ groupId })
 
   const { data: spendData } = useSWR(['spendings', groupId, spendId], async ([_, groupId, spendId]) => {
     return await getSpending({ spendingId: spendId })
