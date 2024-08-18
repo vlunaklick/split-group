@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
 import { useGetGroupParticipnts } from '@/data/groups'
+import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
 import { createSpendingSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
@@ -10,14 +11,13 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import useSWR, { useSWRConfig } from 'swr'
+import { useSWRConfig } from 'swr'
 import { z } from 'zod'
-import { createSpending, getCategories } from '../actions'
+import { createSpending } from '../actions'
 import { DistributionModeType } from '../types'
 import { DebtersForm } from './contributors'
 import { ExpeseInfoForm } from './general-info'
 import { PayersForm } from './payers'
-import { useGetAvailableCurrencies } from '@/data/settings'
 
 // TODO: Add isLoading
 
@@ -33,7 +33,7 @@ export const CreateSpending = ({ groupId, userId }: { groupId: string; userId: s
   const router = useRouter()
   const { mutate } = useSWRConfig()
 
-  const { data: categories, isLoading: isLoadingCategories } = useSWR(['categories', userId], getCategories)
+  const { data: categories, isLoading: isLoadingCategories } = useGetCategories()
   const { data: currencies, isLoading: isLoadingCurrencies } = useGetAvailableCurrencies()
   const { data: participants, isLoading: isLoadingParticipants } = useGetGroupParticipnts({ groupId })
 

@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { getGroupParticipants, getUserGroups, hasGroupAdminPermission, getGroupAdmins, getMembersWithoutAdministrator } from './actions/groups'
+import { getGroupParticipants, getUserGroups, hasGroupAdminPermission, getGroupAdmins, getMembersWithoutAdministrator, getInvitationLink, getUsersInvitedToGroup } from './actions/groups'
 
 export function useGetUserGroups ({ userId }: { userId: string }) {
   return useSWR(['user-groups', userId], async ([_, userId]) => {
@@ -28,5 +28,17 @@ export function useGetGroupAdmins ({ groupId }: { groupId: string }) {
 export function useGetMembersWithoutAdministrator ({ groupId }: { groupId: string }) {
   return useSWR(['/api/groups/members-without-admins', groupId], async ([url, groupId]) => {
     return await getMembersWithoutAdministrator(groupId)
+  })
+}
+
+export function useGetInvitationLink ({ groupId }: { groupId: string }) {
+  return useSWR(['/api/groups/invitation-link', groupId], async ([url, groupId]) => {
+    return await getInvitationLink(groupId)
+  })
+}
+
+export function useGetUsersInvitedToGroup ({ groupId }: { groupId: string }) {
+  return useSWR(['/api/groups/members/invited', groupId], async ([url, groupId]) => {
+    return await getUsersInvitedToGroup(groupId)
   })
 }

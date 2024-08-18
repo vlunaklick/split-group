@@ -5,7 +5,8 @@ import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, Dr
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
 import { useGetGroupParticipnts } from '@/data/groups'
-import { useGetAvailableCurrencies } from '@/data/settings'
+import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
+import { useGetSpendingById } from '@/data/spendings'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { updateSpendingSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,9 +14,9 @@ import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import useSWR, { useSWRConfig } from 'swr'
+import { useSWRConfig } from 'swr'
 import { z } from 'zod'
-import { getCategories, getSpending, updateSpending } from '../actions'
+import { updateSpending } from '../actions'
 import { DistributionModeType } from '../types'
 import { DebtersForm, ExpeseInfoForm, PayersForm } from './steps'
 
@@ -80,13 +81,11 @@ const EditSpendForm = ({ spendId, userId, groupId, setIsOpen }: { spendId: strin
   const [mode, setMode] = useState<DistributionModeType>('equal')
   const { mutate } = useSWRConfig()
 
-  const { data: categories, isLoading: isLoadingCategories } = useSWR(['categories', userId], getCategories)
+  const { data: categories, isLoading: isLoadingCategories } = useGetCategories()
   const { data: currencies, isLoading: isLoadingCurrencies } = useGetAvailableCurrencies()
   const { data: participants, isLoading: isLoadingParticipants } = useGetGroupParticipnts({ groupId })
 
-  const { data: spendData } = useSWR(['spendings', groupId, spendId], async ([_, groupId, spendId]) => {
-    return await getSpending({ spendingId: spendId })
-  })
+  const { data: spendData } = useGetSpendingById({ spendingId: spendId })
 
   const form = useForm<z.infer<typeof updateSpendingSchema>>({
     resolver: zodResolver(updateSpendingSchema),

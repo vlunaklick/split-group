@@ -3,6 +3,12 @@
 import { db } from '@/lib/db'
 import { startOfWeek, endOfWeek } from 'date-fns'
 
+export async function getMembersTotal () {
+  const members = await db.user.count()
+
+  return members
+}
+
 export const getMonthlySpent = async ({ userId }: { userId: string }) => {
   const spent = await db.debt.findMany({
     where: {

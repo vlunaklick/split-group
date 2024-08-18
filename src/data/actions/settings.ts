@@ -13,3 +13,7 @@ export async function getUserConfiguration (userId: string) {
 export async function getAvailableCurrency () {
   return await db.currency.findMany()
 }
+
+export async function getCategories () {
+  return db.category.findMany()
+}

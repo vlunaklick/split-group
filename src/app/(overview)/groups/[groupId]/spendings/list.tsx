@@ -1,15 +1,14 @@
 'use client'
 
-import useSWR from 'swr'
-import { getSpendingsTable } from './actions'
-import Link from 'next/link'
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { formatDate } from '@/lib/dates'
+import { SpendingIcon, SpendingTypes } from '@/components/spending-icons'
 import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
-import { SpendingIcon, SpendingTypes } from '@/components/spending-icons'
-import { cn } from '@/lib/utils'
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useGetSpendingsTable } from '@/data/spendings'
+import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
+import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 type SpendingTable = {
   id: string
@@ -24,7 +23,7 @@ type SpendingTable = {
 }
 
 export const SpendingsList = ({ groupId, userId }: { groupId: string, userId: string }) => {
-  const { data, error } = useSWR(['spendings', groupId, userId], async ([_, groupId, userId]) => await getSpendingsTable({ groupId, userId }))
+  const { data, error } = useGetSpendingsTable({ groupId, userId })
 
   if (error) return <div>Failed to load</div>
   if (!data) return <div>Loading...</div>

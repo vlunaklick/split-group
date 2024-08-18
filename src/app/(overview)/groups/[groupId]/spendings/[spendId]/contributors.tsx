@@ -1,21 +1,16 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { getParticipants, getPayers } from './actions'
-import { cn } from '@/lib/utils'
-import useSWR from 'swr'
 import { buttonVariants } from '@/components/ui/button'
-import { formatMoney } from '@/lib/money'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useGetPayers, useGetSpendingParticipants } from '@/data/spendings'
+import { formatMoney } from '@/lib/money'
+import { cn } from '@/lib/utils'
 
 export const Contributors = ({ groupId, spendId }: { groupId: string; spendId: string }) => {
-  const { data: payers, isLoading: isLoadingPayers } = useSWR(['spendingPayers', groupId, spendId], async ([_, groupId, spendId]) => {
-    return await getPayers({ groupId, spendId })
-  })
+  const { data: payers, isLoading: isLoadingPayers } = useGetPayers({ groupId, spendId })
 
-  const { data: participants, isLoading: isLoadingParticipants } = useSWR(['spendingParticipants', groupId, spendId], async ([_, groupId, spendId]) => {
-    return await getParticipants({ groupId, spendId })
-  })
+  const { data: participants, isLoading: isLoadingParticipants } = useGetSpendingParticipants({ groupId, spendId })
 
   return (
     <Card className='h-min'>

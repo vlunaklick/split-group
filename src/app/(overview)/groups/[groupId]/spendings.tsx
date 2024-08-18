@@ -1,21 +1,18 @@
 'use client'
 
+import { SpendingIcon } from '@/components/spending-icons'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import Link from 'next/link'
-import { getLastSpendings } from './actions'
-import useSWR from 'swr'
-import { cn } from '@/lib/utils'
-import { SpendingWithOwner } from './types'
-import { SpendingIcon } from '@/components/spending-icons'
-import { formatMoney } from '@/lib/money'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useGetLastSpendings } from '@/data/spendings'
 import { formatDate } from '@/lib/dates'
+import { formatMoney } from '@/lib/money'
+import { cn } from '@/lib/utils'
+import Link from 'next/link'
+import { SpendingWithOwner } from './types'
 
 export const Spendings = ({ userId, groupId }: { userId: string, groupId: string }) => {
-  const { data: spendings, isLoading: isLoadingSpendings } = useSWR(['lastSpendings', groupId], async () => {
-    return await getLastSpendings(groupId)
-  })
+  const { data: spendings, isLoading: isLoadingSpendings } = useGetLastSpendings({ groupId })
 
   return (
     <Card className='md:max-w-[526px] w-full h-min'>

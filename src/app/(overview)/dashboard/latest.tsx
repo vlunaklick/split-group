@@ -1,18 +1,17 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import useSWR from 'swr'
-import { getLatestSpendings } from './actions'
-import { formatDate } from '@/lib/dates'
-import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 import { SpendingIcon } from '@/components/spending-icons'
-import { formatMoney } from '@/lib/money'
+import { buttonVariants } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useGetLatestSpendings } from '@/data/dashboard'
+import { formatDate } from '@/lib/dates'
+import { formatMoney } from '@/lib/money'
+import { cn } from '@/lib/utils'
 import { SpendingWithOwnerAndGroup } from './types'
 
 export const LatestsSpendings = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useSWR(['getLatestSpendings', userId], async ([_, userId]) => await getLatestSpendings({ userId }))
+  const { data, isLoading } = useGetLatestSpendings({ userId })
 
   return (
     <Card className='xl:col-span-2 h-min'>

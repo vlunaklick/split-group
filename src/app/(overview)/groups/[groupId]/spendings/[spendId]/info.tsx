@@ -1,13 +1,12 @@
 'use client'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import useSWR from 'swr'
-import { getSpending } from '../actions'
+import { useGetSpendingById } from '@/data/spendings'
 import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
 
 export const SpendInfo = ({ groupId, spendId, userId }: { groupId: string, spendId: string, userId: string }) => {
-  const { data, isLoading } = useSWR(['spendings', groupId, spendId], async ([_, groupId, spendId]) => await getSpending({ spendingId: spendId }))
+  const { data, isLoading } = useGetSpendingById({ spendingId: spendId })
 
   if (isLoading) return <div>Loading...</div>
   if (!data) return <div>Failed to load</div>

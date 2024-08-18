@@ -1,14 +1,10 @@
 'use client'
 
-import useSWR from 'swr'
+import { useGetMembersTotal } from '@/data/dashboard'
 import NumberTicker from '../magicui/number-ticker'
-import { getMembersTotal } from './actions'
 
 export const TrustedBy = () => {
-  const { data, isLoading } = useSWR('members-total', async () => {
-    const data = await getMembersTotal()
-    return data ?? 0
-  })
+  const { data, isLoading } = useGetMembersTotal()
 
   return (
     <div className="flex max-w-xl flex-row items-center justify-between text-balance p-5 text-left text-base tracking-tight md:text-center md:text-base dark:font-medium text-primary">

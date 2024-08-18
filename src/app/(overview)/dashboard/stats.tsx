@@ -2,13 +2,12 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useGetMonthlySpent, useGetTotalDebt, useGetTotalRevenue, useGetWeeklySpent } from '@/data/dashboard'
 import { formatMoney } from '@/lib/money'
-import useSWR from 'swr'
-import { getMonthlySpent, getTotalDebt, getTotalRevenue, getWeeklySpent } from './actions'
-import { IconTransferIn, IconTransferOut, IconMoneybag, IconCashBanknote } from '@tabler/icons-react'
+import { IconCashBanknote, IconMoneybag, IconTransferIn, IconTransferOut } from '@tabler/icons-react'
 
 export const WeeklySpent = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useSWR(['getWeeklySpent', userId], async ([_, userId]) => await getWeeklySpent({ userId }))
+  const { data, isLoading } = useGetWeeklySpent({ userId })
 
   const totalSpentLastWeek = data?.totalSpentLastWeek ?? 0
   const totalSpentThisWeek = data?.totalSpentThisWeek ?? 0
@@ -44,7 +43,7 @@ export const WeeklySpent = ({ userId }: { userId: string }) => {
 }
 
 export const MonthlySpent = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useSWR(['getMonthlySpent', userId], async ([_, userId]) => await getMonthlySpent({ userId }))
+  const { data, isLoading } = useGetMonthlySpent({ userId })
 
   const totalSpentLastMonth = data?.totalSpentLastMonth ?? 0
   const totalSpentThisMonth = data?.totalSpentThisMonth ?? 0
@@ -80,7 +79,7 @@ export const MonthlySpent = ({ userId }: { userId: string }) => {
 }
 
 export const TotalDebt = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useSWR(['getTotalDebt', userId], async ([_, userId]) => await getTotalDebt({ userId }))
+  const { data, isLoading } = useGetTotalDebt({ userId })
 
   return (
     <Card>
@@ -101,7 +100,7 @@ export const TotalDebt = ({ userId }: { userId: string }) => {
 }
 
 export const TotalRevenue = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useSWR(['getTotalRevenue', userId], async ([_, userId]) => await getTotalRevenue({ userId }))
+  const { data, isLoading } = useGetTotalRevenue({ userId })
 
   return (
     <Card>

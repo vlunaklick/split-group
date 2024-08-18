@@ -3,20 +3,19 @@
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useGetInvitationLink, useGetUsersInvitedToGroup } from '@/data/groups'
 import { cn } from '@/lib/utils'
-import useSWR, { useSWRConfig } from 'swr'
+import { IconClipboard } from '@tabler/icons-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { getInvitationLink, getUsersInvitedToGroup, removeInvitationLink, removeUserInvitation } from './actions'
-import { IconClipboard } from '@tabler/icons-react'
+import { useSWRConfig } from 'swr'
+import { removeInvitationLink, removeUserInvitation } from './actions'
 
 export const UsersInvited = ({ groupId, userId }: { groupId: string, userId: string }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { mutate } = useSWRConfig()
 
-  const { data: invitations, isLoading: isLoadingMembers } = useSWR(['/api/groups/members/invited', groupId], async ([url, groupId]) => {
-    return await getUsersInvitedToGroup(groupId)
-  })
+  const { data: invitations, isLoading: isLoadingMembers } = useGetUsersInvitedToGroup({ groupId })
 
   const onRemove = async (userId: string) => {
     setIsLoading(true)
@@ -90,9 +89,7 @@ export const LinksGenerated = ({ groupId, userId }: { groupId: string, userId: s
   const [isLoading, setIsLoading] = useState(false)
   const { mutate } = useSWRConfig()
 
-  const { data: invitations, isLoading: isLoadingMembers } = useSWR(['/api/groups/link', groupId], async ([url, groupId]) => {
-    return await getInvitationLink(groupId)
-  })
+  const { data: invitations, isLoading: isLoadingMembers } = useGetInvitationLink({ groupId })
 
   const onRemove = async (code: string) => {
     setIsLoading(true)

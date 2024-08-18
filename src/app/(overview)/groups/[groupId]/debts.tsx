@@ -1,20 +1,19 @@
 'use client'
 
-import { buttonVariants, Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useGetDebts } from '@/data/spendings'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
 import { useTimeAgo } from '@/utils/time'
-import useSWR, { useSWRConfig } from 'swr'
-import { getDebts, forgiveAllDebt, payAllDebt } from './actions'
-import { toast } from 'sonner'
 import { useState } from 'react'
+import { toast } from 'sonner'
+import { useSWRConfig } from 'swr'
+import { forgiveAllDebt, payAllDebt } from './actions'
 
 export const Debts = ({ userId, groupId }: { userId: string, groupId: string }) => {
-  const { data: debts, isLoading: isLoadingDebts } = useSWR(['lastDebts', groupId, userId], async ([_, groupId, userId]) => {
-    return await getDebts({ groupId, userId })
-  })
+  const { data: debts, isLoading: isLoadingDebts } = useGetDebts({ groupId, userId })
 
   return (
     <Card className='md:max-w-[526px] w-full h-min'>

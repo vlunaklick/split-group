@@ -184,3 +184,22 @@ export async function getMembersWithoutAdministrator (groupId: string) {
 
   return membersFiltered
 }
+
+export async function getInvitationLink (groupId: string) {
+  return db.groupInvite.findMany({
+    where: {
+      groupId
+    }
+  })
+}
+
+export async function getUsersInvitedToGroup (groupId: string) {
+  return db.notification.findMany({
+    where: {
+      groupId
+    },
+    select: {
+      user: true
+    }
+  })
+}

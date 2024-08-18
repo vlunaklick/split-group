@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { getAvailableCurrency, getUserConfiguration } from './actions/settings'
+import { getAvailableCurrency, getUserConfiguration, getCategories } from './actions/settings'
 
 export function useGetUserConfiguration ({ userId }: { userId: string }) {
   return useSWR(`/api/users/${userId}/notifications-wanted`, async () => await getUserConfiguration(userId))
@@ -21,4 +21,8 @@ export function useGetSelectedCurrency () {
     const currency = localStorage.getItem('currency')
     return currency
   })
+}
+
+export function useGetCategories () {
+  return useSWR('categories-settings', getCategories)
 }

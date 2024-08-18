@@ -1,18 +1,18 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { getOwedDebts, getCurrentDebts } from './actions'
-import useSWR, { useSWRConfig } from 'swr'
-import { payDebt, forgiveDebt } from '../actions'
-import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { formatMoney } from '@/lib/money'
-import { useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useGetCurrentDebts, useGetOwedDebts } from '@/data/spendings'
+import { formatMoney } from '@/lib/money'
+import { cn } from '@/lib/utils'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { useSWRConfig } from 'swr'
+import { forgiveDebt, payDebt } from '../actions'
 
 export const SpendDebts = ({ groupId, spendId, userId }: { groupId: string, spendId: string, userId: string }) => {
-  const { data: currentDebts, isLoading: isLoadingList } = useSWR(['debts', groupId, spendId, userId], async ([_, groupId, spendId, userId]) => await getCurrentDebts({ groupId, spendId, userId }))
+  const { data: currentDebts, isLoading: isLoadingList } = useGetCurrentDebts({ groupId, spendId, userId })
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -56,7 +56,7 @@ export const SpendDebts = ({ groupId, spendId, userId }: { groupId: string, spen
 }
 
 export const SpendDebtsOwned = ({ groupId, spendId, userId }: { groupId: string, spendId: string, userId: string }) => {
-  const { data: owedDebts, isLoading: isLoadingList } = useSWR(['owed-debts', groupId, spendId, userId], async ([_, groupId, spendId, userId]) => await getOwedDebts({ groupId, spendId, userId }))
+  const { data: owedDebts, isLoading: isLoadingList } = useGetOwedDebts({ groupId, spendId, userId })
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
