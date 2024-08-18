@@ -102,8 +102,6 @@ export async function getLastSpendings (groupId: string) {
     take: 5
   })
 
-  console.log(spending)
-
   return spending
 }
 
