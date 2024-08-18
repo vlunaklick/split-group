@@ -1,3 +1,5 @@
+'use server'
+
 import { db } from '@/lib/db'
 
 export async function getDebts ({ groupId, userId }: { groupId: string, userId: string }) {
@@ -99,6 +101,8 @@ export async function getLastSpendings (groupId: string) {
     },
     take: 5
   })
+
+  console.log(spending)
 
   return spending
 }
