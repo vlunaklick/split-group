@@ -1,5 +1,7 @@
 'use client'
 
+import { createSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
+import { DistributionModeType } from '@/app/(overview)/groups/[groupId]/spendings/types'
 import { Button } from '@/components/ui/button'
 import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
 import { useGetGroupParticipnts } from '@/data/groups'
@@ -13,11 +15,9 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
-import { createSpending } from '../actions'
-import { DistributionModeType } from '../types'
-import { DebtersForm } from './contributors'
-import { ExpeseInfoForm } from './general-info'
-import { PayersForm } from './payers'
+import { PayersForm } from '../payers'
+import { DebtersForm } from '../contributors'
+import { ExpeseInfoForm } from '../general-info'
 
 // TODO: Add isLoading
 
@@ -27,7 +27,7 @@ const steps = [
   { label: 'Deudores', description: 'Selecciona los deudores', icon: IconUsers }
 ] as StepItem[]
 
-export const CreateSpending = ({ groupId, userId }: { groupId: string; userId: string }) => {
+export const CreateSpendingForm = ({ groupId, userId }: { groupId: string; userId: string }) => {
   const [finalData, setFinalData] = useState<any>({})
   const [mode, setMode] = useState<DistributionModeType>('equal')
   const router = useRouter()
@@ -71,7 +71,7 @@ export const CreateSpending = ({ groupId, userId }: { groupId: string; userId: s
 
   return (
     <>
-      <Stepper initialStep={0} steps={steps}>
+      <Stepper initialStep={0} steps={steps} orientation='vertical'>
         <Step {...steps[0]} key={steps[0].label}>
           <ExpeseInfoForm form={form}
            categories={categories} currencies={currencies} isLoading={isLoadingCategories || isLoadingCurrencies} setFinalData={setFinalData} />

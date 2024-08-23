@@ -10,6 +10,7 @@ import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { SpendingWithOwner } from './types'
+import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
 
 export const Spendings = ({ userId, groupId }: { userId: string, groupId: string }) => {
   const { data: spendings, isLoading: isLoadingSpendings } = useGetLastSpendings({ groupId })
@@ -22,9 +23,7 @@ export const Spendings = ({ userId, groupId }: { userId: string, groupId: string
           <CardDescription>Últimos gastos ingresados</CardDescription>
         </div>
 
-        <Link className={buttonVariants({ variant: 'default' })} href={`/groups/${groupId}/spendings/new`}>
-          Nuevo gasto
-        </Link>
+        <CreateSpendingSheet userId={userId} groupId={groupId} />
       </CardHeader>
       <CardContent className='space-y-4'>
         {isLoadingSpendings && (

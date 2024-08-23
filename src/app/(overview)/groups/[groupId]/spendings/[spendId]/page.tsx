@@ -1,15 +1,15 @@
-import { notFound } from 'next/navigation'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { EditSpendingSheet } from '@/components/spendings/sheets/edit-spending-sheet'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { getGroup } from '@/data/actions/groups'
+import { authOptions } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import { getSpending } from '../actions'
 import { SpendInfo } from './info'
+import { DeleteSpendingDialog } from '@/components/spendings/dialogs/delete-spend-dialog'
 import { SpendDebts, SpendDebtsOwned } from './debts'
 import { Contributors } from './contributors'
-import { EditSpendSheet } from './edit-spend-sheet'
-import { DeleteSpendDialog } from './delete-spend-dialog'
-import { getGroup } from '@/data/actions/groups'
 
 export default async function GroupId ({ params } : { params: { groupId: string, spendId: string } }) {
   const { groupId, spendId } = params
@@ -54,8 +54,8 @@ export default async function GroupId ({ params } : { params: { groupId: string,
         {
           session?.user?.id === spend.ownerId && (
             <div className="ml-auto space-x-4">
-              <DeleteSpendDialog groupId={groupId} spendId={spendId} />
-              <EditSpendSheet groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
+              <DeleteSpendingDialog groupId={groupId} spendId={spendId} />
+              <EditSpendingSheet groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
             </div>
           )
         }

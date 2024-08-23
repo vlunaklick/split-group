@@ -1,5 +1,6 @@
 'use client'
 
+import { DistributionMode, DistributionModeType } from '@/app/(overview)/groups/[groupId]/spendings/types'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -10,7 +11,6 @@ import { useStepper } from '@/components/ui/stepper'
 import { cn } from '@/lib/utils'
 import { User } from '@prisma/client'
 import { useState } from 'react'
-import { DistributionMode, DistributionModeType } from '../types'
 
 export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setFinalData, mode, setMode }: { participants?: any[]; isLoading: boolean; totalAmount: number; payers: any; setFinalData: (data: any) => void, mode: DistributionModeType, setMode: (mode: DistributionModeType) => void }) => {
   const { nextStep, prevStep } = useStepper()

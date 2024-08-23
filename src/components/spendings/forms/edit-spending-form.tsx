@@ -1,14 +1,10 @@
 'use client'
 
+import { DistributionModeType } from '@/app/(overview)/groups/[groupId]/spendings/types'
 import { Button } from '@/components/ui/button'
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
 import { useGetGroupParticipnts } from '@/data/groups'
 import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
-import { useGetSpendingById } from '@/data/spendings'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { updateSpendingSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
 import { useState } from 'react'
@@ -16,67 +12,21 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
-import { updateSpending } from '../actions'
-import { DistributionModeType } from '../types'
-import { DebtersForm, ExpeseInfoForm, PayersForm } from './steps'
+import { PayersForm } from '../payers'
+import { DebtersForm } from '../contributors'
+import { ExpeseInfoForm } from '../general-info'
+import { updateSpendingSchema } from '@/lib/form'
+import { useGetSpendingById } from '@/data/spendings'
+import { updateSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
 
-export function EditSpendSheet ({ spendId, userId, groupId, className }: { spendId: string, userId: string, groupId: string, className?: string }) {
-  const isDesktop = useMediaQuery('(min-width: 768px)')
-  const [isOpen, setIsOpen] = useState(false)
-
-  if (isDesktop) {
-    return (
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetTrigger className={className} asChild>
-          <Button variant="outline">Editar</Button>
-        </SheetTrigger>
-        <SheetContent style={{ width: '550px' }}>
-          <SheetHeader>
-            <SheetTitle>Editar gasto</SheetTitle>
-            <SheetDescription>
-              Aquí podrás editar el gasto que has creado.
-            </SheetDescription>
-            <EditSpendForm spendId={spendId} userId={userId} groupId={groupId} setIsOpen={setIsOpen} />
-          </SheetHeader>
-        </SheetContent>
-      </Sheet>
-    )
-  }
-
-  return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerTrigger className={className} asChild>
-        <Button variant="outline">Editar</Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Editar gasto</DrawerTitle>
-          <DrawerDescription>
-            Aquí podrás editar el gasto que has creado.
-          </DrawerDescription>
-        </DrawerHeader>
-
-        <div className='p-4 overflow-y-auto max-h-96'>
-          <EditSpendForm spendId={spendId} userId={userId} groupId={groupId} setIsOpen={setIsOpen} />
-        </div>
-
-        <DrawerFooter>
-          <DrawerClose>
-            <Button variant="outline" className='w-full'>Cancelar</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-
+// TODO: Add isLoading
 const steps = [
   { label: 'Información del gasto', description: 'Ingresa la información del gasto', icon: IconUser },
   { label: 'Contribuyentes', description: 'Selecciona los contribuyentes', icon: IconCoin },
   { label: 'Deudores', description: 'Selecciona los deudores', icon: IconUsers }
 ] as StepItem[]
 
-const EditSpendForm = ({ spendId, userId, groupId, setIsOpen }: { spendId: string, userId: string, groupId: string, setIsOpen: (value: boolean) => void }) => {
+export const EditSpendingForm = ({ spendId, userId, groupId, setIsOpen }: { spendId: string, userId: string, groupId: string, setIsOpen: (value: boolean) => void }) => {
   const [finalData, setFinalData] = useState<any>({})
   const [mode, setMode] = useState<DistributionModeType>('equal')
   const { mutate } = useSWRConfig()

@@ -1,6 +1,6 @@
 'use client'
 
-import { deleteSpending } from '../actions'
+import { deleteSpending } from '../../../app/(overview)/groups/[groupId]/spendings/actions'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 
-export function DeleteSpendDialog ({ groupId, spendId }: { groupId: string, spendId: string }) {
+export function DeleteSpendingDialog ({ groupId, spendId }: { groupId: string, spendId: string }) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { mutate } = useSWRConfig()

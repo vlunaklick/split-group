@@ -5,6 +5,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import Link from 'next/link'
 import { SpendingsList } from './list'
 import { getGroup } from '@/data/actions/groups'
+import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
 
 export default async function GroupId ({ params } : { params: { groupId: string } }) {
   const groupId = params.groupId
@@ -22,24 +23,28 @@ export default async function GroupId ({ params } : { params: { groupId: string 
 
   return (
     <>
-      <header className="flex md:items-center gap-4 flex-col md:flex-row">
-        <h1 className="text-3xl font-semibold">
-          {group.name}
-        </h1>
+      <header className="flex md:items-center gap-4 flex-col md:flex-row md:justify-between">
+        <div className="flex flex-row gap-4 items-center">
+          <h1 className="text-3xl font-semibold">
+            {group.name}
+          </h1>
 
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href={`/groups/${groupId}`}>Grupo</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Gastos</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href={`/groups/${groupId}`}>Grupo</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Gastos</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+
+        <CreateSpendingSheet userId={session?.user?.id as string} groupId={groupId} />
       </header>
 
       <div className="grid gap-4">
