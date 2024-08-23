@@ -21,7 +21,7 @@ import { DistributionModeType } from '../types'
 import { DebtersForm, ExpeseInfoForm, PayersForm } from './steps'
 
 export function EditSpendSheet ({ spendId, userId, groupId, className }: { spendId: string, userId: string, groupId: string, className?: string }) {
-  const isDesktop = useMediaQuery({ query: '(min-width: 768px)' })
+  const isDesktop = useMediaQuery('(min-width: 768px)')
   const [isOpen, setIsOpen] = useState(false)
 
   if (isDesktop) {
