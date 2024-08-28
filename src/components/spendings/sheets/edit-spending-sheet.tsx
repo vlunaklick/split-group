@@ -4,16 +4,14 @@ import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { useState } from 'react'
 import { EditSpendingForm } from '../forms/edit-spending-form'
 
 export function EditSpendingSheet ({ spendId, userId, groupId, className }: { spendId: string, userId: string, groupId: string, className?: string }) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
-  const [isOpen, setIsOpen] = useState(false)
 
   if (isDesktop) {
     return (
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <Sheet>
         <SheetTrigger className={className} asChild>
           <Button variant="outline">Editar</Button>
         </SheetTrigger>
@@ -24,7 +22,7 @@ export function EditSpendingSheet ({ spendId, userId, groupId, className }: { sp
               Aquí podrás editar el gasto que has creado.
             </SheetDescription>
 
-            <EditSpendingForm spendId={spendId} userId={userId} groupId={groupId} setIsOpen={setIsOpen} />
+            <EditSpendingForm spendId={spendId} userId={userId} groupId={groupId} />
           </SheetHeader>
         </SheetContent>
       </Sheet>
@@ -32,7 +30,7 @@ export function EditSpendingSheet ({ spendId, userId, groupId, className }: { sp
   }
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+    <Drawer>
       <DrawerTrigger className={className} asChild>
         <Button variant="outline">Editar</Button>
       </DrawerTrigger>
@@ -45,7 +43,7 @@ export function EditSpendingSheet ({ spendId, userId, groupId, className }: { sp
         </DrawerHeader>
 
         <div className='p-4 overflow-y-auto max-h-96'>
-          <EditSpendingForm spendId={spendId} userId={userId} groupId={groupId} setIsOpen={setIsOpen} />
+          <EditSpendingForm spendId={spendId} userId={userId} groupId={groupId} />
         </div>
 
         <DrawerFooter>

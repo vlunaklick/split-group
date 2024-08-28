@@ -20,13 +20,14 @@ import { useGetSpendingById } from '@/data/spendings'
 import { updateSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
 
 // TODO: Add isLoading
+// TODO: Arreglar el error que sale acá
 const steps = [
   { label: 'Información del gasto', description: 'Ingresa la información del gasto', icon: IconUser },
   { label: 'Contribuyentes', description: 'Selecciona los contribuyentes', icon: IconCoin },
   { label: 'Deudores', description: 'Selecciona los deudores', icon: IconUsers }
 ] as StepItem[]
 
-export const EditSpendingForm = ({ spendId, userId, groupId, setIsOpen }: { spendId: string, userId: string, groupId: string, setIsOpen: (value: boolean) => void }) => {
+export const EditSpendingForm = ({ spendId, userId, groupId }: { spendId: string, userId: string, groupId: string }) => {
   const [finalData, setFinalData] = useState<any>({})
   const [mode, setMode] = useState<DistributionModeType>('equal')
   const { mutate } = useSWRConfig()
@@ -70,7 +71,6 @@ export const EditSpendingForm = ({ spendId, userId, groupId, setIsOpen }: { spen
       mutate(['lastSpendings', groupId])
       mutate(['lastDebts', groupId, userId])
       mutate(['spendings', groupId, spendId])
-      setIsOpen(false)
     } catch (error) {
       console.error(error)
     }
@@ -82,13 +82,14 @@ export const EditSpendingForm = ({ spendId, userId, groupId, setIsOpen }: { spen
         <ExpeseInfoForm form={form}
            categories={categories} currencies={currencies} isLoading={isLoadingCategories || isLoadingCurrencies} setFinalData={setFinalData} />
       </Step>
+
       <Step {...steps[1]} key={steps[1].label}>
         <PayersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} />
       </Step>
+
       <Step {...steps[2]} key={steps[2].label}>
         <DebtersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} payers={finalData.payers} mode={mode} setMode={setMode} />
       </Step>
-
       <LastStep onSubmit={updateSpendingFinalStep} />
     </Stepper>
   )

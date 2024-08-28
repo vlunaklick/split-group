@@ -51,14 +51,12 @@ export default async function GroupId ({ params } : { params: { groupId: string,
           </BreadcrumbList>
         </Breadcrumb>
 
-        {
-          session?.user?.id === spend.ownerId && (
-            <div className="ml-auto space-x-4">
-              <DeleteSpendingDialog groupId={groupId} spendId={spendId} />
-              <EditSpendingSheet groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
-            </div>
-          )
-        }
+        {session?.user?.id === spend.ownerId && (
+          <div className="ml-auto space-x-4">
+            <DeleteSpendingDialog groupId={groupId} spendId={spendId} />
+            <EditSpendingSheet groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
+          </div>
+        )}
       </header>
 
       <div className="flex gap-4 w-full md:justify-start justify-center flex-col md:flex-row">
@@ -73,8 +71,8 @@ export default async function GroupId ({ params } : { params: { groupId: string,
         <div className="flex flex-col gap-4 w-full">
           <Contributors groupId={groupId} spendId={spendId} />
           <div className="hidden md:flex flex-col gap-4">
-          <SpendDebtsOwned groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
-          <SpendDebts groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
+            <SpendDebtsOwned groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
+            <SpendDebts groupId={groupId} spendId={spendId} userId={session?.user?.id as string} />
           </div>
         </div>
       </div>
