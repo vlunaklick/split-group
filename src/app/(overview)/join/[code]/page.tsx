@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { getInvitationByCode } from './actions'
+import { getUserInvitation } from './actions'
 import { ActionButtons } from './buttons'
 import { Icon } from '@/components/group-icons'
 import { cn } from '@/lib/utils'
@@ -15,11 +15,10 @@ export default async function JoinInvitation ({ params } : { params: { code: str
   }
 
   const session = await getServerSession(authOptions)
-  const invitation = await getInvitationByCode(code)
 
-  const isAlreadyInGroup = invitation?.group.users.some(user => user.id === session?.user.id)
+  const invitation = await getUserInvitation(code)
 
-  if (!invitation || isAlreadyInGroup) {
+  if (!invitation) {
     notFound()
   }
 

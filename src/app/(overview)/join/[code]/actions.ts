@@ -1,6 +1,25 @@
 'use server'
 
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { getServerSession } from 'next-auth'
+
+export async function getUserInvitation (code: string) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  if (!userId) {
+    return false
+  }
+
+  const invitation = await getInvitationByCode(code)
+
+  if (invitation?.group.users.some(user => user.id === userId)) {
+    return invitation
+  }
+
+  return false
+}
 
 export async function getInvitationByCode (code: string) {
   return await db.groupInvite.findFirst({
