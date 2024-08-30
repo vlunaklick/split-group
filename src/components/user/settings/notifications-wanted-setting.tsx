@@ -10,11 +10,11 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { updateNotificationsWanted } from './actions'
+import { updateNotificationsWanted } from '../../../app/(user)/settings/notifications/actions'
 import { useGetUserConfiguration } from '@/data/settings'
 
-export const NotificationsWantedSettings = ({ userId }: { userId: string }) => {
-  const { data: configuration, isLoading: isLoadingConfiguration } = useGetUserConfiguration({ userId })
+export const NotificationsWantedSettings = () => {
+  const { data: configuration, isLoading: isLoadingConfiguration } = useGetUserConfiguration()
 
   const [isLoading, setIsLoading] = useState(false)
   const form = useForm<z.infer<typeof updateNotificationsWantedSettingsSchema>>({
@@ -32,11 +32,9 @@ export const NotificationsWantedSettings = ({ userId }: { userId: string }) => {
   })
 
   const onSubmit = async (values: z.infer<typeof updateNotificationsWantedSettingsSchema>) => {
-    if (!userId) return
     setIsLoading(true)
     try {
       await updateNotificationsWanted({
-        userId,
         invitations: values.invitations || false,
         payments: values.payments || false,
         spents: values.spents || false
@@ -75,6 +73,7 @@ export const NotificationsWantedSettings = ({ userId }: { userId: string }) => {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      disabled={isLoading || isLoadingConfiguration}
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
@@ -95,6 +94,7 @@ export const NotificationsWantedSettings = ({ userId }: { userId: string }) => {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      disabled={isLoading || isLoadingConfiguration}
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
@@ -115,6 +115,7 @@ export const NotificationsWantedSettings = ({ userId }: { userId: string }) => {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      disabled={isLoading || isLoadingConfiguration}
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">

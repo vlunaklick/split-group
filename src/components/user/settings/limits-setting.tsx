@@ -11,10 +11,10 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { updateLimit } from './actions'
+import { updateLimit } from '../../../app/(user)/settings/notifications/actions'
 
-export const LimitSetting = ({ userId }: { userId: string }) => {
-  const { data: configuration, isLoading: isLoadingConfiguration } = useGetUserConfiguration({ userId })
+export const LimitSetting = () => {
+  const { data: configuration, isLoading: isLoadingConfiguration } = useGetUserConfiguration()
 
   const [isLoading, setIsLoading] = useState(false)
   const form = useForm<z.infer<typeof updateAlertLimitSettingsSchema>>({
@@ -28,10 +28,9 @@ export const LimitSetting = ({ userId }: { userId: string }) => {
   })
 
   const onSubmit = async (values: z.infer<typeof updateAlertLimitSettingsSchema>) => {
-    if (!userId) return
     setIsLoading(true)
     try {
-      await updateLimit({ userId, newLimit: values.amount })
+      await updateLimit({ newLimit: values.amount })
     } catch (error) {
       toast.error('Ha ocurrido un error, por favor intenta de nuevo.', {
         duration: 3000

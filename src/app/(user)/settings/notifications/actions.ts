@@ -1,8 +1,13 @@
 'use server'
 
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { getServerSession } from 'next-auth'
 
-export async function updateLimit ({ userId, newLimit }: { userId: string, newLimit: number }) {
+export async function updateLimit ({ newLimit }: { newLimit: number }) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   await db.userConfig.update({
     where: {
       userId
@@ -15,7 +20,10 @@ export async function updateLimit ({ userId, newLimit }: { userId: string, newLi
   return true
 }
 
-export async function updateNotificationsWanted ({ userId, invitations, payments, spents }: { userId: string, invitations: boolean, payments: boolean, spents: boolean }) {
+export async function updateNotificationsWanted ({ invitations, payments, spents }: { invitations: boolean, payments: boolean, spents: boolean }) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   await db.userConfig.update({
     where: {
       userId

@@ -1,8 +1,6 @@
+import { LimitSetting } from '@/components/user/settings/limits-setting'
+import { NotificationsWantedSettings } from '@/components/user/settings/notifications-wanted-setting'
 import { Metadata } from 'next'
-import { LimitSetting } from './limits-setting'
-import { NotificationsWantedSettings } from './notifications-wanted-setting'
-import { authOptions } from '@/lib/auth'
-import { getServerSession } from 'next-auth'
 
 export const metadata: Metadata = {
   title: 'Notifications',
@@ -10,12 +8,10 @@ export const metadata: Metadata = {
 }
 
 export default async function Notifications () {
-  const session = await getServerSession(authOptions)
-
   return (
     <>
-      <NotificationsWantedSettings userId={session?.user?.id as string} />
-      <LimitSetting userId={session?.user?.id as string} />
+      <NotificationsWantedSettings />
+      <LimitSetting />
     </>
   )
 }
