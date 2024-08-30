@@ -1,8 +1,13 @@
 'use server'
 
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { getServerSession } from 'next-auth'
 
-export async function getDebts ({ groupId, userId }: { groupId: string, userId: string }) {
+export async function getDebts ({ groupId }: { groupId: string }) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   // Obtener las deudas en las que el usuario es el acreedor
   const debts = await db.debt.findMany({
     where: {

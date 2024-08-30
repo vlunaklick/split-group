@@ -27,7 +27,7 @@ const steps = [
   { label: 'Deudores', description: 'Selecciona los deudores', icon: IconUsers }
 ] as StepItem[]
 
-export const CreateSpendingForm = ({ groupId, userId }: { groupId: string; userId: string }) => {
+export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
   const [finalData, setFinalData] = useState<any>({})
   const [mode, setMode] = useState<DistributionModeType>('equal')
   const router = useRouter()
@@ -54,13 +54,12 @@ export const CreateSpendingForm = ({ groupId, userId }: { groupId: string; userI
         groupId,
         mode,
         spending: {
-          userId,
           ...finalData
         }
       })
       toast.success('Gasto creado correctamente')
       mutate(['lastSpendings', groupId])
-      mutate(['lastDebts', groupId, userId])
+      mutate(['lastDebts', groupId])
       setTimeout(() => {
         router.push(`/groups/${groupId}/spendings`)
       }, 1000)

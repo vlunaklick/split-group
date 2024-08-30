@@ -1,13 +1,11 @@
-'use client'
-
 import { Button, buttonVariants } from '@/components/ui/button'
-import { useHasGroupAdminPermission } from '@/data/groups'
+import { hasGroupAdminPermission } from '@/data/actions/groups'
 import { cn } from '@/lib/utils'
 import { IconSettings, IconUsersGroup } from '@tabler/icons-react'
 import Link from 'next/link'
 
-export const HeaderButtons = ({ groupId, userId }: { groupId: string, userId: string }) => {
-  const { data: hasPermission } = useHasGroupAdminPermission({ userId, groupId })
+export const HeaderButtons = async ({ groupId }: { groupId: string }) => {
+  const hasPermission = await hasGroupAdminPermission(groupId)
 
   return (
     <>
@@ -27,8 +25,8 @@ export const HeaderButtons = ({ groupId, userId }: { groupId: string, userId: st
   )
 }
 
-export const HeaderButtonsMobile = ({ groupId, userId }: { groupId: string, userId: string }) => {
-  const { data: hasPermission } = useHasGroupAdminPermission({ userId, groupId })
+export const HeaderButtonsMobile = async ({ groupId }: { groupId: string }) => {
+  const hasPermission = await hasGroupAdminPermission(groupId)
 
   return (
     <div className="flex gap-2 md:hidden">
@@ -42,5 +40,26 @@ export const HeaderButtonsMobile = ({ groupId, userId }: { groupId: string, user
         </Link>
       )}
     </div>
+  )
+}
+
+export const HeaderButtonsSkeletons = () => {
+  return (
+    <>
+      <div className="hidden md:flex gap-2">
+        <Button variant="outline" className="md:inline hidden" disabled>
+          Participantes
+        </Button>
+        <Button variant="outline" disabled>
+          Exportar
+        </Button>
+      </div>
+
+      <div className="flex gap-2 md:hidden">
+        <Button variant="outline" size="icon" disabled>
+          <IconUsersGroup />
+        </Button>
+      </div>
+    </>
   )
 }

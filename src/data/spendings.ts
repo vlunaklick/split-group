@@ -1,9 +1,9 @@
 import useSWR from 'swr'
 import { getDebts, getLastSpendings, getSpendingsTable, getPayers, getParticipants, getSpending, getCurrentDebts, getOwedDebts } from './actions/spendings'
 
-export function useGetDebts ({ groupId, userId }: { groupId: string, userId: string }) {
-  return useSWR(['debts', groupId, userId], async ([, groupId, userId]) => {
-    return await getDebts({ groupId, userId })
+export function useGetDebts ({ groupId }: { groupId: string }) {
+  return useSWR(['debts', groupId], async ([, groupId]) => {
+    return await getDebts({ groupId })
   })
 }
 

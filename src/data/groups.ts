@@ -7,9 +7,9 @@ export function useGetUserGroups () {
   })
 }
 
-export function useHasGroupAdminPermission ({ userId, groupId }: { userId: string, groupId: string }) {
-  return useSWR(['/api/groups/permissions', groupId, userId], async ([url, groupId, userId]) => {
-    return await hasGroupAdminPermission(userId, groupId)
+export function useHasGroupAdminPermission ({ groupId }: { groupId: string }) {
+  return useSWR(['/api/groups/permissions', groupId], async ([url, groupId]) => {
+    return await hasGroupAdminPermission(groupId)
   })
 }
 

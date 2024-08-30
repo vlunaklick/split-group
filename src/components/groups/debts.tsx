@@ -1,5 +1,6 @@
 'use client'
 
+import { forgiveAllDebt, payAllDebt } from '@/app/(overview)/groups/[groupId]/actions'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -10,10 +11,9 @@ import { useTimeAgo } from '@/utils/time'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
-import { forgiveAllDebt, payAllDebt } from './actions'
 
-export const Debts = ({ userId, groupId }: { userId: string, groupId: string }) => {
-  const { data: debts, isLoading: isLoadingDebts } = useGetDebts({ groupId, userId })
+export const Debts = ({ groupId }: { groupId: string }) => {
+  const { data: debts, isLoading: isLoadingDebts } = useGetDebts({ groupId })
 
   return (
     <Card className='md:max-w-[526px] w-full h-min'>
@@ -32,7 +32,7 @@ export const Debts = ({ userId, groupId }: { userId: string, groupId: string }) 
         )}
 
         {!isLoadingDebts && debts && debts.map((debt: any) => (
-          <DebtItem key={debt.id + debt.createdAt.getTime()} debt={debt} groupId={groupId} userId={userId} />
+          <DebtItem key={debt.id + debt.createdAt.getTime()} debt={debt} groupId={groupId} />
         ))}
 
         {!isLoadingDebts && debts && debts.length === 0 && (
@@ -43,7 +43,7 @@ export const Debts = ({ userId, groupId }: { userId: string, groupId: string }) 
   )
 }
 
-const DebtItem = ({ debt, groupId, userId }: { debt: { name: string, userId: string, amount: number, isDebter: boolean, createdAt: Date }, groupId: string, userId: string }) => {
+const DebtItem = ({ debt, groupId }: { debt: { name: string, userId: string, amount: number, isDebter: boolean, createdAt: Date }, groupId: string }) => {
   const { timeAgo } = useTimeAgo(debt.createdAt.getTime())
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
@@ -51,9 +51,9 @@ const DebtItem = ({ debt, groupId, userId }: { debt: { name: string, userId: str
   const handlePayDebt = async () => {
     setIsLoading(true)
     try {
-      await payAllDebt({ groupId, userId, crediterId: debt.userId })
+      await payAllDebt({ groupId, crediterId: debt.userId })
       toast.success('Deuda pagada')
-      mutate(['lastDebts', groupId, userId])
+      mutate(['lastDebts', groupId])
     } catch (error) {
       toast.error('No se pudo pagar la deuda')
     }
@@ -63,9 +63,9 @@ const DebtItem = ({ debt, groupId, userId }: { debt: { name: string, userId: str
   const handleForgiveDebt = async () => {
     setIsLoading(true)
     try {
-      await forgiveAllDebt({ groupId, userId, debterId: debt.userId })
+      await forgiveAllDebt({ groupId, debterId: debt.userId })
       toast.success('Deuda perdonada')
-      mutate(['lastDebts', groupId, userId])
+      mutate(['lastDebts', groupId])
     } catch (error) {
       toast.error('No se pudo perdonar la deuda')
     }
@@ -130,5 +130,25 @@ const DebtItemSkeleton = () => {
         <Skeleton className="w-20 h-8" />
       </div>
     </div>
+  )
+}
+
+export const DebtsSkeleton = () => {
+  return (
+    <Card className='md:max-w-[526px] w-full h-min'>
+      <CardHeader>
+        <CardTitle>
+          <Skeleton className="w-20 h-6" />
+        </CardTitle>
+        <CardDescription>
+          <Skeleton className="w-20 h-4" />
+        </CardDescription>
+      </CardHeader>
+      <CardContent className='space-y-4'>
+        <DebtItemSkeleton />
+        <DebtItemSkeleton />
+        <DebtItemSkeleton />
+      </CardContent>
+    </Card>
   )
 }

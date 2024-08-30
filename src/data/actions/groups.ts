@@ -48,7 +48,10 @@ export async function getGroup (groupId: string) {
   return group
 }
 
-export async function hasGroupAdminPermission (userId: string, groupId: string) {
+export async function hasGroupAdminPermission (groupId: string) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const group = await db.group.findFirst({
     where: {
       id: groupId

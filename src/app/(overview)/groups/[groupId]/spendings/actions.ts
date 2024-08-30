@@ -3,8 +3,15 @@
 import { db } from '@/lib/db'
 import { DistributionModeType, SpendingInfo } from './types'
 import { handleDistribution } from '@/utils/distributions'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function createSpending ({ groupId, spending, mode }: { groupId: string, spending: SpendingInfo, mode: DistributionModeType }) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  if (!userId) return
+
   const createdSpending = await db.spending.create({
     data: {
       groupId,

@@ -7,7 +7,7 @@ import { useMediaQuery } from '@/hooks/use-media-query'
 import { useState } from 'react'
 import { CreateSpendingForm } from '../forms/create-spending-form'
 
-export function CreateSpendingSheet ({ userId, groupId, className }: { userId: string, groupId: string, className?: string }) {
+export function CreateSpendingSheet ({ groupId, className }: { groupId: string, className?: string }) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const [isOpen, setIsOpen] = useState(false)
 
@@ -24,7 +24,7 @@ export function CreateSpendingSheet ({ userId, groupId, className }: { userId: s
               Aquí podrás crear un nuevo gasto.
             </SheetDescription>
 
-            <CreateSpendingForm groupId={groupId} userId={userId} />
+            <CreateSpendingForm groupId={groupId} />
           </SheetHeader>
         </SheetContent>
       </Sheet>
@@ -45,7 +45,7 @@ export function CreateSpendingSheet ({ userId, groupId, className }: { userId: s
         </DrawerHeader>
 
         <div className='p-4 overflow-y-auto max-h-96'>
-          <CreateSpendingForm groupId={groupId} userId={userId} />
+          <CreateSpendingForm groupId={groupId} />
         </div>
 
         <DrawerFooter>

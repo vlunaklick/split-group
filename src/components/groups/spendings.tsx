@@ -9,10 +9,10 @@ import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
-import { SpendingWithOwner } from './types'
 import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
+import { SpendingWithOwner } from '@/app/(overview)/groups/[groupId]/types'
 
-export const Spendings = ({ userId, groupId }: { userId: string, groupId: string }) => {
+export const Spendings = ({ groupId }: { groupId: string }) => {
   const { data: spendings, isLoading: isLoadingSpendings } = useGetLastSpendings({ groupId })
 
   return (
@@ -23,7 +23,7 @@ export const Spendings = ({ userId, groupId }: { userId: string, groupId: string
           <CardDescription>Últimos gastos ingresados</CardDescription>
         </div>
 
-        <CreateSpendingSheet userId={userId} groupId={groupId} />
+        <CreateSpendingSheet groupId={groupId} />
       </CardHeader>
       <CardContent className='space-y-4'>
         {isLoadingSpendings && (
@@ -80,5 +80,27 @@ const SpendingItemSkeleton = () => {
         <Skeleton className="w-8 h-4" />
       </div>
     </div>
+  )
+}
+
+export const SpendingsSkeleton = () => {
+  return (
+    <Card className='md:max-w-[526px] w-full h-min'>
+      <CardHeader className='flex justify-between flex-row items-center'>
+        <div className='flex flex-col gap-2'>
+          <CardTitle>
+            <Skeleton className="w-40 h-6" />
+          </CardTitle>
+          <CardDescription>
+            <Skeleton className="w-40 h-4" />
+          </CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent className='space-y-4'>
+        <SpendingItemSkeleton />
+        <SpendingItemSkeleton />
+        <SpendingItemSkeleton />
+      </CardContent>
+    </Card>
   )
 }
