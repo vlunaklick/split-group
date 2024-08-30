@@ -1,13 +1,11 @@
-'use client'
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useGetMonthlySpent, useGetTotalDebt, useGetTotalRevenue, useGetWeeklySpent } from '@/data/dashboard'
+import { getMonthlySpent, getTotalDebt, getTotalRevenue, getWeeklySpent } from '@/data/actions/dashboard'
 import { formatMoney } from '@/lib/money'
 import { IconCashBanknote, IconMoneybag, IconTransferIn, IconTransferOut } from '@tabler/icons-react'
 
-export const WeeklySpent = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useGetWeeklySpent({ userId })
+export const WeeklySpent = async () => {
+  const data = await getWeeklySpent()
 
   const totalSpentLastWeek = data?.totalSpentLastWeek ?? 0
   const totalSpentThisWeek = data?.totalSpentThisWeek ?? 0
@@ -25,25 +23,17 @@ export const WeeklySpent = ({ userId }: { userId: string }) => {
         <IconCashBanknote className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        {
-          isLoading
-            ? <CardSkeleton />
-            : (
-              <>
-                <div className="text-2xl font-bold">{formatMoney(data?.totalSpentThisWeek ?? 0)}</div>
-                <p className="text-xs text-muted-foreground/60">
-                  {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde la semana pasada
-                </p>
-              </>
-              )
-        }
+        <div className="text-2xl font-bold">{formatMoney(data?.totalSpentThisWeek ?? 0)}</div>
+        <p className="text-xs text-muted-foreground/60">
+          {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde la semana pasada
+        </p>
       </CardContent>
     </Card>
   )
 }
 
-export const MonthlySpent = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useGetMonthlySpent({ userId })
+export const MonthlySpent = async () => {
+  const data = await getMonthlySpent() ?? { totalSpentThisMonth: 0, totalSpentLastMonth: 0 }
 
   const totalSpentLastMonth = data?.totalSpentLastMonth ?? 0
   const totalSpentThisMonth = data?.totalSpentThisMonth ?? 0
@@ -61,25 +51,17 @@ export const MonthlySpent = ({ userId }: { userId: string }) => {
         <IconMoneybag className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        {
-          isLoading
-            ? <CardSkeleton />
-            : (
-              <>
-                <div className="text-2xl font-bold">{formatMoney(data?.totalSpentThisMonth ?? 0)}</div>
-                <p className="text-xs text-muted-foreground/60">
-                  {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde el mes pasado
-                </p>
-              </>
-              )
-        }
+        <p className="text-2xl font-bold">{formatMoney(data?.totalSpentThisMonth ?? 0)}</p>
+        <p className="text-xs text-muted-foreground/60">
+          {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde el mes pasado
+        </p>
       </CardContent>
     </Card>
   )
 }
 
-export const TotalDebt = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useGetTotalDebt({ userId })
+export const TotalDebt = async () => {
+  const data = await getTotalDebt()
 
   return (
     <Card>
@@ -88,19 +70,15 @@ export const TotalDebt = ({ userId }: { userId: string }) => {
         <IconTransferOut className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        {
-          isLoading
-            ? <Skeleton className="h-8 w-20" />
-            : <div className="text-2xl font-bold">{formatMoney(data?.totalDebt ?? 0)}</div>
-        }
+        <div className="text-2xl font-bold">{formatMoney(data?.totalDebt ?? 0)}</div>
         <p className="text-xs text-muted-foreground/60">Valor entre todos los grupos</p>
       </CardContent>
     </Card>
   )
 }
 
-export const TotalRevenue = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useGetTotalRevenue({ userId })
+export const TotalRevenue = async () => {
+  const data = await getTotalRevenue()
 
   return (
     <Card>
@@ -109,22 +87,26 @@ export const TotalRevenue = ({ userId }: { userId: string }) => {
         <IconTransferIn className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        {
-          isLoading
-            ? <Skeleton className="h-8 w-20" />
-            : <div className="text-2xl font-bold">{formatMoney(data?.totalRevenue ?? 0)}</div>
-        }
+        <div className="text-2xl font-bold">{formatMoney(data?.totalRevenue ?? 0)}</div>
         <p className="text-xs text-muted-foreground/60">Valor entre todos los grupos</p>
       </CardContent>
     </Card>
   )
 }
 
-const CardSkeleton = () => {
+export const StatCardSkeleton = () => {
   return (
-    <div className="animate-pulse space-y-1">
-      <Skeleton className="h-8 w-20" />
-      <Skeleton className="h-3 w-20" />
-    </div>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <Skeleton className="h-4 w-4" />
+        <IconCashBanknote className="h-4 w-4 text-muted-foreground/60" />
+      </CardHeader>
+      <CardContent>
+        <div className="animate-pulse space-y-1">
+          <Skeleton className="h-8 w-20" />
+          <Skeleton className="h-3 w-20" />
+        </div>
+      </CardContent>
+    </Card>
   )
 }

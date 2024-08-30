@@ -10,8 +10,8 @@ import { Icon } from './group-icons'
 import { Skeleton } from './ui/skeleton'
 import { useGetUserGroups } from '@/data/groups'
 
-export const SideNav = ({ userId }: { userId: string }) => {
-  const { data: groups = [], isLoading } = useGetUserGroups({ userId })
+export const SideNav = () => {
+  const { data: groups, isLoading } = useGetUserGroups()
   const path = usePathname()
 
   const selectedPath = (href: string) => {

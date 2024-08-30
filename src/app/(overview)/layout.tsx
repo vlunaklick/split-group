@@ -4,11 +4,10 @@ import { SideNav } from '@/components/side-nav'
 import { ThemeSwitcher } from '@/components/theme-switcher'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { UserNav } from '@/components/user-nav'
-import { authOptions } from '@/lib/auth'
+import { UserNav, UserNavSkeleton } from '@/components/user-nav'
 import { Menu } from 'lucide-react'
-import { getServerSession } from 'next-auth'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,8 +16,6 @@ export default async function RootLayout ({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions)
-
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block dark:border-zinc-800">
@@ -31,13 +28,15 @@ export default async function RootLayout ({
               <Logo />
               <span className="sr-only">Split Group</span>
             </Link>
-            <NotificationsAmount userId={session?.user.id as string} />
+
+            <NotificationsAmount />
           </div>
           <div className="flex-1">
-            <SideNav userId={session?.user.id as string} />
+            <SideNav />
           </div>
         </div>
       </div>
+
       <div className="flex flex-col">
         <header className="flex h-14 items-center gap-4 border-b dark:border-zinc-800 bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           {/* Mobile */}
@@ -60,14 +59,18 @@ export default async function RootLayout ({
                 <Logo />
                 <span className="sr-only">Split Group</span>
               </Link>
-              <SideNav userId={session?.user.id as string} />
+
+              <SideNav />
             </SheetContent>
           </Sheet>
 
           <ThemeSwitcher />
 
-          <UserNav className="ml-auto" />
+          <Suspense fallback={<UserNavSkeleton />}>
+            <UserNav className='ml-auto' />
+          </Suspense>
         </header>
+
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           {children}
         </main>

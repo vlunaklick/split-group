@@ -1,9 +1,12 @@
-'use server'
-
 import { db } from '@/lib/db'
 import { NotificationType } from '../../../prisma/notification-type-enum'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
-export async function getNotifications (userId: string) {
+export async function getNotifications () {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   return await db.notification.findMany({
     where: {
       userId,
@@ -15,7 +18,10 @@ export async function getNotifications (userId: string) {
   })
 }
 
-export async function getGroupNotifications (userId: string) {
+export async function getGroupNotifications () {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   return await db.notification.findMany({
     where: {
       userId,
@@ -32,15 +38,4 @@ export async function getGroupNotifications (userId: string) {
       title: true
     }
   })
-}
-
-export async function getAmountNotifications (userId: string) {
-  const notifications = await db.notification.findMany({
-    where: {
-      userId,
-      read: false
-    }
-  })
-
-  return notifications.length
 }

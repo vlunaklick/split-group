@@ -14,8 +14,8 @@ const chartConfig = {
 
 const defaultData = [{ month: 'Enero', totalSpent: 0 }, { month: 'Febrero', totalSpent: 0 }, { month: 'Marzo', totalSpent: 0 }, { month: 'Abril', totalSpent: 0 }, { month: 'Mayo', totalSpent: 0 }, { month: 'Junio', totalSpent: 0 }, { month: 'Julio', totalSpent: 0 }, { month: 'Agosto', totalSpent: 0 }, { month: 'Septiembre', totalSpent: 0 }, { month: 'Octubre', totalSpent: 0 }, { month: 'Noviembre', totalSpent: 0 }, { month: 'Diciembre', totalSpent: 0 }]
 
-export const StatsChart = ({ userId }: { userId: string }) => {
-  const { data = defaultData } = useGetMontlySpentGraph({ userId })
+export const StatsChart = () => {
+  const { data = defaultData } = useGetMontlySpentGraph()
 
   return (
     <Card className='xl:col-span-2'>

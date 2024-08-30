@@ -1,7 +1,7 @@
-'use server'
-
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { startOfWeek, endOfWeek } from 'date-fns'
+import { getServerSession } from 'next-auth'
 
 export async function getMembersTotal () {
   const members = await db.user.count()
@@ -9,7 +9,10 @@ export async function getMembersTotal () {
   return members
 }
 
-export const getMonthlySpent = async ({ userId }: { userId: string }) => {
+export const getMonthlySpent = async () => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const spent = await db.debt.findMany({
     where: {
       debterId: userId,
@@ -43,7 +46,10 @@ export const getMonthlySpent = async ({ userId }: { userId: string }) => {
   }
 }
 
-export const getWeeklySpent = async ({ userId }: { userId: string }) => {
+export const getWeeklySpent = async () => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const spent = await db.debt.findMany({
     where: {
       debterId: userId,
@@ -77,7 +83,10 @@ export const getWeeklySpent = async ({ userId }: { userId: string }) => {
   }
 }
 
-export const getTotalDebt = async ({ userId }: { userId: string }) => {
+export const getTotalDebt = async () => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const debts = await db.debt.findMany({
     where: {
       debterId: userId,
@@ -93,7 +102,10 @@ export const getTotalDebt = async ({ userId }: { userId: string }) => {
   }
 }
 
-export const getTotalRevenue = async ({ userId }: { userId: string }) => {
+export const getTotalRevenue = async () => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const revenues = await db.debt.findMany({
     where: {
       creditorId: userId,
@@ -109,7 +121,10 @@ export const getTotalRevenue = async ({ userId }: { userId: string }) => {
   }
 }
 
-export const getMontlySpentGraph = async ({ userId }: { userId: string }) => {
+export const getMontlySpentGraph = async () => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   // We need to calculate the total spent for each month of the year
   // and return it in an array of objects
   // [{ month: 'January', totalSpent: 1000 }, { month: 'February', totalSpent: 2000 }]
@@ -143,7 +158,10 @@ export const getMontlySpentGraph = async ({ userId }: { userId: string }) => {
   return monthlySpent
 }
 
-export const getLatestSpendings = async ({ userId }: { userId: string }) => {
+export const getLatestSpendings = async () => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const latestSpendings = await db.spending.findMany({
     where: {
       group: {

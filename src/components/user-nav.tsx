@@ -42,3 +42,11 @@ export const UserNav = async ({ className }: { className?: string }) => {
     </DropdownMenu>
   )
 }
+
+export const UserNavSkeleton = () => {
+  return (
+    <Button variant="secondary" size="icon" className="rounded-full ml-auto animate-pulse">
+      <span className="sr-only">Alternar menú de usuario</span>
+    </Button>
+  )
+}

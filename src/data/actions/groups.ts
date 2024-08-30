@@ -1,8 +1,11 @@
-'use server'
-
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { getServerSession } from 'next-auth'
 
-export async function getUserGroups (userId: string) {
+export async function getUserGroups () {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const user = await db.user.findUnique({
     where: {
       id: userId

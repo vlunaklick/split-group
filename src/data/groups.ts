@@ -1,9 +1,9 @@
 import useSWR from 'swr'
-import { getGroupParticipants, getUserGroups, hasGroupAdminPermission, getGroupAdmins, getMembersWithoutAdministrator, getInvitationLink, getUsersInvitedToGroup } from './actions/groups'
+import { getGroupAdmins, getGroupParticipants, getInvitationLink, getMembersWithoutAdministrator, getUsersInvitedToGroup, hasGroupAdminPermission } from './actions/groups'
 
-export function useGetUserGroups ({ userId }: { userId: string }) {
-  return useSWR(['user-groups', userId], async ([_, userId]) => {
-    return await getUserGroups(userId)
+export function useGetUserGroups () {
+  return useSWR(['user-groups'], async ([_]) => {
+    return await fetch('/api/user-groups').then(res => res.json())
   })
 }
 
