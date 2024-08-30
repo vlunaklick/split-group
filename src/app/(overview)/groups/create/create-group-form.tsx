@@ -17,7 +17,7 @@ import { useSWRConfig } from 'swr'
 import { GROUP_ICONS } from '@/components/group-icons'
 import { IconLoader2 } from '@tabler/icons-react'
 
-export const CreateGroupFrom = ({ userId }: { userId: string }) => {
+export const CreateGroupFrom = () => {
   const router = useRouter()
   const { mutate } = useSWRConfig()
   const [isLogging, setIsLogging] = useState(false)
@@ -36,7 +36,7 @@ export const CreateGroupFrom = ({ userId }: { userId: string }) => {
     setIsLogging(true)
 
     try {
-      const group = await createGroup({ userId, name, description, icon })
+      const group = await createGroup({ name, description, icon })
       mutate('user-groups')
       toast.success('Grupo creado con éxito. Redirigiendo...')
       setTimeout(() => {

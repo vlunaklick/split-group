@@ -1,8 +1,17 @@
 'use server'
 
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { getServerSession } from 'next-auth'
 
-export const createGroup = async ({ userId, name, description, icon }: { userId: string, name: string, description: string, icon: string }) => {
+export const createGroup = async ({ name, description, icon }: { name: string, description: string, icon: string }) => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  if (!userId) {
+    throw new Error('No user found')
+  }
+
   const group = await db.group.create({
     data: {
       name,
