@@ -2,17 +2,14 @@ import { SpendingIcon } from '@/components/spending-icons'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { getLatestSpendings } from '@/data/actions/dashboard'
 import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
 import { SpendingWithOwnerAndGroup } from '../../app/(overview)/dashboard/types'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import { getLatestSpendings } from '@/data/actions/dashboard'
 
 export const LatestsSpendings = async () => {
-  const session = await getServerSession(authOptions)
-  const latestSpendings = await getLatestSpendings({ userId: session?.user.id as string })
+  const latestSpendings = await getLatestSpendings()
 
   return (
     <Card className='xl:col-span-2 h-min'>

@@ -20,7 +20,7 @@ export const CurrencySetting = () => {
   const form = useForm<z.infer<typeof updateCurrencySettingsSchema>>({
     resolver: zodResolver(updateCurrencySettingsSchema),
     values: {
-      currency: currencies?.find((curr) => curr.id === currency)?.id || ''
+      currency: currencies?.find((curr: any) => curr.id === currency)?.id || ''
     }
   })
 
@@ -65,7 +65,7 @@ export const CurrencySetting = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {currencies?.map((currency) => (
+                      {currencies?.map((currency: any) => (
                         <SelectItem key={currency.id} value={currency.id}>
                           {currency.name}
                         </SelectItem>
