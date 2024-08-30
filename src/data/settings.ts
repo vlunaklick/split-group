@@ -2,7 +2,7 @@ import useSWR from 'swr'
 
 export function useGetUserConfiguration () {
   return useSWR('user-config', async () => {
-    return await fetch('/api/settings?userConfig=true').then(res => res.json())
+    return await fetch('/api/users/settings?userConfig=true').then(res => res.json())
   })
 }
 
@@ -15,7 +15,7 @@ export function useGetAlertsSizeSelected () {
 
 export function useGetAvailableCurrencies () {
   return useSWR('currencies-settings', async () => {
-    return await fetch('/api/settings?availableCurrency=true').then(res => res.json())
+    return await fetch('/api/users/settings?availableCurrency=true').then(res => res.json())
   })
 }
 
@@ -28,6 +28,6 @@ export function useGetSelectedCurrency () {
 
 export function useGetCategories () {
   return useSWR('categories-settings', async () => {
-    return await fetch('/api/settings?categories=true').then(res => res.json())
+    return await fetch('/api/users/settings?categories=true').then(res => res.json())
   })
 }

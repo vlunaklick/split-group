@@ -3,7 +3,7 @@ import { getGroupAdmins, getGroupParticipants, getInvitationLink, getMembersWith
 
 export function useGetUserGroups () {
   return useSWR(['user-groups'], async ([_]) => {
-    return await fetch('/api/user-groups').then(res => res.json())
+    return await fetch('/api/users/user-groups').then(res => res.json())
   })
 }
 

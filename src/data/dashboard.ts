@@ -1,9 +1,9 @@
-import { getMembersTotal, getLatestSpendings, getMonthlySpent, getMontlySpentGraph, getTotalDebt, getTotalRevenue, getWeeklySpent } from './actions/dashboard'
 import useSWR from 'swr'
+import { getLatestSpendings, getMonthlySpent, getMontlySpentGraph, getTotalDebt, getTotalRevenue, getWeeklySpent } from './actions/dashboard'
 
 export function useGetMembersTotal () {
   return useSWR('members-total', async () => {
-    const data = await getMembersTotal()
+    const data = await fetch('/api/users/members').then((res) => res.json())
     return data ?? 0
   })
 }
