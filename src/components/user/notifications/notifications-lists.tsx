@@ -11,12 +11,12 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
-import { deleteNotification, joinGroup, markAsRead, rejectGroup } from './actions'
-import { NotificationWithGroups } from './types'
+import { deleteNotification, joinGroup, markAsRead, rejectGroup } from '../../../app/(user)/notifications/actions'
+import { NotificationWithGroups } from '../../../app/(user)/notifications/types'
 
-export const ListNotifications = ({ userId }: { userId: string }) => {
-  const { data: notifications, isLoading: isLoadingNotifications } = useGetNotifications({ userId })
-  const { data: groupNotifications, isLoading: isGroupNotifications } = useGetGroupNotifications({ userId })
+export const ListNotifications = () => {
+  const { data: notifications, isLoading: isLoadingNotifications } = useGetNotifications()
+  const { data: groupNotifications, isLoading: isGroupNotifications } = useGetGroupNotifications()
 
   return (
     <>
@@ -24,9 +24,11 @@ export const ListNotifications = ({ userId }: { userId: string }) => {
 
       <div className="grid gap-3 w-full">
         {groupNotifications?.map((notification: NotificationWithGroups) => (
-          <GroupNotification key={notification.id} notification={notification} userId={userId} />
+          <GroupNotification key={notification.id} notification={notification} />
         ))}
+
         {groupNotifications?.length === 0 && <p className="text-zinc-500">No tienes invitaciones a grupos</p>}
+
         {isGroupNotifications && (
           <>
             <NotificationSkeleton />
@@ -39,7 +41,7 @@ export const ListNotifications = ({ userId }: { userId: string }) => {
 
       <div className="grid gap-3 w-full">
         {notifications?.map((notification: Notification) => (
-          <GenericNotification key={notification.id} notification={notification} userId={userId} />
+          <GenericNotification key={notification.id} notification={notification} />
         ))}
         {notifications?.length === 0 && <p className="text-zinc-500">No tienes notificaciones</p>}
         {isLoadingNotifications && (
@@ -53,7 +55,7 @@ export const ListNotifications = ({ userId }: { userId: string }) => {
   )
 }
 
-export const GroupNotification = ({ notification, userId }: { notification: NotificationWithGroups; userId: string }) => {
+export const GroupNotification = ({ notification }: { notification: NotificationWithGroups }) => {
   const { mutate } = useSWRConfig()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -61,10 +63,10 @@ export const GroupNotification = ({ notification, userId }: { notification: Noti
   const handleJoinGroup = async () => {
     setIsLoading(true)
     try {
-      await joinGroup(userId, notification?.group?.id as string)
-      mutate(['notifications', userId])
+      await joinGroup(notification?.group?.id as string)
+      mutate(['notifications'])
       mutate('user-groups')
-      mutate(['group-notifications', userId])
+      mutate(['group-notifications'])
       toast.success('Te has unido al grupo! Redirigiendo...')
       setTimeout(() => {
         router.push(`/groups/${notification?.group?.id}`)
@@ -79,8 +81,8 @@ export const GroupNotification = ({ notification, userId }: { notification: Noti
     setIsLoading(true)
     try {
       await rejectGroup(notification.id)
-      mutate(['notifications', userId])
-      mutate(['group-notifications', userId])
+      mutate(['notifications'])
+      mutate(['group-notifications'])
       toast.success('Has rechazado la invitación')
     } catch (error) {
       toast.error('Error al rechazar la invitación')
@@ -92,7 +94,7 @@ export const GroupNotification = ({ notification, userId }: { notification: Noti
     setIsLoading(true)
     try {
       await markAsRead(notification.id)
-      mutate(['notifications', userId])
+      mutate(['notifications'])
       toast.success('Notificación marcada como leída')
     } catch (error) {
       toast.error('Error al marcar la notificación como leída')
@@ -129,7 +131,7 @@ export const GroupNotification = ({ notification, userId }: { notification: Noti
   )
 }
 
-export const GenericNotification = ({ notification, userId }: { notification: Notification; userId: string }) => {
+export const GenericNotification = ({ notification }: { notification: Notification }) => {
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -137,7 +139,7 @@ export const GenericNotification = ({ notification, userId }: { notification: No
     setIsLoading(true)
     try {
       await deleteNotification(notification.id)
-      mutate(['notifications', userId])
+      mutate(['notifications'])
       toast.success('Notificación eliminada')
     } catch (error) {
       toast.error('Error al eliminar la notificación')
@@ -149,7 +151,7 @@ export const GenericNotification = ({ notification, userId }: { notification: No
     setIsLoading(true)
     try {
       await markAsRead(notification.id)
-      mutate(['notifications', userId])
+      mutate(['notifications'])
       toast.success('Notificación marcada como leída')
     } catch (error) {
       toast.error('Error al marcar la notificación como leída')

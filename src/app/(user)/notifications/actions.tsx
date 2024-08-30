@@ -2,6 +2,8 @@
 
 import { db } from '@/lib/db'
 import { ROLE } from '../../../../prisma/roles-enum'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function markAsRead (id: string) {
   return await db.notification.update({
@@ -14,7 +16,10 @@ export async function markAsRead (id: string) {
   })
 }
 
-export async function markAllAsRead (userId: string) {
+export async function markAllAsRead () {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   return await db.notification.updateMany({
     where: {
       userId
@@ -33,7 +38,14 @@ export async function deleteNotification (id: string) {
   })
 }
 
-export async function joinGroup (userId: string, groupId: string) {
+export async function joinGroup (groupId: string) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  if (!userId) {
+    throw new Error('User not found')
+  }
+
   await db.userGroupRole.create({
     data: {
       userId,

@@ -1,8 +1,6 @@
-import { authOptions } from '@/lib/auth'
+import { MarkAllAsRead } from '@/components/user/notifications/notifications-buttons'
+import { ListNotifications } from '@/components/user/notifications/notifications-lists'
 import { Metadata } from 'next'
-import { getServerSession } from 'next-auth'
-import { ListNotifications } from './notifications-lists'
-import { MarkAllAsRead } from './notifications-buttons'
 
 export const metadata: Metadata = {
   title: 'Notifications',
@@ -10,15 +8,14 @@ export const metadata: Metadata = {
 }
 
 export default async function Notifications () {
-  const session = await getServerSession(authOptions)
-
   return (
     <div className="mx-auto w-full max-w-2xl flex flex-col gap-4">
       <header className="flex items-center justify-between">
         <h1 className="text-3xl font-semibold">Notificaciones</h1>
-        <MarkAllAsRead userId={session?.user?.id as string} />
+        <MarkAllAsRead />
       </header>
-      <ListNotifications userId={session?.user?.id as string} />
+
+      <ListNotifications />
     </div>
   )
 }

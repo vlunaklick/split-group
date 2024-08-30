@@ -1,20 +1,20 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { markAllAsRead } from './actions'
+import { markAllAsRead } from '../../../app/(user)/notifications/actions'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { useSWRConfig } from 'swr'
 
-export const MarkAllAsRead = ({ userId }: { userId: string }) => {
+export const MarkAllAsRead = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { mutate } = useSWRConfig()
 
   const handleOnClick = async () => {
     setIsLoading(true)
     try {
-      await markAllAsRead(userId)
-      mutate(['notifications', userId])
+      await markAllAsRead()
+      mutate(['notifications'])
       toast.success('Todas las notificaciones han sido marcadas como leídas')
     } catch (error) {
       console.error(error)

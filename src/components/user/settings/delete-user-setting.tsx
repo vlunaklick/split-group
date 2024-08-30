@@ -4,13 +4,12 @@ import { toast } from 'sonner'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { deleteUser } from './actions'
+import { deleteUser } from '../../../app/(user)/settings/actions'
 
-export const DeleteSetting = ({ userId }: { userId: string }) => {
+export const DeleteSetting = () => {
   const handleDelete = async () => {
-    if (!userId) return
     try {
-      await deleteUser({ userId })
+      await deleteUser()
     } catch (error) {
       toast.error('No se ha podido desactivar tu cuenta')
       return

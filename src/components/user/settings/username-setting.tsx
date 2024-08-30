@@ -5,36 +5,35 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { changeNameSchema } from '@/lib/form'
+import { z } from 'zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { updateName } from './actions'
+import { changeUsernameSchema } from '@/lib/form'
+import { updateUsername } from '@/app/(user)/settings/actions'
 
-export const NameSettings = ({ userId }: { userId: string }) => {
+export const UsernameSettings = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const form = useForm<z.infer<typeof changeNameSchema>>({
-    resolver: zodResolver(changeNameSchema),
+  const form = useForm<z.infer<typeof changeUsernameSchema>>({
+    resolver: zodResolver(changeUsernameSchema),
     defaultValues: {
-      name: ''
+      username: ''
     }
   })
 
-  const onSubmit = async (values: z.infer<typeof changeNameSchema>) => {
-    if (!userId) return
+  const onSubmit = async (values: z.infer<typeof changeUsernameSchema>) => {
     setIsLoading(true)
     try {
-      await updateName({ userId, newName: values.name })
+      await updateUsername({ newUsername: values.username })
     } catch (error) {
-      toast.error('Hubo un error al actualizar tu nombre', {
+      toast.error('Hubo un error al actualizar tu nombre de usuario.', {
         duration: 3000
       })
       setIsLoading(false)
       return
     }
 
-    toast.success('Tu nombre actualizado correctamente.', {
+    toast.success('Nombre de usuario actualizado correctamente.', {
       duration: 3000
     })
     setIsLoading(false)
@@ -43,9 +42,9 @@ export const NameSettings = ({ userId }: { userId: string }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nombre de la cuenta</CardTitle>
+        <CardTitle>Nombre de usuario</CardTitle>
         <CardDescription>
-          Nombre que se mostrará en la plataforma para el resto de usuarios.
+          Nombre que se utilizará para acceder a la plataforma.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
@@ -53,13 +52,13 @@ export const NameSettings = ({ userId }: { userId: string }) => {
           <CardContent>
             <FormField
               control={form.control}
-              name="name"
+              name="username"
               render={({ field }: any) => (
                 <FormItem>
                   <FormControl>
                     <Input
-                      id='name'
-                      placeholder="Jhon doe"
+                      id='username'
+                      placeholder="@johndoe"
                       {...field}
                       disabled={isLoading}
                     />
