@@ -88,12 +88,8 @@ export const SpendingsSkeleton = () => {
     <Card className='md:max-w-[526px] w-full h-min'>
       <CardHeader className='flex justify-between flex-row items-center'>
         <div className='flex flex-col gap-2'>
-          <CardTitle>
-            <Skeleton className="w-40 h-6" />
-          </CardTitle>
-          <CardDescription>
-            <Skeleton className="w-40 h-4" />
-          </CardDescription>
+          <Skeleton className="w-40 h-6" />
+          <Skeleton className="w-40 h-4" />
         </div>
       </CardHeader>
       <CardContent className='space-y-4'>

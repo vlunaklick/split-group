@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import { generateInvitationLinkSchema, inviteMemberSchema } from '@/lib/form'
 import { Input } from '@/components/ui/input'
 import { IconLoader2 } from '@tabler/icons-react'
-import { generateInvitationLink, inviteMemberToGroup } from './actions'
+import { generateInvitationLink, inviteMemberToGroup } from '../../../app/(overview)/groups/[groupId]/settings/actions'
 import { useSWRConfig } from 'swr'
 
 export const InviteMembers = ({ groupId, userId }: { groupId: string, userId: string }) => {

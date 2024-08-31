@@ -137,12 +137,8 @@ export const DebtsSkeleton = () => {
   return (
     <Card className='md:max-w-[526px] w-full h-min'>
       <CardHeader>
-        <CardTitle>
-          <Skeleton className="w-20 h-6" />
-        </CardTitle>
-        <CardDescription>
-          <Skeleton className="w-20 h-4" />
-        </CardDescription>
+        <Skeleton className="w-20 h-6" />
+        <Skeleton className="w-20 h-4" />
       </CardHeader>
       <CardContent className='space-y-4'>
         <DebtItemSkeleton />

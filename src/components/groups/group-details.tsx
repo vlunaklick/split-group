@@ -1,24 +1,27 @@
 'use client'
 
+import { deleteGroup, updateGroup } from '@/app/(overview)/groups/[groupId]/settings/actions'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'sonner'
-import { updateGroupFormSchema } from '@/lib/form'
 import { Input } from '@/components/ui/input'
+import { useGetIsGroupOwner } from '@/data/groups'
+import { updateGroupFormSchema } from '@/lib/form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
-import { deleteGroup, updateGroup } from './actions'
+import { z } from 'zod'
+import { Label } from '../ui/label'
 
-export const GroupDetails = ({ groupId, userId, isOwner }: { groupId: string, userId: string, isOwner: boolean }) => {
+export const GroupDetails = ({ groupId }: { groupId: string }) => {
   const [isLoading, setIsLoading] = useState(false)
   const { mutate } = useSWRConfig()
   const router = useRouter()
+  const { data: isGroupOwner, isLoading: isLoadingOwner } = useGetIsGroupOwner({ groupId })
 
   const form = useForm<z.infer<typeof updateGroupFormSchema>>({
     resolver: zodResolver(updateGroupFormSchema),
@@ -68,7 +71,7 @@ export const GroupDetails = ({ groupId, userId, isOwner }: { groupId: string, us
       </CardHeader>
       <CardContent className='space-y-2'>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2'>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
               control={form.control}
               name="name"
@@ -113,11 +116,39 @@ export const GroupDetails = ({ groupId, userId, isOwner }: { groupId: string, us
           </form>
         </Form>
 
-        {isOwner && (
-          <Button variant='destructive' className='w-full' onClick={onDelete} disabled={isLoading}>
+        {!isLoadingOwner && isGroupOwner.isOwner && (
+          <Button variant="destructive" disabled={!isGroupOwner.isOwner || isLoading} onClick={onDelete} className='w-full'>
             Eliminar grupo
           </Button>
         )}
+      </CardContent>
+    </Card>
+  )
+}
+
+export const GroupDetailsSkeleton = () => {
+  return (
+    <Card className='md:max-w-[526px] w-full'>
+      <CardHeader>
+        <CardTitle>Detalles del grupo</CardTitle>
+        <CardDescription>Información general sobre el grupo</CardDescription>
+      </CardHeader>
+      <CardContent className='space-y-2'>
+        <div className='animate-pulse space-y-4'>
+          <div className='grid gap-2 space-y-0'>
+            <Label htmlFor='name'>Nombre del grupo</Label>
+            <Input name='name' disabled />
+          </div>
+
+          <div className='grid gap-2 space-y-0'>
+            <Label htmlFor='description'>Descripción del grupo</Label>
+            <Input name='description' disabled />
+          </div>
+
+          <Button disabled className='w-full'>
+            <IconLoader2 className='animate-spin' />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )

@@ -42,3 +42,9 @@ export function useGetUsersInvitedToGroup ({ groupId }: { groupId: string }) {
     return await getUsersInvitedToGroup(groupId)
   })
 }
+
+export function useGetIsGroupOwner ({ groupId }: { groupId: string }) {
+  return useSWR(['/api/groups', groupId], async ([url, groupId]) => {
+    return await fetch(`/api/groups/${groupId}?isOwner=true`).then(res => res.json())
+  })
+}

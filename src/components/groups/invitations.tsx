@@ -9,7 +9,7 @@ import { IconClipboard } from '@tabler/icons-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
-import { removeInvitationLink, removeUserInvitation } from './actions'
+import { removeInvitationLink, removeUserInvitation } from '../../../app/(overview)/groups/[groupId]/settings/actions'
 
 export const UsersInvited = ({ groupId, userId }: { groupId: string, userId: string }) => {
   const [isLoading, setIsLoading] = useState(false)

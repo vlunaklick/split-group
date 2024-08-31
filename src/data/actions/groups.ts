@@ -29,9 +29,17 @@ export async function getUserGroups () {
 }
 
 export async function getGroup (groupId: string) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const group = await db.group.findUnique({
     where: {
-      id: groupId
+      id: groupId,
+      users: {
+        some: {
+          id: userId
+        }
+      }
     },
     include: {
       users: {
@@ -208,4 +216,18 @@ export async function getUsersInvitedToGroup (groupId: string) {
       user: true
     }
   })
+}
+
+export async function isGroupOwner (groupId: string) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  const group = await db.group.findFirst({
+    where: {
+      id: groupId,
+      ownerId: userId
+    }
+  })
+
+  return !!group
 }
