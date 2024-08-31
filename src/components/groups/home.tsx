@@ -7,9 +7,9 @@ import { Skeleton } from '../ui/skeleton'
 import { Suspense } from 'react'
 
 export async function GroupHome ({ groupId }: { groupId: string }) {
-  const group = await getGroup(groupId)
+  const data = await getGroup(groupId)
 
-  if (!group) {
+  if (!data.group) {
     notFound()
   }
 
@@ -18,10 +18,10 @@ export async function GroupHome ({ groupId }: { groupId: string }) {
       <header className="flex md:justify-between md:items-center gap-4 flex-col md:flex-row">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2 justify-between">
-            <h1 className="text-3xl font-semibold">{group.name}</h1>
+            <h1 className="text-3xl font-semibold">{data.group.name}</h1>
             <HeaderButtonsMobile groupId={groupId} />
           </div>
-          <p className="text-balance text-muted-foreground">{group.description}</p>
+          <p className="text-balance text-muted-foreground">{data.group.description}</p>
         </div>
 
         <div className="flex gap-2">

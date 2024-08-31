@@ -6,16 +6,16 @@ import { GroupDetails, GroupDetailsSkeleton } from './group-details'
 import { Skeleton } from '../ui/skeleton'
 
 export async function GroupSettings ({ groupId }: { groupId: string }) {
-  const group = await getGroup(groupId)
+  const data = await getGroup(groupId)
 
-  if (!group || !group.users.find(user => user.userGroupRole.find(g => g.groupId === groupId)?.role === 'ADMIN')) {
+  if (!data.group || !data.isAdmin || !data.isOwner) {
     notFound()
   }
 
   return (
     <>
       <header className="flex md:items-center gap-4 md:gap-6 flex-col md:flex-row">
-        <h1 className="text-3xl font-semibold">{group.name}</h1>
+        <h1 className="text-3xl font-semibold">{data.group.name}</h1>
 
         <Breadcrumb>
           <BreadcrumbList>

@@ -1,4 +1,4 @@
-import { isGroupOwner } from '@/data/actions/groups'
+import { getGroupAdmins, getGroupParticipants, getMembersWithoutAdministrator, isGroupOwner } from '@/data/actions/groups'
 
 export async function GET (
   request: Request,
@@ -14,13 +14,33 @@ export async function GET (
 
   const { searchParams } = new URL(request.url)
 
-  const isOwnerParam = searchParams.get('isOwner')
-
-  if (isOwnerParam) {
+  if (searchParams.get('isOwner')) {
     const isOwner = await isGroupOwner(groupId)
 
     return Response.json({
       isOwner
     })
   }
+
+  if (searchParams.get('getGroupAdmins')) {
+    const admins = await getGroupAdmins(groupId)
+
+    return Response.json(admins)
+  }
+
+  if (searchParams.get('getMembersWithoutAdmins')) {
+    const membersWithoutAdmins = await getMembersWithoutAdministrator(groupId)
+
+    return Response.json(membersWithoutAdmins)
+  }
+
+  if (searchParams.get('getGroupParticipants')) {
+    const participants = await getGroupParticipants(groupId)
+
+    return Response.json(participants)
+  }
+
+  return Response.json({
+    error: 'Invalid query'
+  })
 }

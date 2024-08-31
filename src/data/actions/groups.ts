@@ -53,7 +53,22 @@ export async function getGroup (groupId: string) {
     }
   })
 
-  return group
+  const isUserAdmin = group?.users.filter((user: any) => {
+    if (user.id === userId) {
+      return user.userGroupRole.filter((uG: any) => uG.groupId === groupId && uG.role === 'ADMIN').length > 0
+    }
+
+    return false
+  })
+
+  const groupData = {
+    group,
+    isOwner: group?.ownerId === userId,
+    isAdmin: !!isUserAdmin?.length,
+    userId
+  }
+
+  return groupData
 }
 
 export async function hasGroupAdminPermission (groupId: string) {

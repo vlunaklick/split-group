@@ -17,15 +17,16 @@ export function CreateSpendingSheet ({ groupId, className }: { groupId: string, 
         <SheetTrigger className={className} asChild>
           <Button variant="outline">Crear gasto</Button>
         </SheetTrigger>
-        <SheetContent style={{ width: '550px' }}>
+        <SheetContent style={{ width: '550px' }} className='flex flex-col gap-4'>
           <SheetHeader>
             <SheetTitle>Crear gasto</SheetTitle>
             <SheetDescription>
               Aquí podrás crear un nuevo gasto.
             </SheetDescription>
-
-            <CreateSpendingForm groupId={groupId} />
           </SheetHeader>
+          <div className='overflow-y-auto flex flex-col gap-4'>
+            <CreateSpendingForm groupId={groupId} />
+          </div>
         </SheetContent>
       </Sheet>
     )

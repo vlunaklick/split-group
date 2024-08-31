@@ -1,8 +1,13 @@
 'use server'
 
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { getServerSession } from 'next-auth'
 
-export async function leaveGroup (groupId: string, userId: string) {
+export async function leaveGroup (groupId: string) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   await db.group.update({
     where: { id: groupId },
     data: {

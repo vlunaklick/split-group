@@ -15,15 +15,16 @@ export function EditSpendingSheet ({ spendId, userId, groupId, className }: { sp
         <SheetTrigger className={className} asChild>
           <Button variant="outline">Editar</Button>
         </SheetTrigger>
-        <SheetContent style={{ width: '550px' }}>
+        <SheetContent style={{ width: '550px' }} className='flex flex-col gap-4'>
           <SheetHeader>
             <SheetTitle>Editar gasto</SheetTitle>
             <SheetDescription>
               Aquí podrás editar el gasto que has creado.
             </SheetDescription>
-
-            <EditSpendingForm spendId={spendId} userId={userId} groupId={groupId} />
           </SheetHeader>
+          <div className='overflow-y-auto flex flex-col gap-4'>
+            <EditSpendingForm spendId={spendId} userId={userId} groupId={groupId} />
+          </div>
         </SheetContent>
       </Sheet>
     )
