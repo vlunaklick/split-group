@@ -10,7 +10,6 @@ export interface Debter {
 
 export interface SpendingInfo {
   name: string
-  userId: string
   amount: number
   description: string
   categoryId: string

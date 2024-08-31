@@ -3,60 +3,18 @@
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useGetCurrentDebts, useGetOwedDebts } from '@/data/spendings'
+import { useGetOwedDebts } from '@/data/spendings'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
-import { forgiveDebt, payDebt } from '../actions'
+import { forgiveDebt } from '../../../app/(overview)/groups/[groupId]/spendings/actions'
 
-export const SpendDebts = ({ groupId, spendId, userId }: { groupId: string, spendId: string, userId: string }) => {
-  const { data: currentDebts, isLoading: isLoadingList } = useGetCurrentDebts({ groupId, spendId, userId })
-  const { mutate } = useSWRConfig()
-  const [isLoading, setIsLoading] = useState(false)
+// TODO: Ver que solo se le pase spendId
 
-  const handlePayDebt = async (debtId: string) => {
-    setIsLoading(true)
-    try {
-      await payDebt({ debtId })
-      toast.success('Deuda pagada')
-      mutate(['debts', groupId, spendId, userId])
-    } catch (error) {
-      toast.error('Error al pagar deuda')
-    }
-    setIsLoading(false)
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Deudas actuales</CardTitle>
-        <CardDescription>
-          Estas son las personas a las que les debes dinero.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {currentDebts?.length === 0 && <p className='text-muted-foreground/50'>No tienes deudas pendientes</p>}
-
-        {isLoadingList && (
-          <>
-            <RowSkeleton buttonText="Pagar" />
-            <RowSkeleton buttonText="Pagar" />
-            <RowSkeleton buttonText="Pagar" />
-          </>
-        )}
-
-        {currentDebts?.map(debt => (
-          <Row key={debt.id} name={debt.creditor?.name as string} amount={debt.amount} buttonText="Pagar" onButtonClick={() => handlePayDebt(debt.id)} isLoading={isLoading} />
-        ))}
-      </CardContent>
-    </Card>
-  )
-}
-
-export const SpendDebtsOwned = ({ groupId, spendId, userId }: { groupId: string, spendId: string, userId: string }) => {
-  const { data: owedDebts, isLoading: isLoadingList } = useGetOwedDebts({ groupId, spendId, userId })
+export const SpendingDebtsOwedList = ({ groupId, spendId }: { groupId: string, spendId: string }) => {
+  const { data: owedDebts, isLoading: isLoadingList } = useGetOwedDebts({ groupId, spendId })
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -65,7 +23,7 @@ export const SpendDebtsOwned = ({ groupId, spendId, userId }: { groupId: string,
     try {
       await forgiveDebt({ debtId })
       toast.success('Deuda perdonada')
-      mutate(['owed-debts', groupId, spendId, userId])
+      mutate(['owed-debts', groupId, spendId])
     } catch (error) {
       toast.error('Error al perdonar deuda')
     }
@@ -91,7 +49,7 @@ export const SpendDebtsOwned = ({ groupId, spendId, userId }: { groupId: string,
           </>
         )}
 
-        {owedDebts?.map(debt => (
+        {owedDebts?.map((debt: any) => (
           <Row key={debt.id} name={debt.debter?.name as string} amount={debt.amount} buttonText="Perdonar" onButtonClick={() => handleForgiveDebt(debt.id)} isLoading={isLoading} />
         ))}
       </CardContent>

@@ -7,7 +7,7 @@ import { useGetPayers, useGetSpendingParticipants } from '@/data/spendings'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
 
-export const Contributors = ({ groupId, spendId }: { groupId: string; spendId: string }) => {
+export const ContributorsList = ({ groupId, spendId }: { groupId: string; spendId: string }) => {
   const { data: payers, isLoading: isLoadingPayers } = useGetPayers({ groupId, spendId })
 
   const { data: participants, isLoading: isLoadingParticipants } = useGetSpendingParticipants({ groupId, spendId })

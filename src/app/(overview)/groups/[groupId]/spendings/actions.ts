@@ -15,7 +15,7 @@ export async function createSpending ({ groupId, spending, mode }: { groupId: st
   const createdSpending = await db.spending.create({
     data: {
       groupId,
-      ownerId: spending.userId,
+      ownerId: userId,
       date: spending.date,
       name: spending.name,
       description: spending.description,

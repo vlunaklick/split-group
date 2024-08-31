@@ -1,10 +1,8 @@
-'use server'
-
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { getServerSession } from 'next-auth'
 
-export async function getDebts ({ groupId }: { groupId: string }) {
+export async function getGroupDebts ({ groupId }: { groupId: string }) {
   const session = await getServerSession(authOptions)
   const userId = session?.user.id
 
@@ -60,6 +58,7 @@ export async function getDebts ({ groupId }: { groupId: string }) {
       mappedInfo[index].amount += debt.amount
     } else {
       mappedInfo.push({
+        id: debt.id,
         name: debt.debter.name,
         userId: debt.debter.id,
         amount: debt.amount,
@@ -92,7 +91,7 @@ export async function getDebts ({ groupId }: { groupId: string }) {
   return mappedInfo
 }
 
-export async function getLastSpendings (groupId: string) {
+export async function getLatestGroupSpendings (groupId: string) {
   const spending = await db.spending.findMany({
     where: {
       groupId
@@ -110,7 +109,10 @@ export async function getLastSpendings (groupId: string) {
   return spending
 }
 
-export async function getSpendingsTable ({ groupId, userId }: { groupId: string, userId: string }) {
+export async function getSpendingsTable ({ groupId }: { groupId: string }) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const spendings = await db.spending.findMany({
     where: {
       groupId
@@ -141,7 +143,7 @@ export async function getSpendingsTable ({ groupId, userId }: { groupId: string,
   }))
 }
 
-export const getPayers = async ({ groupId, spendId }: { groupId: string, spendId: string }) => {
+export const getSpendingPayers = async ({ groupId, spendId }: { groupId: string, spendId: string }) => {
   const spends = await db.payment.findMany({
     where: {
       spending: {
@@ -157,7 +159,7 @@ export const getPayers = async ({ groupId, spendId }: { groupId: string, spendId
   return spends
 }
 
-export const getParticipants = async ({ groupId, spendId }: { groupId: string, spendId: string }) => {
+export const getSpendingParticipants = async ({ groupId, spendId }: { groupId: string, spendId: string }) => {
   const debts = await db.debt.findMany({
     where: {
       spending: {
@@ -176,7 +178,7 @@ export const getParticipants = async ({ groupId, spendId }: { groupId: string, s
 
   const uniqueParticipants = new Set(debts.map(debt => debt.debter))
 
-  const payers = await getPayers({ groupId, spendId })
+  const payers = await getSpendingPayers({ groupId, spendId })
 
   payers.forEach(payer => {
     uniqueParticipants.delete(payer.payer)
@@ -185,7 +187,7 @@ export const getParticipants = async ({ groupId, spendId }: { groupId: string, s
   return Array.from(uniqueParticipants)
 }
 
-export async function getSpending ({ spendingId }: { spendingId: string }) {
+export async function getSpendingById ({ spendingId }: { spendingId: string }) {
   return db.spending.findUnique({
     where: {
       id: spendingId
@@ -200,7 +202,37 @@ export async function getSpending ({ spendingId }: { spendingId: string }) {
   })
 }
 
-export const getCurrentDebts = async ({ groupId, userId, spendId }: { groupId: string, userId: string, spendId: string }) => {
+export async function getCustomSpending ({ spendingId, groupId }: { spendingId: string, groupId: string }) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  const spend = await db.spending.findFirst({
+    where: {
+      id: spendingId,
+      groupId
+    },
+    include: {
+      payments: true,
+      debts: true,
+      category: true,
+      owner: true,
+      currency: true,
+      group: true
+    }
+  })
+
+  const isOwner = spend?.ownerId === userId
+
+  return {
+    spend,
+    isOwner
+  }
+}
+
+export const getSpendingDebts = async ({ groupId, spendId }: { groupId: string, spendId: string }) => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const debts = await db.debt.findMany({
     where: {
       debterId: userId,
@@ -219,7 +251,10 @@ export const getCurrentDebts = async ({ groupId, userId, spendId }: { groupId: s
   return debts
 }
 
-export const getOwedDebts = async ({ groupId, userId, spendId }: { groupId: string, userId: string, spendId: string }) => {
+export const getSpendingOwedDebts = async ({ groupId, spendId }: { groupId: string, spendId: string }) => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
   const debts = await db.debt.findMany({
     where: {
       creditorId: userId,

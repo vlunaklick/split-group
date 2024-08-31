@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { EditSpendingForm } from '../forms/edit-spending-form'
 
-export function EditSpendingSheet ({ spendId, userId, groupId, className }: { spendId: string, userId: string, groupId: string, className?: string }) {
+export function EditSpendingSheet ({ spendId, groupId, className }: { spendId: string, groupId: string, className?: string }) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   if (isDesktop) {
@@ -23,7 +23,7 @@ export function EditSpendingSheet ({ spendId, userId, groupId, className }: { sp
             </SheetDescription>
           </SheetHeader>
           <div className='overflow-y-auto flex flex-col gap-4'>
-            <EditSpendingForm spendId={spendId} userId={userId} groupId={groupId} />
+            <EditSpendingForm spendId={spendId} groupId={groupId} />
           </div>
         </SheetContent>
       </Sheet>
@@ -44,7 +44,7 @@ export function EditSpendingSheet ({ spendId, userId, groupId, className }: { sp
         </DrawerHeader>
 
         <div className='p-4 overflow-y-auto max-h-96'>
-          <EditSpendingForm spendId={spendId} userId={userId} groupId={groupId} />
+          <EditSpendingForm spendId={spendId} groupId={groupId} />
         </div>
 
         <DrawerFooter>

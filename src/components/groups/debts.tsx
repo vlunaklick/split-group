@@ -31,9 +31,12 @@ export const Debts = ({ groupId }: { groupId: string }) => {
           </>
         )}
 
-        {!isLoadingDebts && debts && debts.map((debt: any) => (
-          <DebtItem key={debt.id + debt.createdAt.getTime()} debt={debt} groupId={groupId} />
-        ))}
+        {!isLoadingDebts && debts && debts.map((debt: any) => {
+          const createdAtDate = new Date(debt.createdAt)
+          return (
+            <DebtItem key={debt.id + createdAtDate.getDate} debt={debt} groupId={groupId} />
+          )
+        })}
 
         {!isLoadingDebts && debts && debts.length === 0 && (
           <p className="text-center text-muted-foreground">No tienes deudas pendientes</p>
@@ -44,7 +47,8 @@ export const Debts = ({ groupId }: { groupId: string }) => {
 }
 
 const DebtItem = ({ debt, groupId }: { debt: { name: string, userId: string, amount: number, isDebter: boolean, createdAt: Date }, groupId: string }) => {
-  const { timeAgo } = useTimeAgo(debt.createdAt.getTime())
+  const createdAtDate = new Date(debt.createdAt)
+  const { timeAgo } = useTimeAgo(createdAtDate.getTime())
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 

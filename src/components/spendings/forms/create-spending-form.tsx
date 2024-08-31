@@ -15,9 +15,9 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
-import { PayersForm } from '../payers'
-import { DebtersForm } from '../contributors'
-import { ExpeseInfoForm } from '../general-info'
+import { PayersForm } from './payers-form'
+import { DebtersForm } from './contributors-form'
+import { ExpeseInfoForm } from './general-info-form'
 
 // TODO: Add isLoading
 

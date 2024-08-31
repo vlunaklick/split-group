@@ -6,7 +6,7 @@ import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export const SpendInfo = ({ groupId, spendId, userId }: { groupId: string, spendId: string, userId: string }) => {
+export const SpendingInfo = ({ spendId }: { spendId: string }) => {
   const { data, isLoading } = useGetSpendingById({ spendingId: spendId })
 
   if (isLoading) return <SpendInfoSkeleton />

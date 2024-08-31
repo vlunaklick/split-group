@@ -12,9 +12,9 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
-import { PayersForm } from '../payers'
-import { DebtersForm } from '../contributors'
-import { ExpeseInfoForm } from '../general-info'
+import { PayersForm } from './payers-form'
+import { DebtersForm } from './contributors-form'
+import { ExpeseInfoForm } from './general-info-form'
 import { updateSpendingSchema } from '@/lib/form'
 import { useGetSpendingById } from '@/data/spendings'
 import { updateSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
@@ -27,7 +27,7 @@ const steps = [
   { label: 'Deudores', description: 'Selecciona los deudores', icon: IconUsers }
 ] as StepItem[]
 
-export const EditSpendingForm = ({ spendId, userId, groupId }: { spendId: string, userId: string, groupId: string }) => {
+export const EditSpendingForm = ({ spendId, groupId }: { spendId: string, groupId: string }) => {
   const [finalData, setFinalData] = useState<any>({})
   const [mode, setMode] = useState<DistributionModeType>('equal')
   const { mutate } = useSWRConfig()
@@ -63,13 +63,12 @@ export const EditSpendingForm = ({ spendId, userId, groupId }: { spendId: string
         spendingId: spendId,
         mode,
         spending: {
-          userId,
           ...finalData
         }
       })
       toast.success('Gasto actualizado correctamente')
       mutate(['lastSpendings', groupId])
-      mutate(['lastDebts', groupId, userId])
+      mutate(['lastDebts', groupId])
       mutate(['spendings', groupId, spendId])
     } catch (error) {
       console.error(error)

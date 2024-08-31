@@ -1,16 +1,13 @@
-'use client'
-
 import { SpendingIcon, SpendingTypes } from '@/components/spending-icons'
 import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useGetSpendingsTable } from '@/data/spendings'
 import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
-type SpendingTable = {
+type SpendingTableType = {
   id: string
   name: string
   description: string | null
@@ -22,21 +19,7 @@ type SpendingTable = {
   someoneOwesYou: boolean
 }
 
-export const SpendingsList = ({ groupId, userId }: { groupId: string, userId: string }) => {
-  const { data, error } = useGetSpendingsTable({ groupId, userId })
-
-  if (error) return <div>Failed to load</div>
-  if (!data) return <div>Loading...</div>
-
-  return (
-    <>
-      <TableDisplay data={data} groupId={groupId} userId={userId} />
-      <MobileTableDisplay data={data} groupId={groupId} userId={userId} />
-    </>
-  )
-}
-
-const TableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], groupId: string, userId: string }) => {
+export function SpendingTable ({ data, groupId }: { data: SpendingTableType[], groupId: string }) {
   return (
     <Table className='hidden sm:table'>
       <TableCaption>Lista de gastos del grupo</TableCaption>
@@ -51,7 +34,7 @@ const TableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], groupI
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((spending: SpendingTable) => (
+        {data.map((spending: SpendingTableType) => (
           <TableRow key={spending.id}>
             <TableCell>{spending.name}</TableCell>
             <TableCell>
@@ -79,10 +62,10 @@ const TableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], groupI
   )
 }
 
-const MobileTableDisplay = ({ data, groupId, userId }: { data: SpendingTable[], groupId: string, userId: string }) => {
+export function MobileSpendingTable ({ data, groupId }: { data: SpendingTableType[], groupId: string }) {
   return (
     <section className='sm:hidden flex flex-col gap-4'>
-      {data.map((spending: SpendingTable) => (
+      {data.map((spending: SpendingTableType) => (
         <article key={spending.id} className='flex flex-col justify-center gap-4 p-4 border rounded-md'>
           <header className='flex items-center gap-4'>
             <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
