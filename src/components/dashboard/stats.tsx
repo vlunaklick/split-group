@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getMonthlySpent, getTotalDebt, getTotalRevenue, getWeeklySpent } from '@/data/actions/dashboard'
+import { getMonthlySpent, getTotalDebt, getTotalRevenue, getWeeklySpent } from '@/data/apis/dashboard'
 import { formatMoney } from '@/lib/money'
 import { IconCashBanknote, IconMoneybag, IconTransferIn, IconTransferOut } from '@tabler/icons-react'
 

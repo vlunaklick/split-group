@@ -1,4 +1,4 @@
-import { getGroup } from '@/data/actions/groups'
+import { getGroup } from '@/data/apis/groups'
 import { notFound } from 'next/navigation'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../ui/breadcrumb'
 import Link from 'next/link'

@@ -1,6 +1,6 @@
 import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
-import { getGroup } from '@/data/actions/groups'
+import { getGroup } from '@/data/apis/groups'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { SpendingsList } from './lists/spendings-list'

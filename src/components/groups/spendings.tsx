@@ -33,7 +33,7 @@ export const Spendings = ({ groupId }: { groupId: string }) => {
             <SpendingItemSkeleton />
           </>
         )}
-        {!isLoadingSpendings && spendings?.map((spending) => <SpendingItem key={spending.id} spending={spending} />)}
+        {!isLoadingSpendings && spendings?.map((spending: any) => <SpendingItem key={spending.id} spending={spending} />)}
 
         {spendings?.length === 0 && (
           <p className='text-center text-muted-foreground'>No hay gastos ingresados</p>

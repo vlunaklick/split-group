@@ -21,7 +21,7 @@ export const ContributorsList = ({ groupId, spendId }: { groupId: string; spendI
       <CardContent>
         <div className="flex flex-col space-y-4">
           {isLoadingPayers && <SkeletonRow hasValue />}
-          {payers?.map((payer) => (
+          {payers?.map((payer: any) => (
             <Row key={payer.id} name={payer.payer.name ?? payer.payer.username ?? ''} value={payer.amount} />
           ))}
           {isLoadingParticipants && (
@@ -31,7 +31,7 @@ export const ContributorsList = ({ groupId, spendId }: { groupId: string; spendI
               <SkeletonRow hasValue={false} />
             </>
           )}
-          {participants?.map((participant) => (
+          {participants?.map((participant: any) => (
             <Row key={participant.id} name={participant.name ?? participant.username ?? ''} />
           ))}
         </div>

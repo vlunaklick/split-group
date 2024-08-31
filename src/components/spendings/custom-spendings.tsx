@@ -1,4 +1,4 @@
-import { getCustomSpending } from '@/data/actions/spendings'
+import { getCustomSpending } from '@/data/apis/spendings'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../ui/breadcrumb'

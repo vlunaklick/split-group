@@ -1,4 +1,4 @@
-import { getGroup } from '@/data/actions/groups'
+import { getGroup } from '@/data/apis/groups'
 import { notFound } from 'next/navigation'
 import { HeaderButtons, HeaderButtonsMobile, HeaderButtonsSkeletons } from './home-header-buttons'
 import { Spendings, SpendingsSkeleton } from './spendings'

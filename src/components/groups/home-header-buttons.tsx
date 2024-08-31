@@ -1,5 +1,5 @@
 import { Button, buttonVariants } from '@/components/ui/button'
-import { hasGroupAdminPermission } from '@/data/actions/groups'
+import { hasGroupAdminPermission } from '@/data/apis/groups'
 import { cn } from '@/lib/utils'
 import { IconSettings, IconUsersGroup } from '@tabler/icons-react'
 import Link from 'next/link'
