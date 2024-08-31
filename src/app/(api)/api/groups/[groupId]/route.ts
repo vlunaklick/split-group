@@ -1,4 +1,4 @@
-import { getGroupAdmins, getGroupParticipants, getMembersWithoutAdministrator, isGroupOwner } from '@/data/actions/groups'
+import { getGroupAdmins, getGroupParticipants, getMembersWithoutAdministrator, isGroupOwner } from '@/data/apis/groups'
 
 export async function GET (
   request: Request,

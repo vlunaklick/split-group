@@ -1,4 +1,4 @@
-import { getSpendingPayers, getSpendingParticipants, getSpendingDebts, getSpendingOwedDebts } from '@/data/actions/spendings'
+import { getSpendingPayers, getSpendingParticipants, getSpendingDebts, getSpendingOwedDebts } from '@/data/apis/spendings'
 
 export async function GET (
   request: Request,

@@ -1,4 +1,4 @@
-import { getUserConfiguration, getAvailableCurrency, getCategories } from '@/data/actions/settings'
+import { getUserConfiguration, getAvailableCurrency, getCategories } from '@/data/apis/settings'
 
 export async function GET (request: Request) {
   const { searchParams } = new URL(request.url)

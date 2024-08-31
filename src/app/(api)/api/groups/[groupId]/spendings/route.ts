@@ -1,4 +1,4 @@
-import { getGroupDebts, getLatestGroupSpendings, getSpendingsTable } from '@/data/actions/spendings'
+import { getGroupDebts, getLatestGroupSpendings, getSpendingsTable } from '@/data/apis/spendings'
 
 export async function GET (
   request: Request,

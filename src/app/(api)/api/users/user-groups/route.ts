@@ -1,4 +1,4 @@
-import { getUserGroups } from '@/data/actions/groups'
+import { getUserGroups } from '@/data/apis/groups'
 
 export async function GET (request: Request) {
   const userGroups = await getUserGroups()

@@ -1,4 +1,4 @@
-import { getSpendingById } from '@/data/actions/spendings'
+import { getSpendingById } from '@/data/apis/spendings'
 
 export async function GET (
   request: Request,

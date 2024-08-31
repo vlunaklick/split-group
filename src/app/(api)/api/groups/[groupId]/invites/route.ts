@@ -1,4 +1,4 @@
-import { getUsersInvitedToGroup, getInvitationLink } from '@/data/actions/groups'
+import { getUsersInvitedToGroup, getInvitationLink } from '@/data/apis/groups'
 
 export async function GET (
   request: Request,
