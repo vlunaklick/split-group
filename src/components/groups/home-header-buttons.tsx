@@ -3,6 +3,7 @@ import { hasGroupAdminPermission } from '@/data/apis/groups'
 import { cn } from '@/lib/utils'
 import { IconSettings, IconUsersGroup } from '@tabler/icons-react'
 import Link from 'next/link'
+import { ExportButton } from './export-button'
 
 export const HeaderButtons = async ({ groupId }: { groupId: string }) => {
   const hasPermission = await hasGroupAdminPermission(groupId)
@@ -12,9 +13,8 @@ export const HeaderButtons = async ({ groupId }: { groupId: string }) => {
       <Link href={`/groups/${groupId}/participants`} className={cn(buttonVariants({ variant: 'outline' }), 'md:inline hidden')}>
         Participantes
       </Link>
-      <Button variant="outline">
-        Exportar
-      </Button>
+
+      <ExportButton groupId={groupId} />
 
       {hasPermission && (
         <Link href={`/groups/${groupId}/settings`} className={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'hidden md:flex')}>

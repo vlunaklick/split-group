@@ -40,12 +40,15 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "framer-motion": "^11.3.24",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.3",
     "lucide-react": "^0.408.0",
     "mini-svg-data-uri": "^1.4.4",
     "next": "14.2.5",
     "next-auth": "^4.24.7",
     "next-themes": "^0.3.0",
     "react": "^18",
+    "react-colorful": "^5.6.1",
     "react-currency-input-field": "^3.8.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
@@ -56,6 +59,7 @@
     "tailwind-merge": "^2.5.0",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.1",
+    "xlsx": "^0.18.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
