@@ -1,41 +1,41 @@
 'use server'
 
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { getServerSession } from 'next-auth'
 
-export const getCurrentDebts = async ({ groupId, userId, spendId }: { groupId: string, userId: string, spendId: string }) => {
-  const debts = await db.debt.findMany({
-    where: {
-      debterId: userId,
-      forgiven: false,
-      paid: false,
-      spending: {
-        id: spendId,
-        groupId
-      }
-    },
-    include: {
-      creditor: true
+export const createComment = async ({ spendingId, comment }: { spendingId: string, comment: string }) => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  if (!userId) {
+    return null
+  }
+
+  const newComment = await db.comment.create({
+    data: {
+      spendingId,
+      userId,
+      content: comment
     }
   })
 
-  return debts
+  return newComment
 }
 
-export const getOwedDebts = async ({ groupId, userId, spendId }: { groupId: string, userId: string, spendId: string }) => {
-  const debts = await db.debt.findMany({
-    where: {
-      creditorId: userId,
-      forgiven: false,
-      paid: false,
-      spending: {
-        id: spendId,
-        groupId
-      }
-    },
-    include: {
-      debter: true
-    }
-  })
+export const deleteComment = async ({ commentId }: { commentId: string }) => {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
 
-  return debts
+  if (!userId) {
+    return null
+  }
+
+  await db.comment.delete({
+    where: {
+      id: commentId
+    }
+  }).catch(() => {
+    return null
+  })
 }

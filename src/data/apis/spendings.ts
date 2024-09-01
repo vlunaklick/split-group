@@ -272,3 +272,25 @@ export const getSpendingOwedDebts = async ({ groupId, spendId }: { groupId: stri
 
   return debts
 }
+
+export async function getSpendingComments ({ spendingId }: { spendingId: string }) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  const comments = await db.comment.findMany({
+    where: {
+      spendingId
+    },
+    include: {
+      user: true
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
+
+  return {
+    commentsList: comments ?? [],
+    userId
+  }
+}

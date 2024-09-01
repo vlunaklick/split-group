@@ -1,4 +1,4 @@
-import { getSpendingById } from '@/data/apis/spendings'
+import { getSpendingById, getSpendingComments } from '@/data/apis/spendings'
 
 export async function GET (
   request: Request,
@@ -18,6 +18,12 @@ export async function GET (
     const spending = await getSpendingById({ spendingId: spendId })
 
     return Response.json(spending)
+  }
+
+  if (searchParams.get('getSpendingComments')) {
+    const comments = await getSpendingComments({ spendingId: spendId })
+
+    return Response.json(comments)
   }
 
   return Response.json({

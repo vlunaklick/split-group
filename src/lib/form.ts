@@ -94,3 +94,7 @@ export const updateSpendingSchema = z.object({
   amount: z.coerce.number().int().min(1, { message: 'El monto no puede ser menor a 1' }),
   date: z.date({ required_error: 'Debes seleccionar una fecha' })
 })
+
+export const createCommentSchema = z.object({
+  comment: z.string().min(1, { message: 'El comentario tiene que tener al menos 1 caracter' }).max(255, { message: 'El comentario no puede tener más de 255 caracteres' })
+})

@@ -8,6 +8,7 @@ import { SpendingDebtsList } from './lists/spending-debts-list'
 import { SpendingDebtsOwedList } from './lists/spending-debts-owed-list'
 import { EditSpendingSheet } from './sheets/edit-spending-sheet'
 import { SpendingInfo } from './spending-info'
+import { CommentsSheet } from './sheets/comments-sheet'
 
 export async function CustomSpendingInfo ({ groupId, spendId }: { groupId: string, spendId: string }) {
   const data = await getCustomSpending({ groupId, spendingId: spendId })
@@ -40,13 +41,16 @@ export async function CustomSpendingInfo ({ groupId, spendId }: { groupId: strin
             </BreadcrumbPage>
           </BreadcrumbList>
         </Breadcrumb>
+        <div className="ml-auto space-x-4">
+          <CommentsSheet spendingId={spendId} />
 
-        {data.isOwner && (
-          <div className="ml-auto space-x-4">
-            <DeleteSpendingDialog groupId={groupId} spendId={spendId} />
-            <EditSpendingSheet groupId={groupId} spendId={spendId} />
-          </div>
-        )}
+          {data.isOwner && (
+            <>
+              <DeleteSpendingDialog groupId={groupId} spendId={spendId} />
+              <EditSpendingSheet groupId={groupId} spendId={spendId} />
+            </>
+          )}
+        </div>
       </header>
 
       <div className="flex gap-4 w-full md:justify-start justify-center flex-col md:flex-row">

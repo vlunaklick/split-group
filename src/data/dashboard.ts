@@ -10,7 +10,6 @@ export function useGetMembersTotal () {
 export function useGetMontlySpentGraph () {
   return useSWR(['monthly-spent-graph'], async ([_]) => {
     const data = await fetch('/api/users/stats').then((res) => res.json())
-    console.log(data)
 
     return data ?? []
   })

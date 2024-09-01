@@ -47,3 +47,9 @@ export function useGetOwedDebts ({ groupId, spendId }: { groupId: string, spendI
     return await fetch(`/api/groups/${groupId}/spendings/${spendId}?getSpendingOwedDebts=true`).then(res => res.json())
   })
 }
+
+export function useGetSpendingComments ({ spendingId }: { spendingId: string }) {
+  return useSWR(['spending-comments', spendingId], async ([, spendingId]) => {
+    return await fetch(`/api/spendings/${spendingId}?getSpendingComments=true`).then(res => res.json())
+  })
+}

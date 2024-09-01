@@ -158,24 +158,6 @@ export async function getCommentsOfSpending ({ spendingId }: { spendingId: strin
   })
 }
 
-export async function createComment ({ spendingId, comment }: { spendingId: string, comment: any }) {
-  return db.comment.create({
-    data: {
-      spendingId,
-      userId: comment.userId,
-      content: comment.content
-    }
-  })
-}
-
-export async function deleteComment ({ commentId }: { commentId: string }) {
-  return db.comment.delete({
-    where: {
-      id: commentId
-    }
-  })
-}
-
 export async function payDebt ({ debtId }: { debtId: string }) {
   return db.debt.update({
     where: {
