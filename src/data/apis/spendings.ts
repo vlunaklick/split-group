@@ -149,14 +149,14 @@ export async function getSpendingsTable ({ groupId, searchParams }: { groupId: s
     category: spending.category.name,
     hasDebt: spending.debts.some(debt => debt.debterId === userId && !debt.paid && !debt.forgiven),
     someoneOwesYou: spending.debts.some(debt => debt.creditorId === userId && !debt.paid && !debt.forgiven),
-    group: spending.groupId
+    groupId: spending.groupId
   }))
 
   const totalCount = await db.spending.count({
     where: {
       groupId,
       name: {
-        contains: searchParams.title
+        contains: searchParams.name
       }
     }
   })

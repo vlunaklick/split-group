@@ -61,6 +61,8 @@ export async function inviteMemberToGroup (email: string, groupId: string) {
       message: `Te han invitado a unirte al grupo ${group.name}`
     }
   })
+
+  // TODO: Agregar alerta por mail
 }
 
 export async function generateInvitationLink (groupId: string, maxUses: number) {

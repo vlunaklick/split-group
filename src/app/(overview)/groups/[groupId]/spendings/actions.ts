@@ -5,6 +5,7 @@ import { DistributionModeType, SpendingInfo } from './types'
 import { handleDistribution } from '@/utils/distributions'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { NotificationType } from '../../../../../../prisma/notification-type-enum'
 
 export async function createSpending ({ groupId, spending, mode }: { groupId: string, spending: SpendingInfo, mode: DistributionModeType }) {
   const session = await getServerSession(authOptions)
@@ -110,6 +111,19 @@ export async function updateSpending ({ spendingId, spending, mode }: { spending
       }
     })
   }
+
+  for (const user of spending.payers) {
+    await db.notification.create({
+      data: {
+        type: NotificationType.GENERIC,
+        userId: user.userId,
+        title: 'Gasto actualizado',
+        message: 'El gasto ' + spending.name + ' ha sido actualizado.'
+      }
+    })
+  }
+
+  // TODO: Agregar alerta por mail
 }
 
 export async function deleteSpending ({ spendingId }: { spendingId: string }) {
@@ -159,7 +173,7 @@ export async function getCommentsOfSpending ({ spendingId }: { spendingId: strin
 }
 
 export async function payDebt ({ debtId }: { debtId: string }) {
-  return db.debt.update({
+  db.debt.update({
     where: {
       id: debtId
     },
@@ -167,6 +181,31 @@ export async function payDebt ({ debtId }: { debtId: string }) {
       paid: true
     }
   })
+
+  const debt = await db.debt.findUnique({
+    where: {
+      id: debtId
+    },
+    include: {
+      spending: true,
+      debter: true
+    }
+  })
+
+  if (!debt) return
+
+  const description = 'Tu deuda de ' + debt.amount.toFixed(2) + ' en el gasto ' + debt.spending.name + ' ha sido pagada.'
+
+  await db.notification.create({
+    data: {
+      type: NotificationType.GENERIC,
+      userId: debt.creditorId,
+      title: 'Deuda pagada',
+      message: description
+    }
+  })
+
+  // TODO: Agregar alerta por mail
 }
 
 export async function forgiveDebt ({ debtId }: { debtId: string }) {

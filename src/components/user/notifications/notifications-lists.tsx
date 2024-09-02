@@ -159,7 +159,8 @@ export const GenericNotification = ({ notification }: { notification: Notificati
     setIsLoading(false)
   }
 
-  const { timeAgo } = useTimeAgo(notification.createdAt.getTime())
+  const createdAt = new Date(notification.createdAt ?? new Date())
+  const { timeAgo } = useTimeAgo(createdAt.getTime())
 
   return (
     <div className="flex items-start gap-3 w-full">
