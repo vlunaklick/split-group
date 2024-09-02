@@ -30,6 +30,11 @@ export const UserNav = async ({ className }: { className?: string }) => {
         <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
+          <Link href={`/user/${session?.user?.username}`}>
+            Perfil
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
           <Link href="/settings">
             Configuración
           </Link>
