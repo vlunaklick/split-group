@@ -61,7 +61,7 @@ export function SpendingTable ({ data, groupId }: { data: any, groupId: string }
 export function MobileSpendingTable ({ data, groupId }: { data: SpendingTableType[], groupId: string }) {
   return (
     <section className='sm:hidden flex flex-col gap-4'>
-      {data.map((spending: SpendingTableType) => (
+      {data?.map((spending: SpendingTableType) => (
         <article key={spending.id} className='flex flex-col justify-center gap-4 p-4 border rounded-md'>
           <header className='flex items-center gap-4'>
             <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>

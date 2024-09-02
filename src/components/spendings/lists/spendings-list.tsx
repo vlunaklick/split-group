@@ -3,12 +3,10 @@
 import { useGetSpendingsTable } from '@/data/spendings'
 import { MobileSpendingTable, SpendingTable } from '../tables/spending-table'
 import { GetSpendingsSchema } from '@/lib/validations'
-import { useSWRConfig } from 'swr'
 import { useEffect } from 'react'
 
 export const SpendingsList = ({ groupId, searchParams }: { groupId: string, searchParams: GetSpendingsSchema }) => {
-  const { data, error } = useGetSpendingsTable({ groupId, searchParams })
-  const { mutate } = useSWRConfig()
+  const { data, error, mutate } = useGetSpendingsTable({ groupId, searchParams })
 
   useEffect(() => {
     mutate(['spendings-table', groupId])
@@ -20,7 +18,7 @@ export const SpendingsList = ({ groupId, searchParams }: { groupId: string, sear
   return (
     <>
       <SpendingTable data={data} groupId={groupId}/>
-      <MobileSpendingTable data={data.data} groupId={groupId} />
+      <MobileSpendingTable data={data?.data ?? []} groupId={groupId} />
     </>
   )
 }
