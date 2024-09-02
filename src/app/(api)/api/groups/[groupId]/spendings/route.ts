@@ -1,4 +1,5 @@
 import { getGroupDebts, getLatestGroupSpendings, getSpendingsTable } from '@/data/apis/spendings'
+import { getSpendingsSchema } from '@/lib/validations'
 
 export async function GET (
   request: Request,
@@ -27,7 +28,11 @@ export async function GET (
   }
 
   if (searchParams.get('getSpendingsTable')) {
-    const spendingsTable = await getSpendingsTable({ groupId })
+    const search = getSpendingsSchema.parse({
+      ...Object.fromEntries(searchParams.entries())
+    })
+
+    const spendingsTable = await getSpendingsTable({ groupId, searchParams: search })
 
     return Response.json(spendingsTable)
   }

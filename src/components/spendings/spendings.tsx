@@ -4,8 +4,9 @@ import { getGroup } from '@/data/apis/groups'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { SpendingsList } from './lists/spendings-list'
+import { GetSpendingsSchema } from '@/lib/validations'
 
-export async function Spendings ({ groupId }: { groupId: string }) {
+export async function Spendings ({ groupId, searchParams }: { groupId: string, searchParams: GetSpendingsSchema }) {
   const data = await getGroup(groupId)
 
   if (!data || !data.group) {
@@ -39,7 +40,7 @@ export async function Spendings ({ groupId }: { groupId: string }) {
       </header>
 
       <div className="grid gap-4">
-        <SpendingsList groupId={groupId} />
+        <SpendingsList groupId={groupId} searchParams={searchParams} />
       </div>
     </>
   )

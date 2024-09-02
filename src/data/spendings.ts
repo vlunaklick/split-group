@@ -1,3 +1,4 @@
+import { GetSpendingsSchema } from '@/lib/validations'
 import useSWR from 'swr'
 
 export function useGetDebts ({ groupId }: { groupId: string }) {
@@ -12,9 +13,11 @@ export function useGetLastSpendings ({ groupId }: { groupId: string }) {
   })
 }
 
-export function useGetSpendingsTable ({ groupId }: { groupId: string }) {
+export function useGetSpendingsTable ({ groupId, searchParams }: { groupId: string, searchParams: GetSpendingsSchema }) {
   return useSWR(['spendings-table', groupId], async ([, groupId]) => {
-    return await fetch(`/api/groups/${groupId}/spendings?getSpendingsTable=true`).then(res => res.json())
+    const urlSearchParams = new URLSearchParams(searchParams as Record<string, string>).toString()
+
+    return await fetch(`/api/groups/${groupId}/spendings?getSpendingsTable=true&${urlSearchParams}`).then(res => res.json())
   })
 }
 

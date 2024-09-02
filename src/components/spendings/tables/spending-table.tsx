@@ -1,11 +1,16 @@
+import { DataTable } from '@/components/data-table/data-table'
+import { DataTableToolbar } from '@/components/data-table/data-table-toolbar'
 import { SpendingIcon, SpendingTypes } from '@/components/spending-icons'
 import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useDataTable } from '@/hooks/use-data-table'
 import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
+import { DataTableFilterField } from '@/types'
 import Link from 'next/link'
+import { useMemo } from 'react'
+import { getColumns } from './spending-table-columns'
 
 type SpendingTableType = {
   id: string
@@ -17,48 +22,39 @@ type SpendingTableType = {
   createdBy: string | null
   hasDebt: boolean
   someoneOwesYou: boolean
+  groupId: string
 }
 
-export function SpendingTable ({ data, groupId }: { data: SpendingTableType[], groupId: string }) {
+export function SpendingTable ({ data, groupId }: { data: any, groupId: string }) {
+  const columns = useMemo(() => getColumns(), [])
+
+  // Acá podemos definir los campos por los que se puede filtrar la tabla (Nos referimos a buscar)
+  const filterFields: DataTableFilterField<SpendingTableType>[] = [
+    {
+      label: 'Nombre',
+      value: 'name',
+      placeholder: 'Buscar por nombre'
+    }
+  ]
+
+  const { table } = useDataTable({
+    data: data.data || [],
+    columns,
+    pageCount: data.totalPages,
+    /* optional props */
+    filterFields,
+    initialState: {
+      columnPinning: { right: ['actions'] }
+    },
+    getRowId: (originalRow, index) => `${originalRow.id}-${index}`
+  })
+
   return (
-    <Table className='hidden sm:table'>
-      <TableCaption>Lista de gastos del grupo</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="min-w-[200px]">Nombre</TableHead>
-          <TableHead>Categoría</TableHead>
-          <TableHead className='min-w-[220px]'>Fecha</TableHead>
-          <TableHead>Estado</TableHead>
-          <TableHead className="text-right">Monto</TableHead>
-          <TableHead />
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((spending: SpendingTableType) => (
-          <TableRow key={spending.id}>
-            <TableCell>{spending.name}</TableCell>
-            <TableCell>
-              <div className='flex items-center gap-4'>
-                <SpendingIcon type={spending.category as SpendingTypes} className='text-muted-foreground/80' />
-                {spending.category}
-              </div>
-            </TableCell>
-            <TableCell>{formatDate(spending.date)}</TableCell>
-            <TableCell>
-              {spending.hasDebt && <Badge variant='destructive' className='w-max'>Debes</Badge>}
-              {spending.someoneOwesYou && <Badge variant="secondary" className='w-max'>Te deben</Badge>}
-              {!spending.someoneOwesYou && !spending.hasDebt && <Badge variant="default" className='w-max'>-</Badge>}
-            </TableCell>
-            <TableCell className="text-right">{formatMoney(spending.amount)}</TableCell>
-            <TableCell>
-              <Link href={`/groups/${groupId}/spendings/${spending.id}`} className={buttonVariants({ variant: 'outline' })}>
-                Ver
-              </Link>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <DataTable
+      table={table}
+    >
+      <DataTableToolbar table={table} filterFields={filterFields} />
+    </DataTable>
   )
 }
 

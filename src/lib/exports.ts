@@ -12,6 +12,7 @@ export type SpendingTableType = {
   createdBy: string | null
   hasDebt: boolean
   someoneOwesYou: boolean
+  groupId: string
 }
 
 export async function exportData ({ groupId, type, props }: { groupId: string, type: 'excel' | 'pdf', props: any }) {

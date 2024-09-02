@@ -1,5 +1,6 @@
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { GetSpendingsSchema } from '@/lib/validations'
 import { getServerSession } from 'next-auth'
 
 export async function getGroupDebts ({ groupId }: { groupId: string }) {
@@ -109,13 +110,19 @@ export async function getLatestGroupSpendings (groupId: string) {
   return spending
 }
 
-export async function getSpendingsTable ({ groupId }: { groupId: string }) {
+export async function getSpendingsTable ({ groupId, searchParams }: { groupId: string, searchParams: GetSpendingsSchema }) {
   const session = await getServerSession(authOptions)
   const userId = session?.user.id
 
+  const limitPerPage = searchParams?.per_page ? searchParams.per_page : 10
+  const offset = searchParams?.page ? (searchParams.page - 1) * limitPerPage : 0
+
   const spendings = await db.spending.findMany({
     where: {
-      groupId
+      groupId,
+      name: {
+        contains: searchParams.name
+      }
     },
     include: {
       payments: true,
@@ -127,10 +134,12 @@ export async function getSpendingsTable ({ groupId }: { groupId: string }) {
       date: 'desc'
     }, {
       createdAt: 'desc'
-    }]
+    }],
+    skip: offset,
+    take: limitPerPage
   })
 
-  return spendings.map(spending => ({
+  const spendingsParsed = spendings.map(spending => ({
     id: spending.id,
     name: spending.name,
     description: spending.description,
@@ -139,8 +148,26 @@ export async function getSpendingsTable ({ groupId }: { groupId: string }) {
     createdBy: spending.owner.name,
     category: spending.category.name,
     hasDebt: spending.debts.some(debt => debt.debterId === userId && !debt.paid && !debt.forgiven),
-    someoneOwesYou: spending.debts.some(debt => debt.creditorId === userId && !debt.paid && !debt.forgiven)
+    someoneOwesYou: spending.debts.some(debt => debt.creditorId === userId && !debt.paid && !debt.forgiven),
+    group: spending.groupId
   }))
+
+  const totalCount = await db.spending.count({
+    where: {
+      groupId,
+      name: {
+        contains: searchParams.title
+      }
+    }
+  })
+
+  const totalPages = Math.ceil(totalCount / limitPerPage)
+
+  return {
+    data: spendingsParsed,
+    totalPages,
+    totalCount
+  }
 }
 
 export const getSpendingPayers = async ({ groupId, spendId }: { groupId: string, spendId: string }) => {
