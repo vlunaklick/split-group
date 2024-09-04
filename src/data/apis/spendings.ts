@@ -87,7 +87,9 @@ export async function getGroupDebts ({ groupId }: { groupId: string }) {
   })
 
   // Ordenar el array mapeado por la fecha de creación en orden descendente
-  mappedInfo.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+  mappedInfo.sort((a, b) => {
+    return new Date(b.createdAt ?? new Date()).getTime() - new Date(a.createdAt ?? new Date()).getTime()
+  })
 
   return mappedInfo
 }

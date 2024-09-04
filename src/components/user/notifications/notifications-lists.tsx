@@ -102,7 +102,8 @@ export const GroupNotification = ({ notification }: { notification: Notification
     setIsLoading(false)
   }
 
-  const { timeAgo } = useTimeAgo(notification.createdAt.getTime())
+  const createdAt = new Date(notification.createdAt ?? new Date())
+  const { timeAgo } = useTimeAgo(createdAt.getTime())
 
   return (
     <div className={cn('flex items-start gap-3 w-full', !notification.read && 'bg-zinc-100 dark:bg-zinc-800')}>
