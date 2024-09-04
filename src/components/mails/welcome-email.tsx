@@ -17,8 +17,8 @@ interface WelcomeEmailProps {
   firstName: string
 }
 
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
+const baseUrl = process.env.PAGE_URL
+  ? `https://${process.env.PAGE_URL}`
   : 'http://localhost:3000'
 
 export const WelcomeEmail: React.FC<WelcomeEmailProps> = ({ username, firstName }) => {
