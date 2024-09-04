@@ -1,7 +1,11 @@
 'use server'
 
+import { ResetPasswordEmail } from '@/components/mails/reset-password'
 import { db } from '@/lib/db'
 import crypto from 'crypto'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function requestChangePassword (email: string) {
   let user
@@ -25,6 +29,18 @@ export async function requestChangePassword (email: string) {
           code
         }
       })
+
+      const { error } = await resend.emails.send({
+        from: 'SplitGroup <splitgroup@vmoon.me>',
+        to: email,
+        subject: 'Restablecer contraseña',
+        react: ResetPasswordEmail({ username: user.username ?? '', hash: code })
+      })
+
+      if (error) {
+        console.error('Error sending email:', error)
+        return { error: { field: 'email', message: 'Error sending email' } }
+      }
     }
   } catch (e) {
     console.error(e)

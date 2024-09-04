@@ -3,6 +3,10 @@
 import { db } from '@/lib/db'
 import crypto from 'crypto'
 import { NotificationType } from '../../../../../../prisma/notification-type-enum'
+import { Resend } from 'resend'
+import { GroupInviteEmail } from '@/components/mails/group-invite'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function inviteMemberToGroup (email: string, groupId: string) {
   const user = await db.user.findFirst({
@@ -62,7 +66,21 @@ export async function inviteMemberToGroup (email: string, groupId: string) {
     }
   })
 
-  // TODO: Agregar alerta por mail
+  const { error } = await resend.emails.send({
+    from: 'SplitGroup <splitgroup@vmoon.me>',
+    to: email,
+    subject: 'Invitación a grupo',
+    react: GroupInviteEmail({
+      groupName: group.name,
+      username: user.name || 'Usuario'
+    })
+  })
+
+  if (error) {
+    return {
+      error: 'Error al enviar el correo'
+    }
+  }
 }
 
 export async function generateInvitationLink (groupId: string, maxUses: number) {

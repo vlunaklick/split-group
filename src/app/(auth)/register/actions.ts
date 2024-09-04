@@ -1,7 +1,11 @@
 'use server'
 
+import { WelcomeEmail } from '@/components/mails/welcome-email'
 import { db } from '@/lib/db'
 import { Prisma } from '@prisma/client'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function createUser ({ username, password, name, email }: { username: string, password: string, name: string, email: string }) {
   try {
@@ -13,6 +17,19 @@ export async function createUser ({ username, password, name, email }: { usernam
         email
       }
     })
+
+    const { error } = await resend.emails.send({
+      from: 'SplitGroup <splitgroup@vmoon.me>',
+      to: email,
+      subject: 'Bienvenido a SplitGroup',
+      react: WelcomeEmail({ username, firstName: name })
+    })
+
+    if (error) {
+      console.error('Error sending email:', error)
+      return { error: { field: 'email', message: 'Error sending email' } }
+    }
+
     return null
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {

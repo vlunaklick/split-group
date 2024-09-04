@@ -6,6 +6,11 @@ import { handleDistribution } from '@/utils/distributions'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { NotificationType } from '../../../../../../prisma/notification-type-enum'
+import { SpendUpdatedEmail } from '@/components/mails/spend-updated'
+import { Resend } from 'resend'
+import { PayedDebtEmail } from '@/components/mails/payed-debt'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function createSpending ({ groupId, spending, mode }: { groupId: string, spending: SpendingInfo, mode: DistributionModeType }) {
   const session = await getServerSession(authOptions)
@@ -57,7 +62,7 @@ export async function createSpending ({ groupId, spending, mode }: { groupId: st
 
 export async function updateSpending ({ spendingId, spending, mode }: { spendingId: string, spending: SpendingInfo, mode: DistributionModeType }) {
   // Actualizamos el gasto
-  await db.spending.update({
+  const spendingEntity = await db.spending.update({
     where: {
       id: spendingId
     },
@@ -68,6 +73,10 @@ export async function updateSpending ({ spendingId, spending, mode }: { spending
       categoryId: spending.categoryId,
       currencyId: spending.currencyId,
       value: spending.amount
+    },
+    include: {
+      group: true,
+      owner: true
     }
   })
 
@@ -123,7 +132,20 @@ export async function updateSpending ({ spendingId, spending, mode }: { spending
     })
   }
 
-  // TODO: Agregar alerta por mail
+  const { error } = await resend.emails.send({
+    from: 'SplitGroup <splitgroup@vmoon.me>',
+    to: spendingEntity.owner.email || '',
+    subject: 'Gasto actualizado',
+    react: SpendUpdatedEmail({
+      spendingName: spendingEntity.name,
+      groupName: spendingEntity.group.name,
+      username: spendingEntity.owner.name || 'Usuario'
+    })
+  })
+
+  if (error) {
+    console.error(error)
+  }
 }
 
 export async function deleteSpending ({ spendingId }: { spendingId: string }) {
@@ -173,22 +195,21 @@ export async function getCommentsOfSpending ({ spendingId }: { spendingId: strin
 }
 
 export async function payDebt ({ debtId }: { debtId: string }) {
-  db.debt.update({
+  const debt = await db.debt.update({
     where: {
       id: debtId
     },
     data: {
       paid: true
-    }
-  })
-
-  const debt = await db.debt.findUnique({
-    where: {
-      id: debtId
     },
     include: {
-      spending: true,
-      debter: true
+      spending: {
+        include: {
+          group: true
+        }
+      },
+      debter: true,
+      creditor: true
     }
   })
 
@@ -199,22 +220,76 @@ export async function payDebt ({ debtId }: { debtId: string }) {
   await db.notification.create({
     data: {
       type: NotificationType.GENERIC,
-      userId: debt.creditorId,
+      userId: debt.creditor.id,
       title: 'Deuda pagada',
       message: description
     }
   })
 
-  // TODO: Agregar alerta por mail
+  const { error } = await resend.emails.send({
+    from: 'SplitGroup <splitgroup@vmoon.me>',
+    to: debt.creditor.email || '',
+    subject: 'Deuda pagada',
+    react: PayedDebtEmail({
+      username: debt.creditor.name || 'Usuario',
+      amount: debt.amount,
+      groupName: debt.spending.group.name,
+      allDebt: false,
+      payer: debt.debter.name || 'Usuario'
+    })
+  })
+
+  if (error) {
+    console.error(error)
+  }
 }
 
 export async function forgiveDebt ({ debtId }: { debtId: string }) {
-  return db.debt.update({
+  const debt = await db.debt.update({
     where: {
       id: debtId
     },
     data: {
       forgiven: true
+    },
+    include: {
+      spending: {
+        include: {
+          group: true
+        }
+      },
+      debter: true,
+      creditor: true
     }
   })
+
+  if (!debt) return
+
+  const description = 'Tu deuda de ' + debt.amount.toFixed(2) + ' en el gasto ' + debt.spending.name + ' ha sido perdonada.'
+
+  await db.notification.create({
+    data: {
+      type: NotificationType.GENERIC,
+      userId: debt.creditor.id,
+      title: 'Deuda perdonada',
+      message: description
+    }
+  })
+
+  const { error } = await resend.emails.send({
+    from: 'SplitGroup <splitgroup@vmoon.me>',
+    to: debt.creditor.email || '',
+    subject: 'Deuda perdonada',
+    react: PayedDebtEmail({
+      username: debt.creditor.name || 'Usuario',
+      amount: debt.amount,
+      groupName: debt.spending.group.name,
+      allDebt: false,
+      payer: debt.debter.name || 'Usuario'
+    })
+  })
+
+  if (error) {
+    console.error(error)
+  }
 }
