@@ -12,7 +12,8 @@
     "lint": "next lint",
     "db:seed": "npx prisma db seed",
     "postinstall": "prisma generate",
-    "build": "prisma generate && next build"
+    "build": "prisma generate && next build",
+    "test": "playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -66,6 +67,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.47.1",
     "@types/node": "^20.14.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
