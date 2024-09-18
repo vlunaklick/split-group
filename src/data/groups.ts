@@ -20,7 +20,7 @@ export function useGetGroupAdmins ({ groupId }: { groupId: string }) {
 
 export function useGetMembersWithoutAdministrator ({ groupId }: { groupId: string }) {
   return useSWR(['/api/groups/members-without-admins', groupId], async ([_, groupId]) => {
-    return await fetch(`/api/groups/${groupId}?membersWithoutAdmins=true`).then(res => res.json())
+    return await fetch(`/api/groups/${groupId}?getMembersWithoutAdmins=true`).then(res => res.json())
   })
 }
 
