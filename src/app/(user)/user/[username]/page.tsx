@@ -1,4 +1,4 @@
-import { Profile } from '@/components/user/profile/profile'
+import { Profile, ProfileSkeleton } from '@/components/user/profile/profile'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
@@ -17,7 +17,7 @@ export default async function Page ({ params } : { params: { username: string } 
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<ProfileSkeleton />}>
       <Profile username={username} />
     </Suspense>
   )
