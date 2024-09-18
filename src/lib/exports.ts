@@ -27,7 +27,7 @@ export async function exportDataToExcel (groupId: string) {
   try {
     const response = await fetch(`/api/groups/${groupId}/spendings?getSpendingsTable=true`).then(res => res.json())
 
-    const spendings: SpendingTableType[] = response
+    const spendings: SpendingTableType[] = response.data
 
     if (spendings && Array.isArray(spendings)) {
       const dataToExport = spendings.map((spending: any) => ({
@@ -59,7 +59,7 @@ export async function exportDataToPDF (groupId: string, props: any) {
   try {
     const response = await fetch(`/api/groups/${groupId}/spendings?getSpendingsTable=true`).then(res => res.json())
 
-    const spendings: SpendingTableType[] = response
+    const spendings: SpendingTableType[] = response.data
 
     if (spendings && Array.isArray(spendings)) {
       const dataToExport = spendings.map((spending: any) => ({
