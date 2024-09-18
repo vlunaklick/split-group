@@ -127,7 +127,7 @@ export const ThemeSetting = () => {
 const ThemeBlock = ({ text, bgColor, textColor, cardColor }: { text: string, bgColor: string, textColor: string, cardColor: string }) => {
   return (
     <>
-      <div className="items-center rounded-md border-2 border-border p-1 hover:border-zinc-300 dark:hover:border-zinc-600">
+      <div className="items-center rounded-md border-2 border-border p-1 hover:border-primary">
         <div className={`space-y-2 rounded-sm ${bgColor} p-2`}>
           <div className={`space-y-2 rounded-md ${cardColor} p-2 shadow-sm`}>
             <div className={`h-2 w-[80px] rounded-lg ${textColor}`} />
@@ -153,7 +153,7 @@ const ThemeBlock = ({ text, bgColor, textColor, cardColor }: { text: string, bgC
 export const ThemeBlockSkeleton = ({ text }: { text: string }) => {
   return (
     <div className='flex flex-col'>
-      <div className="items-center rounded-md border-2 border-zinc-100 dark:border-zinc-800 p-1 hover:border-zinc-300 dark:hover:border-zinc-600 animate-pulse">
+      <div className="items-center rounded-md border-2 p-1 border-border animate-pulse">
         <div className={'space-y-2 rounded-sm bg-zinc-600 p-2'}>
           <div className={'space-y-2 rounded-md bg-zinc-500 p-2 shadow-sm'}>
             <div className={'h-2 w-[80px] rounded-lg bg-muted-foreground'} />

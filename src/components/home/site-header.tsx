@@ -11,7 +11,7 @@ import { Button, buttonVariants } from '../ui/button'
 
 export function SiteHeader () {
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b dark:border-zinc-800 px-4 md:px-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-30">
+    <header className="sticky top-0 flex h-16 items-center gap-4 border-b px-4 md:px-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-30">
       <Link href="/" className="mr-6 items-center space-x-2 hidden md:flex">
         <Logo />
 
@@ -38,7 +38,7 @@ export function SiteHeader () {
             <span className="sr-only">Alternar navegación</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="flex flex-col dark:border-zinc-800">
+        <SheetContent side="left" className="flex flex-col">
           <Link
             href="/"
             className="flex items-center gap-2 text-lg font-semibold"

@@ -16,6 +16,7 @@ import { RadioGroupItem } from '@radix-ui/react-radio-group'
 import { useSWRConfig } from 'swr'
 import { GROUP_ICONS } from '@/components/group-icons'
 import { IconLoader2 } from '@tabler/icons-react'
+import { cn } from '@/lib/utils'
 
 export const CreateGroupFrom = () => {
   const router = useRouter()
@@ -103,16 +104,9 @@ export const CreateGroupFrom = () => {
               >
                 {
                   GROUP_ICONS.map(({ name, Icon }) => (
-                    <FormItem key={name}>
-                      <FormLabel className="dark:[&:has([data-state=checked])>div]:border-muted-foreground dark:[&:has([data-state=checked])>div]:text-white [&:has([data-state=checked])>div]:text-black [&:has([data-state=checked])>div]:border-zinc-600">
-                        <FormControl>
-                          <RadioGroupItem value={name} className="sr-only" />
-                        </FormControl>
-                        <IconSelector>
-                          <Icon />
-                        </IconSelector>
-                      </FormLabel>
-                    </FormItem>
+                    <IconSelector key={name} name={name} label={name}>
+                      <Icon className="h-6 w-6" />
+                    </IconSelector>
                   ))
                 }
               </RadioGroup>
@@ -128,10 +122,22 @@ export const CreateGroupFrom = () => {
   )
 }
 
-export const IconSelector = ({ children }: { children: React.ReactNode }) => {
+export const IconSelector = ({ children, name, label }: { children: React.ReactNode; name: string; label: string }) => {
   return (
-    <div className="flex justify-center items-center w-12 h-12 rounded-md border text-muted-foreground/80 border-muted-foreground/80 cursor-pointer">
-      {children}
-    </div>
+    <FormItem>
+      <FormLabel className={cn(
+        'cursor-pointer',
+        '[&:has([data-state=checked])>div]:border-primary',
+        '[&:has([data-state=checked])>div]:text-primary'
+      )}>
+        <FormControl>
+          <RadioGroupItem value={name} className="sr-only" />
+        </FormControl>
+        <div className="flex justify-center items-center w-12 h-12 rounded-md border text-muted-foreground/80 border-muted-foreground/80 hover:border-primary hover:text-primary transition-colors">
+          {children}
+        </div>
+        <span className="sr-only">{label}</span>
+      </FormLabel>
+    </FormItem>
   )
 }

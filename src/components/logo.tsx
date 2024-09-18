@@ -1,10 +1,13 @@
 import { cn } from '@/lib/utils'
 
-export function Logo ({ className }: { className?: string }) {
+export function Logo ({ className, fullName = 'Spendwise' }: { className?: string, fullName?: string }) {
   return (
-    <h1 className={cn('text-3xl font-semibold dark:text-white text-black', className)}>
-      S
-      <span className="text-emerald-500">.</span>
-    </h1>
+    <div className={cn('flex items-center', className)}>
+      <h1 className="text-3xl font-semibold text-foreground">
+        S
+        <span className="text-emerald-500" aria-hidden="true">.</span>
+      </h1>
+      <span className="sr-only">{fullName}</span>
+    </div>
   )
 }

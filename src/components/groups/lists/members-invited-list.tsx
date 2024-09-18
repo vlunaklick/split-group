@@ -36,7 +36,7 @@ export function MembersInvitedList ({ groupId }: { groupId: string }) {
     <article>
       <header>
         <h3 className="text-lg font-medium">Miembros invitados</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+        <p className="text-sm text-muted-foreground mb-2">
           Estos son los miembros que has invitado a unirse a este grupo.
         </p>
       </header>
@@ -49,7 +49,7 @@ export function MembersInvitedList ({ groupId }: { groupId: string }) {
         </ul>
       )}
 
-      {invitations?.length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">No has invitado a ningún miembro a unirse a este grupo.</p>}
+      {invitations?.length === 0 && <p className="text-sm text-muted-foreground">No has invitado a ningún miembro a unirse a este grupo.</p>}
 
       {invitations?.length > 0 && (
         <ul className="space-y-2">
@@ -60,7 +60,7 @@ export function MembersInvitedList ({ groupId }: { groupId: string }) {
               </Avatar>
               <div>
                 <p className="text-sm font-medium">{invitation.user.name}</p>
-                <p className="text-xs text-gray-500">{invitation.user.email}</p>
+                <p className="text-xs text-muted-foreground">{invitation.user.email}</p>
               </div>
               <div className="ml-auto">
                 <Button variant="ghost" size='icon' onClick={() => onRemove(invitation.user.id)} disabled={isLoading}>

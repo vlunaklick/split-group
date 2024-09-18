@@ -79,12 +79,12 @@ const SkeletonComment = () => {
   return (
     <div className="mb-4 p-3 bg-secondary rounded-lg animate-pulse">
       <div className="flex justify-between items-center mb-2">
-        <div className="w-20 h-4 bg-gray-300 rounded-full"></div>
+        <div className="w-20 h-4 text-muted-foreground rounded-full"></div>
         <div className="flex items-center space-x-2">
-          <div className="w-10 h-4 bg-gray-300 rounded-full"></div>
+          <div className="w-10 h-4 text-muted-foreground rounded-full"></div>
         </div>
       </div>
-      <div className="w-3/4 h-4 bg-gray-300 rounded-full"></div>
+      <div className="w-3/4 h-4 text-muted-foreground rounded-full"></div>
     </div>
   )
 }

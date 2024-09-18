@@ -107,7 +107,7 @@ export const GroupNotification = ({ notification }: { notification: Notification
 
   return (
     <div className={cn('flex items-start gap-3 w-full relative')}>
-      <div className="flex h-8 w-8 items-center justify-center rounded-full dark:bg-zinc-100 dark:text-zinc-500">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
         <IconUsers className="h-4 w-4" />
       </div>
       <div className="flex-1 space-y-1">
@@ -177,7 +177,7 @@ export const GenericNotification = ({ notification }: { notification: Notificati
 
   return (
     <div className="flex items-start gap-3 w-full relative">
-      <div className="flex h-8 w-8 items-center justify-center rounded-full dark:bg-zinc-100 dark:text-zinc-500">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
         <IconUsers className="h-4 w-4" />
       </div>
       <div className="flex-1 space-y-1">
@@ -212,7 +212,7 @@ export const GenericNotification = ({ notification }: { notification: Notificati
 export const NotificationSkeleton = () => {
   return (
     <div className="flex items-start gap-3 w-full">
-      <div className="flex h-8 w-8 items-center justify-center rounded-full dark:bg-zinc-100 dark:text-zinc-500">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
         <Skeleton className="h-4 w-4" />
       </div>
       <div className="flex-1 space-y-1">

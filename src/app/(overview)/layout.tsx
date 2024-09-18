@@ -18,9 +18,9 @@ export default async function RootLayout ({
 }>) {
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-r bg-muted/40 md:block dark:border-zinc-800">
+      <div className="hidden border-r bg-muted/40 md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] dark:border-zinc-800 lg:px-6">
+          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link
               href="/dashboard"
               className="flex items-center gap-2 text-lg font-semibold md:text-base"
@@ -38,7 +38,7 @@ export default async function RootLayout ({
       </div>
 
       <div className="flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b dark:border-zinc-800 bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           {/* Mobile */}
           <Sheet>
             <SheetTrigger asChild>
@@ -51,7 +51,7 @@ export default async function RootLayout ({
                 <span className="sr-only">Alternar navegación</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="flex flex-col dark:border-zinc-800">
+            <SheetContent side="left" className="flex flex-col">
               <Link
                 href="/dashboard"
                 className="flex items-center gap-2 text-lg font-semibold"

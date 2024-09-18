@@ -56,7 +56,7 @@ export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
     <article>
       <header>
         <h3 className="text-lg font-medium">Enlaces de invitación generados</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+        <p className="text-sm text-muted-foreground mb-2">
           Estos son los enlaces de invitación que has generado para que otros miembros se unan a este grupo
         </p>
       </header>
@@ -102,7 +102,7 @@ export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
                   </div>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">
+                  <span className="text-muted-foreground">
                     {invitation.uses} de {invitation.maxUses} usos
                   </span>
                   <Progress

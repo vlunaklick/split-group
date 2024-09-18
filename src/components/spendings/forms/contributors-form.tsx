@@ -133,7 +133,7 @@ export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setF
 
                 <div className="flex flex-col gap-1">
                   <span>{participants?.find((participant: User) => participant.id === debter.userId)?.username}</span>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-muted-foreground">
                     {participants?.find((participant: User) => participant.id === debter.userId)?.email}
                   </span>
                 </div>
