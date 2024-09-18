@@ -106,7 +106,7 @@ export const GroupNotification = ({ notification }: { notification: Notification
   const { timeAgo } = useTimeAgo(createdAt.getTime())
 
   return (
-    <div className={cn('flex items-start gap-3 w-full', !notification.read && 'bg-zinc-100 dark:bg-zinc-800')}>
+    <div className={cn('flex items-start gap-3 w-full relative')}>
       <div className="flex h-8 w-8 items-center justify-center rounded-full dark:bg-zinc-100 dark:text-zinc-500">
         <IconUsers className="h-4 w-4" />
       </div>
@@ -116,18 +116,30 @@ export const GroupNotification = ({ notification }: { notification: Notification
           <div className="ml-auto text-xs text-zinc-500">{timeAgo}</div>
         </div>
         <p className="text-sm text-zinc-500">{notification.message}</p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button variant="outline" size="sm" onClick={handleJoinGroup} disabled={isLoading}>
             Aceptar
           </Button>
           <Button variant="ghost" size="sm" onClick={handleRejectGroup} disabled={isLoading}>
             Rechazar
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleMarkAsRead} disabled={isLoading}>
-            Marcar como leído
-          </Button>
+          {!notification.read
+            ? (
+            <Button variant="ghost" size="sm" onClick={handleMarkAsRead} disabled={isLoading}>
+              Marcar como leído
+            </Button>
+              )
+            : null}
         </div>
       </div>
+
+      {!notification.read && (
+        <div className="absolute top-0 left-5">
+          <div className="h-3 w-3 bg-green-500 rounded-full">
+            <div className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-700 opacity-75"></div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -164,7 +176,7 @@ export const GenericNotification = ({ notification }: { notification: Notificati
   const { timeAgo } = useTimeAgo(createdAt.getTime())
 
   return (
-    <div className="flex items-start gap-3 w-full">
+    <div className="flex items-start gap-3 w-full relative">
       <div className="flex h-8 w-8 items-center justify-center rounded-full dark:bg-zinc-100 dark:text-zinc-500">
         <IconUsers className="h-4 w-4" />
       </div>
@@ -174,15 +186,25 @@ export const GenericNotification = ({ notification }: { notification: Notificati
           <div className="ml-auto text-xs text-zinc-500">{timeAgo}</div>
         </div>
         <p className="text-sm text-zinc-500">{notification.message}</p>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleMarkAsRead} disabled={isLoading}>
-            Marcar como leído
-          </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          {!notification.read && (
+            <Button variant="outline" size="sm" onClick={handleMarkAsRead} disabled={isLoading}>
+              Marcar como leído
+            </Button>
+          )}
           <Button variant="ghost" size="sm" onClick={handleDelete} disabled={isLoading}>
             Eliminar
           </Button>
         </div>
       </div>
+
+      {!notification.read && (
+        <div className="absolute top-0 left-5">
+          <div className="h-3 w-3 bg-green-500 rounded-full">
+            <div className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-700 opacity-75"></div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
