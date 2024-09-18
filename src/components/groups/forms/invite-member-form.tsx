@@ -1,4 +1,4 @@
-import { inviteMemberToGroup } from '@/app/(overview)/groups/[groupId]/settings/actions'
+import { inviteMemberToGroup } from '@/app/(overview)/groups/[groupId]/participants/actions'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'

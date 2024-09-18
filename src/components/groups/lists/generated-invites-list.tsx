@@ -1,4 +1,3 @@
-import { removeInvitationLink } from '@/app/(overview)/groups/[groupId]/settings/actions'
 import { useGetInvitationLink } from '@/data/groups'
 import { CheckCircle, Copy, X } from 'lucide-react'
 import { useState } from 'react'
@@ -7,6 +6,7 @@ import { useSWRConfig } from 'swr'
 import { Button } from '../../ui/button'
 import { Progress } from '../../ui/progress'
 import { Skeleton } from '../../ui/skeleton'
+import { removeInvitationLink } from '@/app/(overview)/groups/[groupId]/participants/actions'
 
 export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
   const [isLoading, setIsLoading] = useState(false)

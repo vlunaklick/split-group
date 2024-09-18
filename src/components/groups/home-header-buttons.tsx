@@ -1,9 +1,10 @@
 import { Button, buttonVariants } from '@/components/ui/button'
 import { hasGroupAdminPermission } from '@/data/apis/groups'
 import { cn } from '@/lib/utils'
-import { IconSettings, IconUsersGroup } from '@tabler/icons-react'
+import { IconUsersGroup } from '@tabler/icons-react'
 import Link from 'next/link'
 import { ExportButton } from './export-button'
+import { GroupConfigSheet } from './sheets/group-config-sheet'
 
 export const HeaderButtons = async ({ groupId }: { groupId: string }) => {
   const hasPermission = await hasGroupAdminPermission(groupId)
@@ -17,9 +18,7 @@ export const HeaderButtons = async ({ groupId }: { groupId: string }) => {
       <ExportButton groupId={groupId} />
 
       {hasPermission && (
-        <Link href={`/groups/${groupId}/settings`} className={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'hidden md:flex')}>
-          <IconSettings />
-        </Link>
+        <GroupConfigSheet groupId={groupId} />
       )}
     </>
   )
@@ -35,9 +34,7 @@ export const HeaderButtonsMobile = async ({ groupId }: { groupId: string }) => {
       </Link>
 
       {hasPermission && (
-        <Link href={`/groups/${groupId}/settings`} className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}>
-          <IconSettings />
-        </Link>
+        <GroupConfigSheet groupId={groupId} />
       )}
     </div>
   )

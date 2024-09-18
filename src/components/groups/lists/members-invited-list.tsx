@@ -1,4 +1,4 @@
-import { removeUserInvitation } from '@/app/(overview)/groups/[groupId]/settings/actions'
+import { removeUserInvitation } from '@/app/(overview)/groups/[groupId]/participants/actions'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
