@@ -1,17 +1,15 @@
 'use client'
 
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetOwedDebts } from '@/data/spendings'
 import { formatMoney } from '@/lib/money'
-import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { forgiveDebt } from '../../../app/(overview)/groups/[groupId]/spendings/actions'
-
-// TODO: Ver que solo se le pase spendId
 
 export const SpendingDebtsOwedList = ({ groupId, spendId }: { groupId: string, spendId: string }) => {
   const { data: owedDebts, isLoading: isLoadingList } = useGetOwedDebts({ groupId, spendId })
@@ -61,9 +59,9 @@ const Row = ({ name, amount, buttonText, onButtonClick, isLoading }: { name: str
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
-          {name[0]}
-        </div>
+        <Avatar>
+          <AvatarFallback>{name[0]}</AvatarFallback>
+        </Avatar>
 
         <div>
           <p className="font-medium">{name}</p>

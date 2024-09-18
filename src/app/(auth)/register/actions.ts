@@ -2,6 +2,7 @@
 
 import { WelcomeEmail } from '@/components/mails/welcome-email'
 import { db } from '@/lib/db'
+import { hashPassword } from '@/utils/password-utils'
 import { Prisma } from '@prisma/client'
 import { Resend } from 'resend'
 
@@ -9,10 +10,12 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function createUser ({ username, password, name, email }: { username: string, password: string, name: string, email: string }) {
   try {
+    const hashedPassword = hashPassword(password)
+
     await db.user.create({
       data: {
         username,
-        password,
+        password: hashedPassword,
         name,
         email
       }
