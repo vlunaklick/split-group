@@ -49,8 +49,14 @@ export const SideNav = () => {
 
 const SideNavLink = ({ href, children, className, isSelected }: { href: string; children: React.ReactNode; className?: string; isSelected?: boolean }) => {
   return (
-    <Link href={href} className={cn('flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary border border-transparent',
-      isSelected ? 'text-primary bg-muted' : 'text-muted-foreground', className)}
+    <Link
+      href={href}
+      className={cn(
+        'flex items-center gap-3 rounded-lg px-3 py-2 transition-all',
+        'text-foreground hover:bg-accent hover:text-accent-foreground',
+        isSelected ? 'bg-accent text-accent-foreground font-medium' : 'text-muted-foreground',
+        className
+      )}
     >
       {children}
     </Link>
