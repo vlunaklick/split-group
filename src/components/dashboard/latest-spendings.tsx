@@ -39,7 +39,7 @@ export const LatestsSpendings = async () => {
 const SpendingItem = ({ spending }: { spending: SpendingWithOwnerAndGroup }) => {
   return (
     <div className="flex items-center gap-4">
-      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
+      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full shrink-0')}>
         <SpendingIcon type={spending.category.name as 'Comida' | 'Transporte' | 'Entretenimiento' | 'Salud' | 'Educación' | 'Otros'} />
       </div>
       <div className="grid gap-1">
@@ -58,7 +58,7 @@ const SpendingItem = ({ spending }: { spending: SpendingWithOwnerAndGroup }) => 
 const SpendingItemSkeleton = () => {
   return (
     <div className="flex items-center gap-4">
-      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
+      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full shrink-0')}>
         <Skeleton className="w-8 h-8 rounded-full" />
       </div>
       <div className="grid gap-1">

@@ -12,8 +12,6 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-// TODO: evaluar si puedo llevar esto a la db
-
 export const AlertSettings = () => {
   const { data: alert, isLoading: isLoadingCurrent } = useGetAlertsSizeSelected()
 

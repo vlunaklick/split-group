@@ -18,7 +18,7 @@ export const StatsChart = () => {
   const { data = defaultData } = useGetMontlySpentGraph()
 
   return (
-    <Card className='xl:col-span-2'>
+    <Card className='xl:col-span-2 h-max'>
       <CardHeader>
         <CardTitle>Gasto anual</CardTitle>
         <CardDescription>

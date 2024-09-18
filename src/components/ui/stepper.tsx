@@ -3,8 +3,6 @@
 // @ts-nocheck
 'use client'
 
-// TODO: Change to CSS Variables
-
 import * as React from 'react'
 import { cva } from 'class-variance-authority'
 import { CheckIcon, Loader2, LucideIcon, X } from 'lucide-react'
