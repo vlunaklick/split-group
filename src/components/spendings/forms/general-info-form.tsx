@@ -40,7 +40,7 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
         <CardDescription>Ingresa la información del gasto</CardDescription>
       </CardHeader>
       <CardContent>
-        <Form {...form}>
+        <Form {...form} key={form.watch('amount') ? 0 : 1}>
           <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
@@ -119,6 +119,7 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
                         placeholder="$0.00"
                         decimalsLimit={2}
                         className={inputStyle}
+                        defaultValue={field.value}
                         onChange={(value) => field.onChange(value)}
                       />
                     </FormControl>

@@ -18,7 +18,7 @@ export async function Spendings ({ groupId, searchParams }: { groupId: string, s
   return (
     <>
       <header className="flex md:items-center gap-4 flex-col md:flex-row md:justify-between">
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-row gap-4 items-center flex-wrap">
           <h1 className="text-3xl font-semibold">
             {data.group.name}
           </h1>

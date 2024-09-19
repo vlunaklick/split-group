@@ -19,8 +19,6 @@ import { PayersForm } from './payers-form'
 import { DebtersForm } from './contributors-form'
 import { ExpeseInfoForm } from './general-info-form'
 
-// TODO: Add isLoading
-
 const steps = [
   { label: 'Información del gasto', description: 'Ingresa la información del gasto', icon: IconUser },
   { label: 'Contribuyentes', description: 'Selecciona los contribuyentes', icon: IconCoin },
@@ -32,6 +30,7 @@ export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
   const [mode, setMode] = useState<DistributionModeType>('equal')
   const router = useRouter()
   const { mutate } = useSWRConfig()
+  const [isLoading, setIsLoading] = useState(false)
 
   const { data: categories, isLoading: isLoadingCategories } = useGetCategories()
   const { data: currencies, isLoading: isLoadingCurrencies } = useGetAvailableCurrencies()
@@ -50,6 +49,7 @@ export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
 
   const createSpendingFinalStep = async () => {
     try {
+      setIsLoading(true)
       await createSpending({
         groupId,
         mode,
@@ -64,7 +64,8 @@ export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
         router.push(`/groups/${groupId}/spendings`)
       }, 1000)
     } catch (error) {
-      console.error(error)
+      setIsLoading(false)
+      toast.error('Ocurrió un error al crear el gasto')
     }
   }
 
@@ -82,13 +83,13 @@ export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
           <DebtersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} payers={finalData.payers} mode={mode} setMode={setMode} />
         </Step>
 
-        <LastStep onSubmit={createSpendingFinalStep} />
+        <LastStep onSubmit={createSpendingFinalStep} isSubmitting={isLoading} />
       </Stepper>
     </>
   )
 }
 
-const LastStep = ({ onSubmit }: { onSubmit: () => void }) => {
+const LastStep = ({ onSubmit, isSubmitting }: { onSubmit: () => void; isSubmitting?: boolean }) => {
   const { hasCompletedAllSteps, prevStep } = useStepper()
 
   if (!hasCompletedAllSteps) {
@@ -96,9 +97,13 @@ const LastStep = ({ onSubmit }: { onSubmit: () => void }) => {
   }
 
   return (
-    <>
-      <Button variant='default' onClick={onSubmit} className='mx-auto'>Cargar gasto</Button>
-      <Button variant='default' onClick={prevStep} className='mx-auto'>Volver</Button>
-    </>
+    <div className='flex flex-row gap-4 flex-wrap justify-center'>
+      <Button variant='default' onClick={onSubmit} className='mx-auto' disabled={isSubmitting}>
+        Cargar gasto
+      </Button>
+      <Button variant='default' onClick={prevStep} className='mx-auto' disabled={isSubmitting}>
+        Volver
+      </Button>
+    </div>
   )
 }

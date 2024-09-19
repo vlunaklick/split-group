@@ -19,18 +19,17 @@ import { updateSpendingSchema } from '@/lib/form'
 import { useGetSpendingById } from '@/data/spendings'
 import { updateSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
 
-// TODO: Add isLoading
-// TODO: Arreglar el error que sale acá
 const steps = [
   { label: 'Información del gasto', description: 'Ingresa la información del gasto', icon: IconUser },
   { label: 'Contribuyentes', description: 'Selecciona los contribuyentes', icon: IconCoin },
   { label: 'Deudores', description: 'Selecciona los deudores', icon: IconUsers }
 ] as StepItem[]
 
-export const EditSpendingForm = ({ spendId, groupId }: { spendId: string, groupId: string }) => {
+export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: string, groupId: string, callback?: () => void }) => {
   const [finalData, setFinalData] = useState<any>({})
   const [mode, setMode] = useState<DistributionModeType>('equal')
   const { mutate } = useSWRConfig()
+  const [isLoading, setIsLoading] = useState(false)
 
   const { data: categories, isLoading: isLoadingCategories } = useGetCategories()
   const { data: currencies, isLoading: isLoadingCurrencies } = useGetAvailableCurrencies()
@@ -59,6 +58,7 @@ export const EditSpendingForm = ({ spendId, groupId }: { spendId: string, groupI
 
   const updateSpendingFinalStep = async () => {
     try {
+      setIsLoading(true)
       await updateSpending({
         spendingId: spendId,
         mode,
@@ -70,8 +70,13 @@ export const EditSpendingForm = ({ spendId, groupId }: { spendId: string, groupI
       mutate(['lastSpendings', groupId])
       mutate(['lastDebts', groupId])
       mutate(['spendings', groupId, spendId])
+
+      if (callback) {
+        callback()
+      }
     } catch (error) {
-      console.error(error)
+      setIsLoading(false)
+      toast.error('Ocurrió un error al actualizar el gasto')
     }
   }
 
@@ -89,12 +94,12 @@ export const EditSpendingForm = ({ spendId, groupId }: { spendId: string, groupI
       <Step {...steps[2]} key={steps[2].label}>
         <DebtersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} payers={finalData.payers} mode={mode} setMode={setMode} />
       </Step>
-      <LastStep onSubmit={updateSpendingFinalStep} />
+      <LastStep onSubmit={updateSpendingFinalStep} isSubmitting={isLoading} />
     </Stepper>
   )
 }
 
-const LastStep = ({ onSubmit }: { onSubmit: () => void }) => {
+const LastStep = ({ onSubmit, isSubmitting }: { onSubmit: () => void, isSubmitting: boolean }) => {
   const { hasCompletedAllSteps, prevStep } = useStepper()
 
   if (!hasCompletedAllSteps) {
@@ -102,9 +107,13 @@ const LastStep = ({ onSubmit }: { onSubmit: () => void }) => {
   }
 
   return (
-    <>
-      <Button variant='default' onClick={onSubmit} className='mx-auto'>Cargar gasto</Button>
-      <Button variant='default' onClick={prevStep} className='mx-auto'>Volver</Button>
-    </>
+    <div className='flex flex-row gap-4 flex-wrap justify-center'>
+      <Button variant='default' onClick={onSubmit} className='mx-auto' disabled={isSubmitting}>
+        Actualizar gasto
+      </Button>
+      <Button variant='default' onClick={prevStep} className='mx-auto' disabled={isSubmitting}>
+        Volver
+      </Button>
+    </div>
   )
 }

@@ -20,7 +20,7 @@ export async function CustomSpendingInfo ({ groupId, spendId }: { groupId: strin
 
   return (
     <>
-      <header className="flex md:items-center gap-4 flex-col md:flex-row">
+      <header className="flex lg:items-center gap-4 flex-col lg:flex-row">
         <h1 className="text-3xl font-semibold">
           {data.spend?.group.name}
         </h1>
@@ -42,7 +42,7 @@ export async function CustomSpendingInfo ({ groupId, spendId }: { groupId: strin
             </BreadcrumbPage>
           </BreadcrumbList>
         </Breadcrumb>
-        <div className="ml-auto space-x-4">
+        <div className="md:ml-auto flex gap-2 flex-wrap">
           <CommentsSheet spendingId={spendId} />
 
           {data.isOwner && (

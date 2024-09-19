@@ -5,13 +5,15 @@ import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, Dr
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { EditSpendingForm } from '../forms/edit-spending-form'
+import { useState } from 'react'
 
 export function EditSpendingSheet ({ spendId, groupId, className }: { spendId: string, groupId: string, className?: string }) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
+  const [isOpen, setIsOpen] = useState(false)
 
   if (isDesktop) {
     return (
-      <Sheet>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger className={className} asChild>
           <Button variant="outline">Editar</Button>
         </SheetTrigger>
@@ -23,7 +25,7 @@ export function EditSpendingSheet ({ spendId, groupId, className }: { spendId: s
             </SheetDescription>
           </SheetHeader>
           <div className='overflow-y-auto flex flex-col gap-4'>
-            <EditSpendingForm spendId={spendId} groupId={groupId} />
+            <EditSpendingForm spendId={spendId} groupId={groupId} callback={() => setIsOpen(false)} />
           </div>
         </SheetContent>
       </Sheet>
@@ -31,7 +33,7 @@ export function EditSpendingSheet ({ spendId, groupId, className }: { spendId: s
   }
 
   return (
-    <Drawer>
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger className={className} asChild>
         <Button variant="outline">Editar</Button>
       </DrawerTrigger>
@@ -44,7 +46,7 @@ export function EditSpendingSheet ({ spendId, groupId, className }: { spendId: s
         </DrawerHeader>
 
         <div className='p-4 overflow-y-auto max-h-96'>
-          <EditSpendingForm spendId={spendId} groupId={groupId} />
+          <EditSpendingForm spendId={spendId} groupId={groupId} callback={() => setIsOpen(false)} />
         </div>
 
         <DrawerFooter>
