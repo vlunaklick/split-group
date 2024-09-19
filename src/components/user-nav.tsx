@@ -27,21 +27,26 @@ export const UserNav = async ({ className }: { className?: string }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          {session?.user?.name}
+          <span className="text-muted-foreground block text-xs">
+            {session?.user?.email}
+          </span>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild className='cursor-pointer'>
           <Link href={`/user/${session?.user?.username}`}>
             Perfil
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild className='cursor-pointer'>
           <Link href="/settings">
             Configuración
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <SignOutButton />
+          <SignOutButton className="w-full text-left" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
