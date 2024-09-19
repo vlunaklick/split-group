@@ -61,7 +61,7 @@ export const SpendingInfo = ({ spendId }: { spendId: string }) => {
   )
 }
 
-const SpendInfoSkeleton = () => {
+export const SpendInfoSkeleton = () => {
   return (
     <Card className='w-full'>
       <CardHeader>

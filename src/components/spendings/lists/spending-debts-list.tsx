@@ -95,3 +95,19 @@ const RowSkeleton = ({ buttonText }: {buttonText: string}) => {
     </div>
   )
 }
+
+export const SpendingDebtsListSkeleton = () => {
+  return (
+    <Card>
+      <CardHeader>
+        <Skeleton className="w-40 h-10" />
+        <Skeleton className="w-40 h-4" />
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <RowSkeleton buttonText="Pagar" />
+        <RowSkeleton buttonText="Pagar" />
+        <RowSkeleton buttonText="Pagar" />
+      </CardContent>
+    </Card>
+  )
+}

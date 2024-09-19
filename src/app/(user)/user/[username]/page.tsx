@@ -1,12 +1,21 @@
 import { Profile, ProfileSkeleton } from '@/components/user/profile/profile'
-import { Metadata } from 'next'
+import { getUserByUsername } from '@/data/apis/users'
+import { Metadata, ResolvingMetadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-// TODO: Ver de hacer esto dinámico
-export const metadata: Metadata = {
-  title: 'Profiles',
-  description: 'Perfil de usuario'
+export async function generateMetadata (
+  { params }: { params: { username: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const username = params.username
+
+  await getUserByUsername({ username })
+
+  return {
+    title: `Perfil de ${username}`,
+    description: `Perfil de usuario ${username}`
+  }
 }
 
 export default async function Page ({ params } : { params: { username: string } }) {

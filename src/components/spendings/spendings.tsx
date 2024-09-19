@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { SpendingsList } from './lists/spendings-list'
 import { GetSpendingsSchema } from '@/lib/validations'
+import { DataTableSkeleton } from '../data-table/data-table-skeleton'
+import { Skeleton } from '../ui/skeleton'
 
 export async function Spendings ({ groupId, searchParams }: { groupId: string, searchParams: GetSpendingsSchema }) {
   const data = await getGroup(groupId)
@@ -42,6 +44,28 @@ export async function Spendings ({ groupId, searchParams }: { groupId: string, s
       <div className="grid gap-4">
         <SpendingsList groupId={groupId} searchParams={searchParams} />
       </div>
+    </>
+  )
+}
+
+export const SpendingsPageSkeleton = () => {
+  return (
+    <>
+      <header className="flex md:justify-between md:items-center gap-4 flex-col md:flex-row">
+        <div className="flex flex-col gap-2">
+          <Skeleton className="w-40 h-10" />
+        </div>
+      </header>
+
+      <DataTableSkeleton
+        columnCount={5}
+        rowCount={10}
+        searchableColumnCount={1}
+        showViewOptions
+        cellWidths={['auto', 'auto', 'auto', 'auto', 'auto']}
+        withPagination
+        shrinkZero
+      />
     </>
   )
 }

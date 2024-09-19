@@ -1,4 +1,4 @@
-import { Spendings } from '@/components/spendings/spendings'
+import { Spendings, SpendingsPageSkeleton } from '@/components/spendings/spendings'
 import { searchParamsSchema } from '@/lib/validations'
 import { SearchParams } from '@/types'
 import { notFound } from 'next/navigation'
@@ -14,7 +14,7 @@ export default async function GroupId ({ params, searchParams } : { params: { gr
   const search = searchParamsSchema.parse(searchParams)
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<SpendingsPageSkeleton />}>
       <Spendings groupId={groupId} searchParams={search} />
     </Suspense>
   )

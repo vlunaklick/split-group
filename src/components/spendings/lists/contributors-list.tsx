@@ -79,3 +79,22 @@ const SkeletonRow = ({ hasValue }: { hasValue: boolean }) => {
     </div>
   )
 }
+
+export const ContributorsListSkeleton = () => {
+  return (
+    <Card className='h-min'>
+      <CardHeader>
+        <CardTitle>Contribuyentes</CardTitle>
+        <CardDescription>Estas son las personas que participaron del gasto.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col space-y-4">
+          <SkeletonRow hasValue />
+          <SkeletonRow hasValue={false} />
+          <SkeletonRow hasValue={false} />
+          <SkeletonRow hasValue={false} />
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
