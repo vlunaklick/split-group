@@ -1,10 +1,12 @@
+import { hashPassword } from '../src/utils/password-utils'
+
 export const usersMocks = [
   {
     user: {
       email: 'admin@example.com',
       name: 'admin',
       username: 'admin',
-      password: 'contra123',
+      password: hashPassword('contra123'),
       userConfig: {
         inviteNotification: true,
         spentNotification: false,
@@ -18,7 +20,7 @@ export const usersMocks = [
       email: 'user@example.com',
       name: 'User',
       username: 'user',
-      password: 'contra123',
+      password: hashPassword('contra123'),
       userConfig: {
         inviteNotification: false,
         spentNotification: true,
@@ -32,7 +34,7 @@ export const usersMocks = [
       email: 'user2@example.com',
       name: 'User2',
       username: 'user2',
-      password: 'contra123',
+      password: hashPassword('contra123'),
       userConfig: {
         inviteNotification: true,
         spentNotification: true,
