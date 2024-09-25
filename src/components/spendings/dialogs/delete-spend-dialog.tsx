@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 
-export function DeleteSpendingDialog ({ groupId, spendId }: { groupId: string, spendId: string }) {
+export function DeleteSpendingDialog ({ groupId, spendId, show }: { groupId: string, spendId: string, show: boolean }) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { mutate } = useSWRConfig()
@@ -29,6 +29,8 @@ export function DeleteSpendingDialog ({ groupId, spendId }: { groupId: string, s
       router.push(`/groups/${groupId}/spendings`)
     }, 2000)
   }
+
+  if (!show) return null
 
   return (
     <AlertDialog>

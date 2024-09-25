@@ -10,7 +10,8 @@ export async function getNotifications () {
   return await db.notification.findMany({
     where: {
       userId,
-      type: NotificationType.GENERIC
+      type: NotificationType.GENERIC,
+      read: false
     },
     orderBy: {
       createdAt: 'desc'

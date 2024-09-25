@@ -44,13 +44,8 @@ export async function CustomSpendingInfo ({ groupId, spendId }: { groupId: strin
         </Breadcrumb>
         <div className="md:ml-auto flex gap-2 flex-wrap">
           <CommentsSheet spendingId={spendId} />
-
-          {data.isOwner && (
-            <>
-              <DeleteSpendingDialog groupId={groupId} spendId={spendId} />
-              <EditSpendingSheet groupId={groupId} spendId={spendId} />
-            </>
-          )}
+          <DeleteSpendingDialog groupId={groupId} spendId={spendId} show={data.isOwner} />
+          <EditSpendingSheet groupId={groupId} spendId={spendId} show={data.isOwner} />
         </div>
       </header>
 

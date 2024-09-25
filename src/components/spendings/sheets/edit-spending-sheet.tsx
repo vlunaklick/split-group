@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { EditSpendingForm } from '../forms/edit-spending-form'
 import { useState } from 'react'
+import { EditSpendingForm } from '../forms/edit-spending-form'
 
-export function EditSpendingSheet ({ spendId, groupId, className }: { spendId: string, groupId: string, className?: string }) {
+export function EditSpendingSheet ({ spendId, groupId, className, show }: { spendId: string, groupId: string, className?: string, show: boolean }) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const [isOpen, setIsOpen] = useState(false)
+
+  if (!show) return null
 
   if (isDesktop) {
     return (

@@ -1,23 +1,23 @@
 'use client'
 
+import { updateSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
 import { DistributionModeType } from '@/app/(overview)/groups/[groupId]/spendings/types'
 import { Button } from '@/components/ui/button'
 import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
 import { useGetGroupParticipnts } from '@/data/groups'
 import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
+import { useGetSpendingById } from '@/data/spendings'
+import { updateSpendingSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
-import { PayersForm } from './payers-form'
 import { DebtersForm } from './contributors-form'
 import { ExpeseInfoForm } from './general-info-form'
-import { updateSpendingSchema } from '@/lib/form'
-import { useGetSpendingById } from '@/data/spendings'
-import { updateSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
+import { PayersForm } from './payers-form'
 
 const steps = [
   { label: 'Información del gasto', description: 'Ingresa la información del gasto', icon: IconUser },
@@ -26,15 +26,14 @@ const steps = [
 ] as StepItem[]
 
 export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: string, groupId: string, callback?: () => void }) => {
+  const { mutate } = useSWRConfig()
   const [finalData, setFinalData] = useState<any>({})
   const [mode, setMode] = useState<DistributionModeType>('equal')
-  const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
   const { data: categories, isLoading: isLoadingCategories } = useGetCategories()
   const { data: currencies, isLoading: isLoadingCurrencies } = useGetAvailableCurrencies()
   const { data: participants, isLoading: isLoadingParticipants } = useGetGroupParticipnts({ groupId })
-
   const { data: spendData } = useGetSpendingById({ spendingId: spendId })
 
   const form = useForm<z.infer<typeof updateSpendingSchema>>({
@@ -45,16 +44,27 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
       description: '',
       categoryId: '',
       currencyId: ''
-    },
-    values: {
-      name: spendData?.name || '',
-      amount: spendData?.value || 0,
-      description: spendData?.description || '',
-      categoryId: spendData?.categoryId || '',
-      currencyId: spendData?.currencyId || '',
-      date: new Date(spendData?.date || new Date())
     }
   })
+
+  useEffect(() => {
+    if (spendData) {
+      form.reset({
+        name: spendData.name,
+        amount: spendData.amount,
+        description: spendData.description,
+        categoryId: spendData.categoryId,
+        currencyId: spendData.currencyId
+      })
+      setFinalData({
+        name: spendData.name,
+        amount: spendData.amount,
+        description: spendData.description,
+        categoryId: spendData.categoryId,
+        currencyId: spendData.currencyId
+      })
+    }
+  }, [spendData])
 
   const updateSpendingFinalStep = async () => {
     try {
@@ -84,7 +94,7 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
     <Stepper initialStep={0} steps={steps} orientation='vertical' className='w-full'>
       <Step {...steps[0]} key={steps[0].label}>
         <ExpeseInfoForm form={form}
-           categories={categories} currencies={currencies} isLoading={isLoadingCategories || isLoadingCurrencies} setFinalData={setFinalData} />
+          categories={categories} currencies={currencies} isLoading={isLoadingCategories || isLoadingCurrencies} setFinalData={setFinalData} />
       </Step>
 
       <Step {...steps[1]} key={steps[1].label}>
