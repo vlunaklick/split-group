@@ -1,10 +1,11 @@
 'use client'
 
+import { NumberField, NumberFieldDecrement, NumberFieldGroup, NumberFieldIncrement, NumberFieldInput } from '@/components/number-field'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input, inputStyle } from '@/components/ui/input'
+import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useStepper } from '@/components/ui/stepper'
@@ -12,11 +13,18 @@ import { formatDate } from '@/lib/dates'
 import { createSpendingSchema } from '@/lib/form'
 import { cn } from '@/lib/utils'
 import { Category, Currency } from '@prisma/client'
-import { CalendarIcon } from 'lucide-react'
-import CurrencyInput from 'react-currency-input-field'
+import { CalendarIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import { z } from 'zod'
 
-export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData, form }: { categories?: Category[]; currencies?: Currency[]; isLoading: boolean; setFinalData: (data: any) => void; form: any }) => {
+interface ExpenseInfoFormProps {
+  categories?: Category[]
+  currencies?: Currency[]
+  isLoading: boolean
+  setFinalData: (data: any) => void
+  form: any
+}
+
+export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData, form }: ExpenseInfoFormProps) => {
   const { nextStep } = useStepper()
 
   const onSubmit = (values: z.infer<typeof createSpendingSchema>) => {
@@ -29,6 +37,7 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
       currencyId,
       date
     }
+
     setFinalData(payload)
     nextStep()
   }
@@ -110,18 +119,25 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
               <FormField
                 control={form.control}
                 name="amount"
-                render={({ field }: any) => (
+                render={({ field: { onChange, value } }) => (
                   <FormItem className="grid gap-2 space-y-0 w-full">
                     <FormLabel>Monto</FormLabel>
                     <FormControl className='mt-0'>
-                      <CurrencyInput
-                        name='amount'
-                        placeholder="$0.00"
-                        decimalsLimit={2}
-                        className={inputStyle}
-                        defaultValue={field.value}
-                        onChange={(value) => field.onChange(value)}
-                      />
+                    <NumberField
+                      value={value}
+                      onChange={onChange}
+                      minValue={0}
+                    >
+                      <NumberFieldGroup>
+                        <NumberFieldIncrement>
+                          <ChevronUpIcon />
+                        </NumberFieldIncrement>
+                        <NumberFieldInput />
+                        <NumberFieldDecrement>
+                          <ChevronDownIcon />
+                        </NumberFieldDecrement>
+                      </NumberFieldGroup>
+                    </NumberField>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -159,7 +175,7 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
               name="date"
               render={({ field }: any) => (
                 <FormItem className="flex flex-col w-full">
-                  <FormLabel>Fecha</FormLabel>
+                  <FormLabel className='w-min'>Fecha</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>

@@ -1,16 +1,16 @@
 'use client'
 
 import { DistributionMode, DistributionModeType } from '@/app/(overview)/groups/[groupId]/spendings/types'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { useStepper } from '@/components/ui/stepper'
-import { cn } from '@/lib/utils'
-import { User } from '@prisma/client'
 import { useState } from 'react'
+import { EqualDistributionForm } from './equal-distribution-form'
+import { CustomDistributionForm } from './custom-distribution-form'
+import { Badge } from '@/components/ui/badge'
 
 export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setFinalData, mode, setMode }: { participants?: any[]; isLoading: boolean; totalAmount: number; payers: any; setFinalData: (data: any) => void, mode: DistributionModeType, setMode: (mode: DistributionModeType) => void }) => {
   const { nextStep, prevStep } = useStepper()
@@ -70,76 +70,46 @@ export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setF
     prevStep()
   }
 
+  const changeModeSelect = (value: string) => {
+    setMode(value as DistributionModeType)
+    setDebters([])
+  }
+
   return (
     <Card className='max-w-[526px] w-full'>
-      <CardHeader>
-        <CardTitle>Deudores</CardTitle>
-        <CardDescription>Selecciona los deudores</CardDescription>
+      <CardHeader className='flex justify-between items-center flex-row'>
+        <div className='flex flex-col'>
+          <CardTitle>Deudores</CardTitle>
+          <CardDescription>Selecciona los deudores</CardDescription>
+        </div>
+        <Badge>${totalAmount}</Badge>
       </CardHeader>
       <CardContent>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="flex gap-2 w-full" disabled={isLoading}>
-              Seleccionar deudores
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-full max-w-[320px]" onCloseAutoFocus={(e) => e.preventDefault()}>
-            <DropdownMenuLabel>Participantes</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {participants?.map((participant: User, index: number) => {
-              if (payers?.find((payer: any) => payer.userId === participant.id)) {
-                return null
-              }
-
-              return (
-                <DropdownMenuCheckboxItem
-                  onSelect={(e) => e.preventDefault()}
-                  key={index}
-                  checked={isOptionSelected(participant.id)}
-                  onCheckedChange={() => handleSelectChange(participant.id)}
-                >
-                  @{participant.username} - {participant.email}
-                </DropdownMenuCheckboxItem>
-              )
-            })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <Separator className="my-4" />
-
         <div className="flex gap-4 items-center">
           <Label>Modo de distribución</Label>
-          <Select onValueChange={(value: string) => setMode(value as DistributionModeType)} defaultValue={mode}>
+          <Select onValueChange={changeModeSelect} defaultValue={mode}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="equal">Igualitaria</SelectItem>
-              {/* <SelectItem value="custom">Por monto</SelectItem> */}
+              <SelectItem value="custom">Por monto</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        {debters.length === 0 && (
-          <p className="mt-4">No hay deudores seleccionados</p>
+
+        <Separator className="my-4" />
+
+        {mode === DistributionMode.EQUAL && (
+          <EqualDistributionForm debters={debters} participants={participants} isLoading={isLoading} payers={payers} handleSelectChange={handleSelectChange} isOptionSelected={isOptionSelected} totalAmount={totalAmount} setDebters={setDebters} />
         )}
 
-        {debters.length > 0 && mode === DistributionMode.EQUAL && (
-          <div className="grid gap-4 mt-4">
-            {debters.map((debter: any, index: number) => (
-              <div key={index} className="flex gap-4 items-center p-2">
-                <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
-                  {participants?.find((participant: User) => participant.id === debter.userId)?.username[0]}
-                </div>
+        {mode === DistributionMode.CUSTOM && (
+          <CustomDistributionForm debters={debters} setDebters={setDebters} isLoading={isLoading} participants={participants} isOptionSelected={isOptionSelected} handleSelectChange={handleSelectChange} />
+        )}
 
-                <div className="flex flex-col gap-1">
-                  <span>{participants?.find((participant: User) => participant.id === debter.userId)?.username}</span>
-                  <span className="text-sm text-muted-foreground">
-                    {participants?.find((participant: User) => participant.id === debter.userId)?.email}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+        {debters.length === 0 && (
+          <p className="mt-4">No hay deudores seleccionados</p>
         )}
 
         {debters.length > 0 && (

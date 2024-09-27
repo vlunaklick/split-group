@@ -1,16 +1,16 @@
 'use client'
 
+import { NumberField, NumberFieldDecrement, NumberFieldGroup, NumberFieldIncrement, NumberFieldInput } from '@/components/number-field'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { inputStyle } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { useStepper } from '@/components/ui/stepper'
 import { User } from '@prisma/client'
+import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import { useState } from 'react'
-import CurrencyInput from 'react-currency-input-field'
 
 export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData }: { participants?: any[]; isLoading: boolean; totalAmount: number; setFinalData: (data: any) => void }) => {
   const { nextStep, prevStep } = useStepper()
@@ -36,11 +36,11 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData 
     return !!payers.find((payer: any) => payer.userId === value)
   }
 
-  const handleAmountChange = (value: string, userId: string) => {
+  const handleAmountChange = (value: number, userId: string) => {
     setPayers((prev: any) => {
       return prev.map((payer: any) => {
         if (payer.userId === userId) {
-          return { userId, amount: parseFloat(value.replace('$', '')) }
+          return { userId, amount: value }
         }
         return payer
       })
@@ -123,13 +123,22 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData 
               {payers.map((payer: any, index: number) => (
                 <div key={index} className="gap-4 flex items-center">
                   <Label>@{participants?.find((participant: User) => participant.id === payer.userId)?.username}</Label>
-                  <CurrencyInput
-                    name={payer.userId}
-                    placeholder="$0.00"
-                    className={inputStyle}
-                    decimalsLimit={2}
-                    onChange={(e) => handleAmountChange(e.target.value, payer.userId)}
-                  />
+                  <NumberField
+                    className='ml-auto'
+                    minValue={0}
+                    value={payer.amount}
+                    onChange={(value) => handleAmountChange(value, payer.userId)}
+                  >
+                    <NumberFieldGroup>
+                      <NumberFieldIncrement>
+                        <ChevronUpIcon />
+                      </NumberFieldIncrement>
+                      <NumberFieldInput />
+                      <NumberFieldDecrement>
+                        <ChevronDownIcon />
+                      </NumberFieldDecrement>
+                    </NumberFieldGroup>
+                  </NumberField>
                 </div>
               ))}
 

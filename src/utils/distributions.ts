@@ -4,6 +4,8 @@ export const handleDistribution = ({ type, spending }: { type: DistributionModeT
   switch (type) {
     case DistributionMode.EQUAL:
       return handleEqualDistribution({ spending })
+    case DistributionMode.CUSTOM:
+      return handleCustomDistribution({ spending })
     default:
       throw new Error('Invalid distribution type')
   }
@@ -70,4 +72,70 @@ export const handleEqualDistribution = ({ spending }: { spending: SpendingInfo }
   }
 
   return payments.filter(payment => payment.amount > 0)
+}
+
+export const handleCustomDistribution = ({ spending }: { spending: SpendingInfo }) => {
+  const { payers, debters } = spending
+
+  // Map the amounts already paid by users
+  const paidByUser: { [key: string]: number } = {}
+  payers.forEach(payer => {
+    paidByUser[payer.userId] = (paidByUser[payer.userId] || 0) + payer.amount
+  })
+
+  // Map the amounts owed by users
+  const debtByUser: { [key: string]: number } = {}
+  debters.forEach(debter => {
+    debtByUser[debter.userId] = (debtByUser[debter.userId] || 0) + debter.amount
+  })
+
+  // Result array
+  const result: { from: string; to: string; amount: number }[] = []
+
+  // Calculate balances
+  const balances: { userId: string; balance: number }[] = []
+
+  for (const userId of Object.keys(debtByUser)) {
+    const paid = paidByUser[userId] || 0
+    const debt = debtByUser[userId]
+    const balance = paid - debt
+
+    // Only add users with non-zero balances
+    if (balance !== 0) {
+      balances.push({ userId, balance })
+    }
+  }
+
+  // Separate creditors and debtors
+  const creditors = balances.filter(b => b.balance > 0) // Users with a positive balance (overpaid)
+  const debtors = balances.filter(b => b.balance < 0) // Users with a negative balance (owed money)
+
+  // Settle debts
+  while (creditors.length > 0 && debtors.length > 0) {
+    const creditor = creditors[0] // The first creditor
+    const debtor = debtors[0] // The first debtor
+
+    const amountToTransfer = Math.min(creditor.balance, -debtor.balance) // Amount to transfer
+
+    // Add the transaction to the result
+    result.push({
+      from: debtor.userId, // The debtor (who owes money)
+      to: creditor.userId, // The creditor (who will receive money)
+      amount: amountToTransfer
+    })
+
+    // Update balances
+    creditor.balance -= amountToTransfer // Reduce the creditor's credit
+    debtor.balance += amountToTransfer // Reduce the debtor's debt
+
+    // Remove settled creditors or debtors
+    if (creditor.balance === 0) {
+      creditors.shift() // Remove creditor if settled
+    }
+    if (debtor.balance === 0) {
+      debtors.shift() // Remove debtor if settled
+    }
+  }
+
+  return result // Return the result with transactions
 }

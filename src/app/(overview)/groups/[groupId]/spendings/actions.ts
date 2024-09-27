@@ -47,6 +47,8 @@ export async function createSpending ({ groupId, spending, mode }: { groupId: st
   if (!payments) return
 
   for (const payment of payments) {
+    if (!payment.to || !payment.from) return
+
     await db.debt.create({
       data: {
         spendingId: createdSpending.id,
@@ -109,6 +111,8 @@ export async function updateSpending ({ spendingId, spending, mode }: { spending
   if (!payments) return
 
   for (const payment of payments) {
+    if (!payment.to || !payment.from) return
+
     await db.debt.create({
       data: {
         spendingId,
