@@ -28,7 +28,7 @@ export function GenerateInviteForm ({ groupId }: { groupId: string }) {
 
     try {
       await generateInvitationLink(groupId, maxUses)
-      mutate(['/api/groups/link', groupId])
+      mutate(['/api/groups/invitation-link', groupId])
     } catch (error) {
       console.error(error)
       toast.error('Ha ocurrido un error al generar el enlace de invitación.')

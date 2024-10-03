@@ -36,7 +36,9 @@ export async function getInvitationByCode (code: string) {
   })
 }
 
-export async function joinInvitation (code: string, userId: string) {
+export async function joinInvitation (code: string) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
   const invitation = await getInvitationByCode(code)
 
   if (!invitation || invitation.uses >= (invitation.maxUses || 1)) {
@@ -58,7 +60,7 @@ export async function joinInvitation (code: string, userId: string) {
 
   await db.userGroupRole.create({
     data: {
-      userId,
+      userId: userId as string,
       groupId: invitation.groupId,
       role: 'USER'
     }

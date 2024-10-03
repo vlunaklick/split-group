@@ -9,7 +9,7 @@ import { useSWRConfig } from 'swr'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-export const ActionButtons = ({ code, userId, groupId }: { code: string, userId: string, groupId: string }) => {
+export const ActionButtons = ({ code, groupId }: { code: string, groupId: string }) => {
   const router = useRouter()
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
@@ -17,7 +17,7 @@ export const ActionButtons = ({ code, userId, groupId }: { code: string, userId:
   const handleOnClick = async () => {
     setIsLoading(true)
     try {
-      await joinInvitation(code, userId)
+      await joinInvitation(code)
       toast.success('Ha ingresado al grupo correctamente. Redirigiendo...')
       mutate('user-groups')
       setTimeout(() => {

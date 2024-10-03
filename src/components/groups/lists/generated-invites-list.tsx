@@ -19,7 +19,7 @@ export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
     setIsLoading(true)
     try {
       await removeInvitationLink(code)
-      mutate(['/api/groups/link', groupId])
+      mutate(['/api/groups/invitation-link', groupId])
     } catch (error) {
       toast.error('Hubo un error al enviar la invitación al miembro.', {
         duration: 3000
@@ -80,7 +80,7 @@ export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => handleCopyLink(invitation.link)}
+                      onClick={() => handleCopyLink(invitation.code)}
                       disabled={isLoading}
                     >
                       {copiedLink === invitation.link
