@@ -314,7 +314,7 @@ export async function getSpendingComments ({ spendingId }: { spendingId: string 
       user: true
     },
     orderBy: {
-      createdAt: 'desc'
+      createdAt: 'asc'
     }
   })
 

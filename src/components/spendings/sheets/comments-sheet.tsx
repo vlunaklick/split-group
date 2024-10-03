@@ -5,14 +5,21 @@ import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerT
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useMediaQuery } from '@/hooks/use-media-query'
+import { IconRefresh } from '@tabler/icons-react'
 import { MessageCircle } from 'lucide-react'
 import { useState } from 'react'
-import { CommentsList } from '../lists/comments-list'
 import { CreateCommentForm } from '../forms/create-comment-form'
+import { CommentsList } from '../lists/comments-list'
+import { useSWRConfig } from 'swr'
 
 export function CommentsSheet ({ spendingId, className }: { spendingId: string, className?: string }) {
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const [isOpen, setIsOpen] = useState(false)
+  const { mutate } = useSWRConfig()
+
+  const refreshComments = () => {
+    mutate(['spending-comments', spendingId])
+  }
 
   if (isDesktop) {
     return (
@@ -24,8 +31,11 @@ export function CommentsSheet ({ spendingId, className }: { spendingId: string, 
           </Button>
         </SheetTrigger>
         <SheetContent className='flex flex-col gap-4 w-[400px] sm:w-[540px]'>
-          <SheetHeader>
+          <SheetHeader className='flex gap-4 items-center flex-row space-x-0 space-y-0'>
             <SheetTitle>Comentarios del gasto</SheetTitle>
+            <Button variant='outline' onClick={refreshComments} size='icon'>
+              <IconRefresh className='h-4 w-4' />
+            </Button>
           </SheetHeader>
           <div className='space-y-4'>
             <ScrollArea className='h-[calc(100vh-200px)] pr-4'>
