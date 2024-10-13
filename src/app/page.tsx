@@ -1,4 +1,5 @@
 import { Announcement } from '@/components/home/announcement'
+import { EasterEgg } from '@/components/home/easter-egg'
 import { FaqPage } from '@/components/home/faq'
 import { SiteFooter } from '@/components/home/site-footer'
 import { SiteHeader } from '@/components/home/site-header'
@@ -50,6 +51,8 @@ export default function Home () {
       </main>
 
       <SiteFooter />
+
+      <EasterEgg />
     </div>
   )
 }
