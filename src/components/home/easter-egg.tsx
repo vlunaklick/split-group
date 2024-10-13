@@ -39,7 +39,7 @@ export const EasterEgg = () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('click', handleClickOutside)
     }
-  }, [])s
+  }, [])
 
   return (
     <>
