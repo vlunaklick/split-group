@@ -1,16 +1,12 @@
 'use client'
 
-import Link from 'next/link'
-import { Home } from 'lucide-react'
-import { Separator } from './ui/separator'
-import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
-import { IconCirclePlus } from '@tabler/icons-react'
-import { Icon } from './group-icons'
-import { Skeleton } from './ui/skeleton'
 import { useGetUserGroups } from '@/data/groups'
+import Link from 'next/link'
+import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenuButton, SidebarMenuItem, SidebarMenuSkeleton } from './ui/sidebar'
+import { usePathname } from 'next/navigation'
+import { Icon } from './group-icons'
 
-export const SideNav = () => {
+export const SideGroupNav = () => {
   const { data: groups, isLoading } = useGetUserGroups()
   const path = usePathname()
 
@@ -19,56 +15,40 @@ export const SideNav = () => {
   }
 
   return (
-    <nav className="grid items-start px-2 text-sm font-medium lg:px-4 space-y-2">
-      <p className="text-muted-foreground text-xs font-medium tracking-wide">
-        General
-      </p>
-      <SideNavLink href="/dashboard" isSelected={selectedPath('/dashboard')}>
-        <Home className="h-4 w-4" />
-        Dashboard
-      </SideNavLink>
+    <SidebarGroup title='Grupos'>
+      <SidebarGroupLabel>Grupos</SidebarGroupLabel>
+      <SidebarGroupContent className='list-none gap-2 flex flex-col'>
+        {isLoading && <GroupSkeleton />}
 
-      <Separator />
-      <p className="text-muted-foreground text-xs font-medium tracking-wide">Grupos</p>
-      <SideNavLink href="/groups/create" isSelected={selectedPath('/groups/create')} className='border-muted'>
-        <IconCirclePlus className="h-4 w-4" />
-        Crear grupo
-      </SideNavLink>
-
-      {isLoading && <SideNavLinksSkeleton />}
-
-      {groups?.map((group: any) => (
-        <SideNavLink key={group.id} href={`/groups/${group.id}`} isSelected={selectedPath(`/groups/${group.id}`)}>
-          <Icon type={group.icon} className="h-4 w-4" />
-          {group.name}
-        </SideNavLink>
-      ))}
-    </nav>
+        {groups?.map((group: any) => (
+          <SidebarMenuItem key={group.id}>
+            <SidebarMenuButton isActive={selectedPath(`/groups/${group.id}`)} asChild tooltip={group.name}>
+              <Link href={`/groups/${group.id}`} className='border-muted flex items-center gap-2'>
+                <div className='h-4 w-4 rounded-full flex items-center justify-center'>
+                  <Icon type={group.icon} />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">
+                    {group.name}
+                  </span>
+                </div>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        ))}
+      </SidebarGroupContent>
+    </SidebarGroup>
   )
 }
 
-const SideNavLink = ({ href, children, className, isSelected }: { href: string; children: React.ReactNode; className?: string; isSelected?: boolean }) => {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        'flex items-center gap-3 rounded-lg px-3 py-2 transition-all',
-        'text-foreground hover:bg-accent hover:text-accent-foreground',
-        isSelected ? 'bg-accent text-accent-foreground font-medium' : 'text-muted-foreground',
-        className
-      )}
-    >
-      {children}
-    </Link>
-  )
-}
-
-const SideNavLinksSkeleton = () => {
+const GroupSkeleton = () => {
   return (
     <>
-      <Skeleton className="h-[38px] w-full" />
-      <Skeleton className="h-[38px] w-full" />
-      <Skeleton className="h-[38px] w-full" />
+      {Array.from({ length: 5 }).map((_, index) => (
+        <SidebarMenuItem key={index}>
+          <SidebarMenuSkeleton />
+        </SidebarMenuItem>
+      ))}
     </>
   )
 }
