@@ -24,7 +24,7 @@ interface ExpenseInfoFormProps {
   form: any
 }
 
-export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData, form }: ExpenseInfoFormProps) => {
+export function GeneralInfoForm ({ categories, currencies, isLoading, setFinalData, form }: ExpenseInfoFormProps) {
   const { nextStep } = useStepper()
 
   const onSubmit = (values: z.infer<typeof createSpendingSchema>) => {
@@ -63,13 +63,11 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
                       type="text"
                       placeholder="Nombre del gasto"
                       className='mt-0'
-                      {...field}
-                    />
+                      {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
-            />
+              )} />
             <FormField
               control={form.control}
               name="description"
@@ -82,13 +80,11 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
                       type="text"
                       placeholder="Descripción del gasto"
                       className='mt-0'
-                      {...field}
-                    />
+                      {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
-            />
+              )} />
             <FormField
               control={form.control}
               name="categoryId"
@@ -113,8 +109,7 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
                   </Select>
                   <FormMessage />
                 </FormItem>
-              )}
-            />
+              )} />
             <div className="flex gap-4 flex-col md:flex-row">
               <FormField
                 control={form.control}
@@ -141,8 +136,7 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
                     </FormControl>
                     <FormMessage />
                   </FormItem>
-                )}
-              />
+                )} />
               <FormField
                 control={form.control}
                 name="currencyId"
@@ -191,28 +185,24 @@ export const ExpeseInfoForm = ({ categories, currencies, isLoading, setFinalData
                                 formatDate(field.value)
                               )
                             : (
-                            <span>Selecciona una fecha</span>
+                              <span>Selecciona una fecha</span>
                               )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
+                    <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
                       <Calendar
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date('2021-01-01')
-                        }
-                        initialFocus
-                      />
+                        disabled={(date) => date > new Date() || date < new Date('2021-01-01')}
+                        initialFocus />
                     </PopoverContent>
                   </Popover>
                   <FormMessage />
                 </FormItem>
-              )}
-            />
+              )} />
             <Button type="submit" className="w-full" disabled={isLoading}>
               Siguiente
             </Button>

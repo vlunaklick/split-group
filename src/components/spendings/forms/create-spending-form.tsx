@@ -17,7 +17,7 @@ import { useSWRConfig } from 'swr'
 import { z } from 'zod'
 import { PayersForm } from './payers-form'
 import { DebtersForm } from './contributors-form'
-import { ExpeseInfoForm } from './general-info-form'
+import { GeneralInfoForm } from './general-info-form'
 
 const steps = [
   { label: 'Información del gasto', description: 'Ingresa la información del gasto', icon: IconUser },
@@ -73,7 +73,7 @@ export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
     <>
       <Stepper initialStep={0} steps={steps} orientation='vertical'>
         <Step {...steps[0]} key={steps[0].label}>
-          <ExpeseInfoForm form={form}
+          <GeneralInfoForm form={form}
            categories={categories} currencies={currencies} isLoading={isLoadingCategories || isLoadingCurrencies} setFinalData={setFinalData} />
         </Step>
         <Step {...steps[1]} key={steps[1].label}>

@@ -16,7 +16,7 @@ export function DeleteGroupForm ({ groupId }: { groupId: string }) {
     setIsLoading(true)
     try {
       await deleteGroup(groupId)
-      mutate('user-groups')
+      mutate(['user-groups'])
       toast.success('Grupo eliminado correctamente. Redirigiendo...')
       setTimeout(() => {
         router.push('/dashboard')
@@ -32,7 +32,7 @@ export function DeleteGroupForm ({ groupId }: { groupId: string }) {
   }
 
   return (
-    <Button variant="destructive" disabled={isGroupOwner || isLoading} onClick={onDelete} className='w-full'>
+    <Button variant="destructive" disabled={!isGroupOwner || isLoading} onClick={onDelete} className='w-full'>
       Eliminar grupo
     </Button>
   )

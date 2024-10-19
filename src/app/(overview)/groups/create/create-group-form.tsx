@@ -38,7 +38,7 @@ export const CreateGroupFrom = () => {
 
     try {
       const group = await createGroup({ name, description, icon })
-      mutate('user-groups')
+      mutate(['user-groups'])
       toast.success('Grupo creado con éxito. Redirigiendo...')
       setTimeout(() => {
         router.push(`/groups/${group.id}`)

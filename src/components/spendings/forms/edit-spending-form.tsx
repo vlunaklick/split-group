@@ -16,7 +16,7 @@ import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
 import { DebtersForm } from './contributors-form'
-import { ExpeseInfoForm } from './general-info-form'
+import { GeneralInfoForm } from './general-info-form'
 import { PayersForm } from './payers-form'
 
 const steps = [
@@ -93,7 +93,7 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
   return (
     <Stepper initialStep={0} steps={steps} orientation='vertical' className='w-full'>
       <Step {...steps[0]} key={steps[0].label}>
-        <ExpeseInfoForm form={form}
+        <GeneralInfoForm form={form}
           categories={categories} currencies={currencies} isLoading={isLoadingCategories || isLoadingCurrencies} setFinalData={setFinalData} />
       </Step>
 
