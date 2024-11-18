@@ -4,8 +4,6 @@ import { getDollarBlueData } from '@/data/apis/money'
 export async function GET (request: Request) {
   const { searchParams } = new URL(request.url)
 
-  console.log(searchParams)
-
   if (searchParams.get('total-revenue')) {
     const data = await getTotalRevenue()
 
