@@ -1,20 +1,38 @@
+'use client'
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getMonthlySpent, getTotalDebt, getTotalRevenue, getWeeklySpent } from '@/data/apis/dashboard'
+import { useGetMonthlySpent, useGetTotalDebt, useGetTotalRevenue, useGetWeeklySpent } from '@/data/dashboard'
+import { useGetDolarValue } from '@/data/money'
 import { formatMoney } from '@/lib/money'
 import { IconCashBanknote, IconMoneybag, IconTransferIn, IconTransferOut } from '@tabler/icons-react'
 
-export const WeeklySpent = async () => {
-  const data = await getWeeklySpent()
+export const WeeklySpent = () => {
+  const { data: defaultData, isLoading } = useGetWeeklySpent()
 
-  const totalSpentLastWeek = data?.totalSpentLastWeek ?? 0
-  const totalSpentThisWeek = data?.totalSpentThisWeek ?? 0
+  const totalSpentLastWeek = defaultData?.totalSpentLastWeek ?? 0
+  const totalSpentThisWeek = defaultData?.totalSpentThisWeek ?? 0
 
   const percentageDifference = totalSpentLastWeek !== 0
     ? ((totalSpentThisWeek - totalSpentLastWeek) / totalSpentLastWeek) * 100
     : totalSpentThisWeek > 0
       ? 100
       : 0
+
+  const { data: dolarValue } = useGetDolarValue()
+
+  const currency = localStorage.getItem('currency') ?? 'Peso Argentino'
+
+  const total = (currency === 'Peso Argentino'
+    ? defaultData?.totalSpentThisWeek
+    : (defaultData?.totalSpentThisWeek / dolarValue?.compra)) ??
+    0
+
+  const value = formatMoney(total)
+
+  if (isLoading) {
+    return <StatCardSkeleton />
+  }
 
   return (
     <Card>
@@ -23,7 +41,7 @@ export const WeeklySpent = async () => {
         <IconCashBanknote className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{formatMoney(data?.totalSpentThisWeek ?? 0)}</div>
+        <div className="text-2xl font-bold">{value}</div>
         <p className="text-xs text-muted-foreground/60">
           {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde la semana pasada
         </p>
@@ -32,17 +50,32 @@ export const WeeklySpent = async () => {
   )
 }
 
-export const MonthlySpent = async () => {
-  const data = await getMonthlySpent() ?? { totalSpentThisMonth: 0, totalSpentLastMonth: 0 }
+export const MonthlySpent = () => {
+  const { data: defaultData = { totalSpentThisMonth: 0, totalSpentLastMonth: 0 }, isLoading } = useGetMonthlySpent()
 
-  const totalSpentLastMonth = data?.totalSpentLastMonth ?? 0
-  const totalSpentThisMonth = data?.totalSpentThisMonth ?? 0
+  const totalSpentLastMonth = defaultData?.totalSpentLastMonth ?? 0
+  const totalSpentThisMonth = defaultData?.totalSpentThisMonth ?? 0
 
   const percentageDifference = totalSpentLastMonth !== 0
     ? ((totalSpentThisMonth - totalSpentLastMonth) / totalSpentLastMonth) * 100
     : totalSpentThisMonth > 0
       ? 100
       : 0
+
+  const { data: dolarValue } = useGetDolarValue()
+
+  const currency = localStorage.getItem('currency') ?? 'Peso Argentino'
+
+  const total = (currency === 'Peso Argentino'
+    ? defaultData?.totalSpentThisMonth
+    : (defaultData?.totalSpentThisMonth / dolarValue?.compra)) ??
+    0
+
+  const value = formatMoney(total)
+
+  if (isLoading) {
+    return <StatCardSkeleton />
+  }
 
   return (
     <Card>
@@ -51,7 +84,7 @@ export const MonthlySpent = async () => {
         <IconMoneybag className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        <p className="text-2xl font-bold">{formatMoney(data?.totalSpentThisMonth ?? 0)}</p>
+        <p className="text-2xl font-bold">{value}</p>
         <p className="text-xs text-muted-foreground/60">
           {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde el mes pasado
         </p>
@@ -60,8 +93,23 @@ export const MonthlySpent = async () => {
   )
 }
 
-export const TotalDebt = async () => {
-  const data = await getTotalDebt()
+export const TotalDebt = () => {
+  const { data, isLoading } = useGetTotalDebt()
+
+  const { data: dolarValue } = useGetDolarValue()
+
+  const currency = localStorage.getItem('currency') ?? 'Peso Argentino'
+
+  const total = (currency === 'Peso Argentino'
+    ? data?.totalDebt
+    : (data?.totalDebt / dolarValue?.compra)) ??
+    0
+
+  const value = formatMoney(total)
+
+  if (isLoading) {
+    return <StatCardSkeleton />
+  }
 
   return (
     <Card>
@@ -70,15 +118,30 @@ export const TotalDebt = async () => {
         <IconTransferOut className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{formatMoney(data?.totalDebt ?? 0)}</div>
+        <div className="text-2xl font-bold">{value}</div>
         <p className="text-xs text-muted-foreground/60">Valor entre todos los grupos</p>
       </CardContent>
     </Card>
   )
 }
 
-export const TotalRevenue = async () => {
-  const data = await getTotalRevenue()
+export const TotalRevenue = () => {
+  const { data, isLoading } = useGetTotalRevenue()
+
+  const { data: dolarValue } = useGetDolarValue()
+
+  const currency = localStorage.getItem('currency') ?? 'Peso Argentino'
+
+  const total = (currency === 'Peso Argentino'
+    ? data?.totalRevenue
+    : (data?.totalRevenue / dolarValue?.compra)) ??
+    0
+
+  const value = formatMoney(total)
+
+  if (isLoading) {
+    return <StatCardSkeleton />
+  }
 
   return (
     <Card>
@@ -87,7 +150,7 @@ export const TotalRevenue = async () => {
         <IconTransferIn className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{formatMoney(data?.totalRevenue ?? 0)}</div>
+        <div className="text-2xl font-bold">{value}</div>
         <p className="text-xs text-muted-foreground/60">Valor entre todos los grupos</p>
       </CardContent>
     </Card>

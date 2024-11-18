@@ -20,14 +20,15 @@ export const CurrencySetting = () => {
   const form = useForm<z.infer<typeof updateCurrencySettingsSchema>>({
     resolver: zodResolver(updateCurrencySettingsSchema),
     values: {
-      currency: currencies?.find((curr: any) => curr.id === currency)?.id || ''
+      currency: currencies?.find((curr: any) => curr.name === currency)?.id
     }
   })
 
   const onSubmit = async (values: z.infer<typeof updateCurrencySettingsSchema>) => {
     setIsLoading(true)
     try {
-      localStorage.setItem('currency', values.currency)
+      const name = currencies.find((curr: any) => curr.id === values.currency)?.name || ''
+      localStorage.setItem('currency', name)
     } catch (error) {
       toast.error('Hubo un error al actualizar tu moneda', {
         duration: 3000
