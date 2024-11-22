@@ -3,11 +3,11 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { updateGroupFormSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
 
@@ -32,10 +32,10 @@ export function ChangeInfoGroupForm ({ groupId }: { groupId: string }) {
       mutate('user-groups')
     } catch (error) {
       console.error(error)
-      toast.error('Ha ocurrido un error al actualizar el grupo.')
+      displayToast('Ha ocurrido un error al actualizar el grupo.', 'error')
     }
 
-    toast.success('Grupo actualizado correctamente.')
+    displayToast('Grupo actualizado correctamente.', 'success')
     setIsLoading(false)
     form.reset()
   }

@@ -5,11 +5,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useGetGroupNotifications, useGetNotifications } from '@/data/notifications'
 import { cn } from '@/lib/utils'
 import { useTimeAgo } from '@/utils/time'
+import { displayToast } from '@/utils/toast-display'
 import { Notification } from '@prisma/client'
 import { IconUsers } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { deleteNotification, joinGroup, markAsRead, rejectGroup } from '../../../app/(user)/notifications/actions'
 import { NotificationWithGroups } from '../../../app/(user)/notifications/types'
@@ -67,12 +67,12 @@ export const GroupNotification = ({ notification }: { notification: Notification
       mutate(['notifications'])
       mutate('user-groups')
       mutate(['group-notifications'])
-      toast.success('Te has unido al grupo! Redirigiendo...')
+      displayToast('Te has unido al grupo!', 'success')
       setTimeout(() => {
         router.push(`/groups/${notification?.group?.id}`)
       })
     } catch (error) {
-      toast.error('Error al unirse al grupo')
+      displayToast('Error al unirse al grupo', 'error')
     }
     setIsLoading(false)
   }
@@ -83,9 +83,9 @@ export const GroupNotification = ({ notification }: { notification: Notification
       await rejectGroup(notification.id)
       mutate(['notifications'])
       mutate(['group-notifications'])
-      toast.success('Has rechazado la invitación')
+      displayToast('Has rechazado la invitación', 'success')
     } catch (error) {
-      toast.error('Error al rechazar la invitación')
+      displayToast('Error al rechazar la invitación', 'error')
     }
     setIsLoading(false)
   }
@@ -95,9 +95,9 @@ export const GroupNotification = ({ notification }: { notification: Notification
     try {
       await markAsRead(notification.id)
       mutate(['notifications'])
-      toast.success('Notificación marcada como leída')
+      displayToast('Notificación marcada como leída', 'success')
     } catch (error) {
-      toast.error('Error al marcar la notificación como leída')
+      displayToast('Error al marcar la notificación como leída', 'error')
     }
     setIsLoading(false)
   }
@@ -153,9 +153,9 @@ export const GenericNotification = ({ notification }: { notification: Notificati
     try {
       await deleteNotification(notification.id)
       mutate(['notifications'])
-      toast.success('Notificación eliminada')
+      displayToast('Notificación eliminada', 'success')
     } catch (error) {
-      toast.error('Error al eliminar la notificación')
+      displayToast('Error al eliminar la notificación', 'error')
     }
     setIsLoading(false)
   }
@@ -165,9 +165,9 @@ export const GenericNotification = ({ notification }: { notification: Notificati
     try {
       await markAsRead(notification.id)
       mutate(['notifications'])
-      toast.success('Notificación marcada como leída')
+      displayToast('Notificación marcada como leída', 'success')
     } catch (error) {
-      toast.error('Error al marcar la notificación como leída')
+      displayToast('Error al marcar la notificación como leída', 'error')
     }
     setIsLoading(false)
   }

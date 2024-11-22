@@ -1,12 +1,12 @@
 'use client'
 
-import { deleteSpending } from '../../../app/(overview)/groups/[groupId]/spendings/actions'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { displayToast } from '@/utils/toast-display'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
+import { deleteSpending } from '../../../app/(overview)/groups/[groupId]/spendings/actions'
 
 export function DeleteSpendingDialog ({ groupId, spendId, show }: { groupId: string, spendId: string, show: boolean }) {
   const [isLoading, setIsLoading] = useState(false)
@@ -18,12 +18,12 @@ export function DeleteSpendingDialog ({ groupId, spendId, show }: { groupId: str
     try {
       await deleteSpending({ spendingId: spendId })
     } catch (error) {
-      toast.error('No se ha podido eliminar el gasto')
+      displayToast('Ha ocurrido un error al eliminar el gasto.', 'error')
       setIsLoading(false)
       return
     }
 
-    toast.success('El gasto ha sido eliminado. Redirigiendo...')
+    displayToast('Gasto eliminado correctamente.', 'success')
     mutate(`/api/groups/${groupId}/spendings`)
     setTimeout(() => {
       router.push(`/groups/${groupId}/spendings`)

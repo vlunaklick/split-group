@@ -3,11 +3,11 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { generateInvitationLinkSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconLink, IconLoader2 } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
 
@@ -31,10 +31,10 @@ export function GenerateInviteForm ({ groupId }: { groupId: string }) {
       mutate(['/api/groups/invitation-link', groupId])
     } catch (error) {
       console.error(error)
-      toast.error('Ha ocurrido un error al generar el enlace de invitación.')
+      displayToast('Ha ocurrido un error al generar el enlace de invitación.', 'error')
     }
 
-    toast.success('Enlace de invitación generado correctamente.')
+    displayToast('Enlace de invitación generado correctamente.', 'success')
     setIsLoading(false)
     formLink.reset()
   }

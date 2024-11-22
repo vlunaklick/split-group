@@ -1,9 +1,9 @@
 import { deleteGroup } from '@/app/(overview)/groups/[groupId]/actions'
 import { Button } from '@/components/ui/button'
 import { useGetIsGroupOwner } from '@/data/groups'
+import { displayToast } from '@/utils/toast-display'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 
 export function DeleteGroupForm ({ groupId }: { groupId: string }) {
@@ -17,13 +17,13 @@ export function DeleteGroupForm ({ groupId }: { groupId: string }) {
     try {
       await deleteGroup(groupId)
       mutate(['user-groups'])
-      toast.success('Grupo eliminado correctamente. Redirigiendo...')
+      displayToast('Grupo eliminado correctamente. Redirigiendo...', 'success')
       setTimeout(() => {
         router.push('/dashboard')
       }, 3000)
     } catch (error) {
       console.error(error)
-      toast.error('Ha ocurrido un error al eliminar el grupo.')
+      displayToast('Ha ocurrido un error al eliminar el grupo.', 'error')
     }
   }
 

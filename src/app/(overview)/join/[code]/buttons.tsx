@@ -1,13 +1,13 @@
 'use client'
 
 import { Button, buttonVariants } from '@/components/ui/button'
-import { joinInvitation } from './actions'
-import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { useSWRConfig } from 'swr'
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { displayToast } from '@/utils/toast-display'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useSWRConfig } from 'swr'
+import { joinInvitation } from './actions'
 
 export const ActionButtons = ({ code, groupId }: { code: string, groupId: string }) => {
   const router = useRouter()
@@ -18,14 +18,14 @@ export const ActionButtons = ({ code, groupId }: { code: string, groupId: string
     setIsLoading(true)
     try {
       await joinInvitation(code)
-      toast.success('Ha ingresado al grupo correctamente. Redirigiendo...')
+      displayToast('Ha ingresado al grupo correctamente', 'success')
       mutate('user-groups')
       setTimeout(() => {
         router.push(`/groups/${groupId}`)
       }, 2000)
     } catch (error) {
       console.error(error)
-      toast.error('Ha ocurrido un error al intentar unirse al grupo')
+      displayToast('Ha ocurrido un error al intentar unirse al grupo', 'error')
       setIsLoading(false)
     }
   }

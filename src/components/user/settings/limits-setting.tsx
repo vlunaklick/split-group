@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { updateLimit } from '../../../app/(user)/settings/notifications/actions'
+import { displayToast } from '@/utils/toast-display'
 
 export const LimitSetting = () => {
   const { data: configuration, isLoading: isLoadingConfiguration } = useGetUserConfiguration()
@@ -32,16 +33,12 @@ export const LimitSetting = () => {
     try {
       await updateLimit({ newLimit: values.amount })
     } catch (error) {
-      toast.error('Ha ocurrido un error, por favor intenta de nuevo.', {
-        duration: 3000
-      })
+      displayToast('Ha ocurrido un error, por favor intenta de nuevo.', 'error')
       setIsLoading(false)
       return
     }
 
-    toast.success('El límite de alerta ha sido actualizado.', {
-      duration: 3000
-    })
+    displayToast('El límite de alerta ha sido actualizado.', 'success')
     setIsLoading(false)
   }
 

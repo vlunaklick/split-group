@@ -1,12 +1,12 @@
+import { removeInvitationLink } from '@/app/(overview)/groups/[groupId]/participants/actions'
 import { useGetInvitationLink } from '@/data/groups'
+import { displayToast } from '@/utils/toast-display'
 import { CheckCircle, Copy, X } from 'lucide-react'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { Button } from '../../ui/button'
 import { Progress } from '../../ui/progress'
 import { Skeleton } from '../../ui/skeleton'
-import { removeInvitationLink } from '@/app/(overview)/groups/[groupId]/participants/actions'
 
 export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
   const [isLoading, setIsLoading] = useState(false)
@@ -21,15 +21,11 @@ export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
       await removeInvitationLink(code)
       mutate(['/api/groups/invitation-link', groupId])
     } catch (error) {
-      toast.error('Hubo un error al enviar la invitación al miembro.', {
-        duration: 3000
-      })
+      displayToast('Hubo un error al enviar la invitación al miembro.', 'error')
       return
     }
 
-    toast.success('Invitación eliminada correctamente.', {
-      duration: 3000
-    })
+    displayToast('Invitación eliminada correctamente.', 'success')
     setIsLoading(false)
   }
 
@@ -37,18 +33,13 @@ export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
     try {
       const url = `${window.location.origin}/join/${code}`
       await navigator.clipboard.writeText(url)
-      toast.success('Enlace copiado al portapapeles.', {
-        duration: 3000
-      })
-
+      displayToast('Enlace copiado al portapapeles.', 'success')
       setCopiedLink(url)
       setTimeout(() => {
         setCopiedLink(null)
       }, 3000)
     } catch (error) {
-      toast.error('Hubo un error al copiar el enlace al portapapeles.', {
-        duration: 3000
-      })
+      displayToast('Hubo un error al copiar el enlace al portapapeles.', 'error')
     }
   }
 

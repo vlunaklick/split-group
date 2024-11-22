@@ -1,18 +1,18 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { forgotPasswordSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { useState } from 'react'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { requestChangePassword } from './actions'
-import { toast } from 'sonner'
-import { forgotPasswordSchema } from '@/lib/form'
 
 export const ForgotPasswordForm = () => {
   const router = useRouter()
@@ -35,7 +35,7 @@ export const ForgotPasswordForm = () => {
       return
     }
 
-    toast.success('Se ha enviado un correo con las instrucciones para recuperar tu contraseña.')
+    displayToast('Se ha enviado un correo con las instrucciones para recuperar tu contraseña', 'success')
     setTimeout(() => {
       router.refresh()
       router.push('/login')

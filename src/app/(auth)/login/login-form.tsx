@@ -1,18 +1,18 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { loginSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { IconLoader2 } from '@tabler/icons-react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { useState } from 'react'
-import { IconLoader2 } from '@tabler/icons-react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { loginSchema } from '@/lib/form'
-import { toast } from 'sonner'
 
 export const LoginForm = () => {
   const router = useRouter()
@@ -46,7 +46,7 @@ export const LoginForm = () => {
       })
     }
 
-    toast.success('Bienvenido de vuelta!')
+    displayToast('Bienvenido de vuelta!', 'success')
     router.refresh()
     const redirectUrl = searchParams.get('from') || '/dashboard'
     router.push(redirectUrl)

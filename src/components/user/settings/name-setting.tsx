@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { updateName } from '../../../app/(user)/settings/actions'
+import { displayToast } from '@/utils/toast-display'
 
 export const NameSettings = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -26,16 +27,12 @@ export const NameSettings = () => {
     try {
       await updateName({ newName: values.name })
     } catch (error) {
-      toast.error('Hubo un error al actualizar tu nombre', {
-        duration: 3000
-      })
+      displayToast('Hubo un error al actualizar tu nombre', 'error')
       setIsLoading(false)
       return
     }
 
-    toast.success('Tu nombre actualizado correctamente.', {
-      duration: 3000
-    })
+    displayToast('Tu nombre actualizado correctamente.', 'success')
     setIsLoading(false)
   }
 

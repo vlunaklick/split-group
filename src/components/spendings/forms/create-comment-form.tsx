@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { createCommentSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconLoader2 } from '@tabler/icons-react'
 import { Send } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
 
@@ -34,10 +34,10 @@ export function CreateCommentForm ({ spendingId }: { spendingId: string }) {
       mutate(['spending-comments', spendingId])
     } catch (error) {
       console.error(error)
-      toast.error('Ha ocurrido un error al enviar el comentario.')
+      displayToast('Ha ocurrido un error al enviar el comentario.', 'error')
     }
 
-    toast.success('Comentario enviado correctamente.')
+    displayToast('Comentario enviado correctamente.', 'success')
     setIsLoading(false)
     form.reset()
   }

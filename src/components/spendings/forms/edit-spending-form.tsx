@@ -8,11 +8,11 @@ import { useGetGroupParticipnts } from '@/data/groups'
 import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
 import { useGetSpendingById } from '@/data/spendings'
 import { updateSpendingSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
 import { DebtersForm } from './contributors-form'
@@ -76,7 +76,7 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
           ...finalData
         }
       })
-      toast.success('Gasto actualizado correctamente')
+      displayToast('Gasto actualizado correctamente', 'success')
       mutate(['lastSpendings', groupId])
       mutate(['lastDebts', groupId])
       mutate(['spendings', groupId, spendId])
@@ -86,7 +86,7 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
       }
     } catch (error) {
       setIsLoading(false)
-      toast.error('Ocurrió un error al actualizar el gasto')
+      displayToast('Ocurrió un error al actualizar el gasto', 'error')
     }
   }
 

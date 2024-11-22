@@ -2,9 +2,9 @@ import { deleteComment } from '@/app/(overview)/groups/[groupId]/spendings/[spen
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useGetSpendingComments } from '@/data/spendings'
 import { useTimeAgo } from '@/utils/time'
+import { displayToast } from '@/utils/toast-display'
 import { EllipsisVertical, TrashIcon } from 'lucide-react'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { DeleteCommentDialog } from '../dialogs/delete-comment-dialog'
 
@@ -18,10 +18,10 @@ export function CommentsList ({ spendingId }: { spendingId: string }) {
     setIsLoading(true)
     try {
       await deleteComment({ commentId: id })
-      toast.success('Comentario eliminado correctamente.')
+      displayToast('Comentario eliminado correctamente', 'success')
       mutate(['spending-comments', spendingId])
     } catch (error) {
-      toast.error('Ha ocurrido un error al eliminar el comentario.')
+      displayToast('Error al eliminar comentario', 'error')
     }
     setIsLoading(false)
   }

@@ -6,10 +6,10 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useGetAvailableCurrencies, useGetSelectedCurrency } from '@/data/settings'
 import { updateCurrencySettingsSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 
 export const CurrencySetting = () => {
@@ -30,16 +30,12 @@ export const CurrencySetting = () => {
       const name = currencies.find((curr: any) => curr.id === values.currency)?.name || ''
       localStorage.setItem('currency', name)
     } catch (error) {
-      toast.error('Hubo un error al actualizar tu moneda', {
-        duration: 3000
-      })
+      displayToast('Hubo un error al actualizar tu moneda', 'error')
       setIsLoading(false)
       return
     }
 
-    toast.success('Tu moneda ha sido actualizada correctamente.', {
-      duration: 3000
-    })
+    displayToast('Tu moneda ha sido actualizada correctamente.', 'success')
     setIsLoading(false)
   }
 

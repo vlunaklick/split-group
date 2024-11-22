@@ -6,11 +6,11 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useGetMembersWithoutAdministrator } from '@/data/groups'
 import { giveAdminPermissionSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
 
@@ -34,16 +34,11 @@ export function GiveAdminForm ({ groupId }: { groupId: string }) {
       mutate(['/api/groups/admins', groupId])
       mutate(['/api/groups/members-without-admins', groupId])
     } catch (error) {
-      toast.error('Hubo un error al otorgar permisos de administrador.', {
-        duration: 3000
-      })
+      displayToast('Hubo un error al otorgar permisos de administrador.', 'error')
       setIsLoading(false)
       return
     }
-
-    toast.success('Permisos de administrador otorgados correctamente.', {
-      duration: 3000
-    })
+    displayToast('Permisos de administrador otorgados correctamente.', 'success')
     setIsLoading(false)
   }
 

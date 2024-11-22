@@ -3,12 +3,12 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { inviteMemberSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { PlusCircledIcon } from '@radix-ui/react-icons'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
 
@@ -30,17 +30,17 @@ export function InviteMemberForm ({ groupId }: { groupId: string }) {
     try {
       const response = await inviteMemberToGroup(email, groupId)
       if (response?.error) {
-        toast.error(response.error)
+        displayToast(response.error, 'error')
         setIsLoading(false)
         return
       }
-      toast.success('Miembro invitado correctamente.')
+      displayToast('Miembro invitado correctamente.', 'success')
       setIsLoading(false)
       mutate(['/api/groups/members/invited', groupId])
       form.reset()
     } catch (error) {
       console.error(error)
-      toast.error('Ha ocurrido un error al invitar al miembro.')
+      displayToast('Ha ocurrido un error al invitar al miembro.', 'error')
     }
   }
 

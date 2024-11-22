@@ -1,11 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { displayToast } from '@/utils/toast-display'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useSWRConfig } from 'swr'
 import { leaveGroup } from '../../app/(overview)/groups/[groupId]/participants/actions'
-import { toast } from 'sonner'
 
 export const LeaveGroupButton = ({ groupId }: { groupId: string }) => {
   const router = useRouter()
@@ -16,14 +16,14 @@ export const LeaveGroupButton = ({ groupId }: { groupId: string }) => {
     setIsLoading(true)
     try {
       await leaveGroup(groupId)
-      toast.success('Ha abandonado el grupo correctamente. Redirigiendo...')
+      displayToast('Ha abandonado el grupo correctamente. Redirigiendo...', 'success')
       mutate('user-groups')
       setTimeout(() => {
         router.push('/dashboard')
       }, 2000)
     } catch (error) {
       console.error(error)
-      toast.error('Ha ocurrido un error al intentar abandonar el grupo')
+      displayToast('Ha ocurrido un error al intentar abandonar el grupo', 'error')
       setIsLoading(false)
     }
   }

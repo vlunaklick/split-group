@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { updateNotificationsWanted } from '../../../app/(user)/settings/notifications/actions'
 import { useGetUserConfiguration } from '@/data/settings'
+import { displayToast } from '@/utils/toast-display'
 
 export const NotificationsWantedSettings = () => {
   const { data: configuration, isLoading: isLoadingConfiguration } = useGetUserConfiguration()
@@ -40,16 +41,12 @@ export const NotificationsWantedSettings = () => {
         spents: values.spents || false
       })
     } catch (error) {
-      toast.error('Ha ocurrido un error, por favor intenta de nuevo.', {
-        duration: 3000
-      })
+      displayToast('Ha ocurrido un error, por favor intenta de nuevo.', 'error')
       setIsLoading(false)
       return
     }
 
-    toast.success('Las notificaciones deseadas han sido actualizadas.', {
-      duration: 3000
-    })
+    displayToast('Las notificaciones deseadas han sido actualizadas.', 'success')
     setIsLoading(false)
   }
 

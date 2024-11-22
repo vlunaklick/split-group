@@ -1,10 +1,10 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { markAllAsRead } from '../../../app/(user)/notifications/actions'
-import { toast } from 'sonner'
+import { displayToast } from '@/utils/toast-display'
 import { useState } from 'react'
 import { useSWRConfig } from 'swr'
+import { markAllAsRead } from '../../../app/(user)/notifications/actions'
 
 export const MarkAllAsRead = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -15,10 +15,10 @@ export const MarkAllAsRead = () => {
     try {
       await markAllAsRead()
       mutate(['notifications'])
-      toast.success('Todas las notificaciones han sido marcadas como leídas')
+      displayToast('Todas las notificaciones han sido marcadas como leídas', 'success')
     } catch (error) {
       console.error(error)
-      toast.error('Ha ocurrido un error al marcar todas las notificaciones como leídas')
+      displayToast('Ha ocurrido un error al marcar todas las notificaciones como leídas', 'error')
     }
     setIsLoading(false)
   }

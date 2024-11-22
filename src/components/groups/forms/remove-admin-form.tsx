@@ -1,7 +1,7 @@
 import { removeAdminPermission } from '@/app/(overview)/groups/[groupId]/participants/actions'
 import { Button } from '@/components/ui/button'
+import { displayToast } from '@/utils/toast-display'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 
 export function RemoveAdminForm ({ userId, groupId }: { userId: string, groupId: string }) {
@@ -15,15 +15,11 @@ export function RemoveAdminForm ({ userId, groupId }: { userId: string, groupId:
       mutate(['/api/groups/admins', groupId])
       mutate(['/api/groups/members-without-admins', groupId])
     } catch (error) {
-      toast.error('Hubo un error al remover permisos de administrador.', {
-        duration: 3000
-      })
+      displayToast('Hubo un error al remover permisos de administrador.', 'error')
       return
     }
 
-    toast.success('Permisos de administrador removidos correctamente.', {
-      duration: 3000
-    })
+    displayToast('Permisos de administrador removidos correctamente.', 'success')
     setIsLoading(false)
   }
 

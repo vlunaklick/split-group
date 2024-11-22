@@ -4,8 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetGroupParticipnts } from '@/data/groups'
 import { cn } from '@/lib/utils'
+import { displayToast } from '@/utils/toast-display'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { removeMemberFromGroup } from '../../../app/(overview)/groups/[groupId]/participants/actions'
 
@@ -25,15 +25,11 @@ export const ParticipantsList = ({ groupId, isOwner, isAdmin, userId }: { groupI
       mutate(['/api/groups/members-without-admins', groupId])
       mutate(['/api/groups/admins', groupId])
     } catch (error) {
-      toast.error('Hubo un error al eliminar al miembro del grupo.', {
-        duration: 3000
-      })
+      displayToast('Hubo un error al eliminar al miembro del grupo.', 'error')
       return
     }
 
-    toast.success('Miembro eliminado correctamente.', {
-      duration: 3000
-    })
+    displayToast('Miembro eliminado correctamente.', 'success')
     setIsLoading(false)
   }
 

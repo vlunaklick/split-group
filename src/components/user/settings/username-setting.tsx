@@ -1,16 +1,16 @@
 'use client'
 
-import { toast } from 'sonner'
+import { updateUsername } from '@/app/(user)/settings/actions'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { z } from 'zod'
+import { changeUsernameSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { changeUsernameSchema } from '@/lib/form'
-import { updateUsername } from '@/app/(user)/settings/actions'
+import { z } from 'zod'
 
 export const UsernameSettings = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -26,16 +26,12 @@ export const UsernameSettings = () => {
     try {
       await updateUsername({ newUsername: values.username })
     } catch (error) {
-      toast.error('Hubo un error al actualizar tu nombre de usuario.', {
-        duration: 3000
-      })
+      displayToast('Hubo un error al actualizar tu nombre de usuario.', 'error')
       setIsLoading(false)
       return
     }
 
-    toast.success('Nombre de usuario actualizado correctamente.', {
-      duration: 3000
-    })
+    displayToast('Nombre de usuario actualizado correctamente.', 'success')
     setIsLoading(false)
   }
 

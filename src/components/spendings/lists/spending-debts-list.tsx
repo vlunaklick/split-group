@@ -6,8 +6,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useGetCurrentDebts } from '@/data/spendings'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
+import { displayToast } from '@/utils/toast-display'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { payDebt } from '../../../app/(overview)/groups/[groupId]/spendings/actions'
 
@@ -20,10 +20,10 @@ export const SpendingDebtsList = ({ groupId, spendId }: { groupId: string, spend
     setIsLoading(true)
     try {
       await payDebt({ debtId })
-      toast.success('Deuda pagada')
+      displayToast('Deuda pagada', 'success')
       mutate(['debts', groupId, spendId])
     } catch (error) {
-      toast.error('Error al pagar deuda')
+      displayToast('Error al pagar deuda', 'error')
     }
     setIsLoading(false)
   }

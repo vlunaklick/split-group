@@ -3,9 +3,9 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetUsersInvitedToGroup } from '@/data/groups'
+import { displayToast } from '@/utils/toast-display'
 import { X } from 'lucide-react'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 
 export function MembersInvitedList ({ groupId }: { groupId: string }) {
@@ -20,15 +20,11 @@ export function MembersInvitedList ({ groupId }: { groupId: string }) {
       await removeUserInvitation(userId, groupId)
       mutate(['/api/groups/members/invited', groupId])
     } catch (error) {
-      toast.error('Hubo un error al enviar la invitación al miembro.', {
-        duration: 3000
-      })
+      displayToast('Hubo un error al remover la invitación al miembro.', 'error')
       return
     }
 
-    toast.success('Invitación eliminada correctamente.', {
-      duration: 3000
-    })
+    displayToast('Invitación removida correctamente.', 'success')
     setIsLoading(false)
   }
 

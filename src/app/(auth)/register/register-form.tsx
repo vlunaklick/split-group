@@ -1,17 +1,17 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { registerSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { createUser } from './actions'
-import { toast } from 'sonner'
-import { registerSchema } from '@/lib/form'
 
 export const RegisterForm = () => {
   const router = useRouter()
@@ -49,7 +49,7 @@ export const RegisterForm = () => {
       return setIsCreating(false)
     }
 
-    toast.success('Cuenta creada exitosamente. Serás redirigido a la página de inicio de sesión en 3 segundos.')
+    displayToast('Cuenta creada exitosamente. Serás redirigido a la página de inicio de sesión en 3 segundos.', 'success')
     setTimeout(() => {
       router.push('/login')
     }, 3000)

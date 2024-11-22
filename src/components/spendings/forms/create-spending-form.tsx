@@ -7,17 +7,17 @@ import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
 import { useGetGroupParticipnts } from '@/data/groups'
 import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
 import { createSpendingSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
-import { PayersForm } from './payers-form'
 import { DebtersForm } from './contributors-form'
 import { GeneralInfoForm } from './general-info-form'
+import { PayersForm } from './payers-form'
 
 const steps = [
   { label: 'Información del gasto', description: 'Ingresa la información del gasto', icon: IconUser },
@@ -57,7 +57,7 @@ export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
           ...finalData
         }
       })
-      toast.success('Gasto creado correctamente')
+      displayToast('Gasto creado correctamente', 'success')
       mutate(['lastSpendings', groupId])
       mutate(['lastDebts', groupId])
       setTimeout(() => {
@@ -65,7 +65,7 @@ export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
       }, 1000)
     } catch (error) {
       setIsLoading(false)
-      toast.error('Ocurrió un error al crear el gasto')
+      displayToast('Ocurrió un error al crear el gasto', 'error')
     }
   }
 

@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetOwedDebts } from '@/data/spendings'
 import { formatMoney } from '@/lib/money'
+import { displayToast } from '@/utils/toast-display'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 import { forgiveDebt } from '../../../app/(overview)/groups/[groupId]/spendings/actions'
 
@@ -20,10 +20,10 @@ export const SpendingDebtsOwedList = ({ groupId, spendId }: { groupId: string, s
     setIsLoading(true)
     try {
       await forgiveDebt({ debtId })
-      toast.success('Deuda perdonada')
+      displayToast('Deuda perdonada', 'success')
       mutate(['owed-debts', groupId, spendId])
     } catch (error) {
-      toast.error('Error al perdonar deuda')
+      displayToast('Error al perdonar deuda', 'error')
     }
     setIsLoading(false)
   }

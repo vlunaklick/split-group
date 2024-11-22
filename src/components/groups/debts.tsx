@@ -8,8 +8,8 @@ import { useGetDebts } from '@/data/spendings'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
 import { useTimeAgo } from '@/utils/time'
+import { displayToast } from '@/utils/toast-display'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSWRConfig } from 'swr'
 
 export const Debts = ({ groupId }: { groupId: string }) => {
@@ -56,10 +56,10 @@ const DebtItem = ({ debt, groupId }: { debt: { name: string, userId: string, amo
     setIsLoading(true)
     try {
       await payAllDebt({ groupId, crediterId: debt.userId })
-      toast.success('Deuda pagada')
+      displayToast('Deuda pagada', 'success')
       mutate(['lastDebts', groupId])
     } catch (error) {
-      toast.error('No se pudo pagar la deuda')
+      displayToast('No se pudo pagar la deuda', 'error')
     }
     setIsLoading(false)
   }
@@ -68,10 +68,10 @@ const DebtItem = ({ debt, groupId }: { debt: { name: string, userId: string, amo
     setIsLoading(true)
     try {
       await forgiveAllDebt({ groupId, debterId: debt.userId })
-      toast.success('Deuda perdonada')
+      displayToast('Deuda perdonada', 'success')
       mutate(['lastDebts', groupId])
     } catch (error) {
-      toast.error('No se pudo perdonar la deuda')
+      displayToast('No se pudo perdonar la deuda', 'error')
     }
     setIsLoading(false)
   }

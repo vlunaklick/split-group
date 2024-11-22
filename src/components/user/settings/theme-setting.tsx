@@ -1,16 +1,16 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { updateThemeSettingsSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
-import { updateThemeSettingsSchema } from '@/lib/form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { useForm } from 'react-hook-form'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { z } from 'zod'
 
 export const ThemeSetting = () => {
   const { setTheme, resolvedTheme, systemTheme } = useTheme()
@@ -34,9 +34,9 @@ export const ThemeSetting = () => {
 
     try {
       setTheme(theme)
-      toast.success('Tema actualizado correctamente')
+      displayToast('Tema actualizado correctamente', 'success')
     } catch (error) {
-      toast.error('Hubo un error al actualizar el tema')
+      displayToast('Hubo un error al actualizar el tema', 'error')
     }
     setIsLogging(false)
   }

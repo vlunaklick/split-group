@@ -6,6 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useGetAlertsSizeSelected } from '@/data/settings'
 import { updateAlertSizeSettingsSchema } from '@/lib/form'
+import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -29,16 +30,12 @@ export const AlertSettings = () => {
     try {
       localStorage.setItem('alert-size', values.size)
     } catch (error) {
-      toast.error('Hubo un error al actualizar el tamaño de las alertas', {
-        duration: 3000
-      })
+      displayToast('Hubo un error al actualizar el tamaño de las alertas', 'error')
       setIsLoading(false)
       return
     }
 
-    toast.success('Tamaño de alertas guardado correctamente', {
-      duration: 3000
-    })
+    displayToast('Tamaño de alertas actualizado correctamente', 'success')
     setIsLoading(false)
   }
 

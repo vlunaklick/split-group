@@ -1,22 +1,22 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { createGroupFormSchema } from '@/lib/form'
-import { createGroup } from './actions'
+import { GROUP_ICONS } from '@/components/group-icons'
+import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
 import { RadioGroup } from '@/components/ui/radio-group'
-import { RadioGroupItem } from '@radix-ui/react-radio-group'
-import { useSWRConfig } from 'swr'
-import { GROUP_ICONS } from '@/components/group-icons'
-import { IconLoader2 } from '@tabler/icons-react'
+import { createGroupFormSchema } from '@/lib/form'
 import { cn } from '@/lib/utils'
+import { displayToast } from '@/utils/toast-display'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { RadioGroupItem } from '@radix-ui/react-radio-group'
+import { IconLoader2 } from '@tabler/icons-react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useSWRConfig } from 'swr'
+import { z } from 'zod'
+import { createGroup } from './actions'
 
 export const CreateGroupFrom = () => {
   const router = useRouter()
@@ -39,12 +39,13 @@ export const CreateGroupFrom = () => {
     try {
       const group = await createGroup({ name, description, icon })
       mutate(['user-groups'])
-      toast.success('Grupo creado con éxito. Redirigiendo...')
+
+      displayToast('Grupo creado con éxito. Redirigiendo...', 'success')
       setTimeout(() => {
         router.push(`/groups/${group.id}`)
       }, 2000)
     } catch (error) {
-      toast.error('No se ha podido crear el grupo')
+      displayToast('No se ha podido crear el grupo', 'error')
       setIsLogging(false)
     }
   }
