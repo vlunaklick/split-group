@@ -11,7 +11,7 @@ export const displayToast = (message: string, type: 'success' | 'error' | 'warni
         year: 'numeric'
       }).replace(/^\w/, c => c.toUpperCase())
     })
-  } else if (alert === 'simple') {
+  } else {
     toast[type](message, {
       duration: 3000
     })
