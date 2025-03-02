@@ -5,10 +5,12 @@ import { SiteFooter } from '@/components/home/site-footer'
 import { SiteHeader } from '@/components/home/site-header'
 import { TrustedBy } from '@/components/home/trusted-by'
 import { BorderBeam } from '@/components/magicui/border-beam'
-import WordRotate from '@/components/magicui/word-rotate'
+import { FlipWords } from '@/components/ui/flip-words'
 import Image from 'next/image'
 
 export default function Home () {
+  const words = ['inteligente', 'eficiente', 'sencilla']
+
   return (
     <div className="flex flex-col min-h-screen bg-background relative">
       <div className="absolute inset-0 bg-dot-black/[0.2] dark:bg-dot-white/[0.2] pointer-events-none" aria-hidden="true" />
@@ -20,7 +22,8 @@ export default function Home () {
         <section className="container mx-auto px-4 py-20 flex flex-col items-center gap-6 text-center">
           <Announcement />
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tighter bg-gradient-to-br from-black from-50% to-neutral-200/60 dark:from-white dark:to-neutral-400/60 bg-clip-text text-transparent max-w-[43.5rem]">
-            Organiza tus gastos de forma <WordRotate words={['inteligente', 'eficiente', 'sencilla']} />
+            Gestiona tus finanzas de manera <br />
+            <FlipWords words={words} className="font-bold" />
           </h1>
           <p className="max-w-xl text-base md:text-lg text-muted-foreground">
             Con nuestra aplicación podrás llevar un control de tus gastos de forma sencilla y eficiente. ¡Empieza a organizar tus gastos hoy!
