@@ -1,9 +1,9 @@
-import { IconCirclePlus } from '@tabler/icons-react'
 import Link from 'next/link'
 import { Logo } from './logo'
 import { NotificationsAmount } from './notifications-amount'
 import { SideGroupNav } from './side-nav'
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar'
+import { CreateGroupSheet } from './groups/sheets/create-group-sheet'
 
 export function AppSidebar () {
   return (
@@ -36,10 +36,7 @@ export function AppSidebar () {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton tooltip="Crear grupo" asChild>
-                  <Link href="/groups/create" className='border-muted flex items-center gap-2'>
-                    <IconCirclePlus className="h-4 w-4" />
-                    <span>Crear grupo</span>
-                  </Link>
+                  <CreateGroupSheet />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
