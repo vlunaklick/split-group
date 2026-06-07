@@ -15,7 +15,7 @@ export function MainNav () {
     <div className="mr-4 md:flex">
       <Link href="/" className="mr-6 flex items-center space-x-2">
         <Logo className="text-2xl" />
-        <span className="hidden font-bold sm:inline-block">
+        <span className="hidden text-sm font-medium sm:inline-block">
           {siteConfig.name}
         </span>
       </Link>
@@ -23,8 +23,8 @@ export function MainNav () {
         <Link
           href="/calculator"
           className={cn(
-            'transition-colors hover:text-foreground/80',
-            pathname === '/calculator' ? 'text-foreground' : 'text-foreground/60'
+            'font-medium transition-colors hover:text-foreground',
+            pathname === '/calculator' ? 'text-foreground' : 'text-muted-foreground'
           )}
         >
           Calculadora

@@ -21,7 +21,7 @@ export async function CustomSpendingInfo ({ groupId, spendId }: { groupId: strin
   return (
     <>
       <header className="flex lg:items-center gap-4 flex-col lg:flex-row">
-        <h1 className="text-3xl font-semibold">
+        <h1 className="text-display-sm">
           {data.spend?.group.name}
         </h1>
 

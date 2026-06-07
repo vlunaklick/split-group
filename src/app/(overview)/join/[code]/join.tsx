@@ -12,7 +12,7 @@ export async function Join ({ code }: { code: string }) {
     return (
       <>
         <IconMoodConfuzedFilled className="h-24 w-24 text-muted-foreground" aria-hidden="true" />
-        <h1 className="text-3xl font-semibold">Invitación no válida</h1>
+        <h1 className="text-display-sm">Invitación no válida</h1>
         <p className="text-balance text-muted-foreground">La invitación que intenta usar no es válida o la cantidad máxima de usos ha sido alcanzada.</p>
       </>
     )
@@ -24,7 +24,7 @@ export async function Join ({ code }: { code: string }) {
         <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full mx-auto mb-4')}>
           <Icon type={invitation.group.icon as string} />
         </div>
-        <h1 className="text-3xl font-semibold">Unirse a &quot;{invitation?.group.name}&quot;</h1>
+        <h1 className="text-display-sm">Unirse a &quot;{invitation?.group.name}&quot;</h1>
       </header>
 
       <div className="grid gap-2 text-center">

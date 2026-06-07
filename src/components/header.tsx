@@ -5,7 +5,7 @@ import { SidebarTrigger } from './ui/sidebar'
 
 export function Header () {
   return (
-    <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+    <header className="flex h-16 items-center gap-4 border-b border-border bg-background px-4 lg:px-6">
       <SidebarTrigger className="-ml-1 h-4 w-4" />
 
       <ThemeSwitcher />

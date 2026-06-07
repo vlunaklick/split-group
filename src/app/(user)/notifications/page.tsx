@@ -11,7 +11,7 @@ export default async function Notifications () {
   return (
     <div className="mx-auto w-full max-w-2xl flex flex-col gap-4">
       <header className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-3xl font-semibold">Notificaciones</h1>
+        <h1 className="text-display-sm">Notificaciones</h1>
         <MarkAllAsRead />
       </header>
 

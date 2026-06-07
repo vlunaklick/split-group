@@ -41,7 +41,7 @@ export const WeeklySpent = () => {
         <IconCashBanknote className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="font-mono text-2xl font-normal tracking-tight">{value}</div>
         <p className="text-xs text-muted-foreground/60">
           {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde la semana pasada
         </p>
@@ -84,7 +84,7 @@ export const MonthlySpent = () => {
         <IconMoneybag className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        <p className="text-2xl font-bold">{value}</p>
+        <p className="font-mono text-2xl font-normal tracking-tight">{value}</p>
         <p className="text-xs text-muted-foreground/60">
           {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde el mes pasado
         </p>
@@ -118,7 +118,7 @@ export const TotalDebt = () => {
         <IconTransferOut className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="font-mono text-2xl font-normal tracking-tight">{value}</div>
         <p className="text-xs text-muted-foreground/60">Valor entre todos los grupos</p>
       </CardContent>
     </Card>
@@ -150,7 +150,7 @@ export const TotalRevenue = () => {
         <IconTransferIn className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="font-mono text-2xl font-normal tracking-tight">{value}</div>
         <p className="text-xs text-muted-foreground/60">Valor entre todos los grupos</p>
       </CardContent>
     </Card>
