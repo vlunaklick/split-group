@@ -9,10 +9,10 @@ export default function NotFound () {
       <h2 className="text-xl font-semibold">Página no encontrada</h2>
       <p>¡Ups! Parece que la página que buscas no existe.</p>
       <Link
-        href="/settings/general"
+        href="/settings"
         className={buttonVariants({ variant: 'outline' })}
       >
-        Volver al inicio
+        Volver a ajustes
       </Link>
     </main>
   )

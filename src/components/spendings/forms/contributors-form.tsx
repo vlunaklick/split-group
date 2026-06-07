@@ -22,7 +22,8 @@ export const DebtersForm = ({
   mode,
   setMode,
   onSubmit,
-  isSubmitting
+  isSubmitting,
+  submitLabel
 }: {
   participants?: any[]
   isLoading: boolean
@@ -34,6 +35,7 @@ export const DebtersForm = ({
   setMode: (mode: DistributionModeType) => void
   onSubmit?: (data: any) => void
   isSubmitting?: boolean
+  submitLabel?: string
 }) => {
   const { prevStep, nextStep } = useStepper()
   const [error, setError] = useState<string | null>(null)
@@ -189,7 +191,7 @@ export const DebtersForm = ({
           variant="default"
           disabled={isSubmitting || debters.length === 0}
         >
-          {isSubmitting ? 'Creando…' : onSubmit ? 'Crear gasto' : 'Continuar'}
+          {isSubmitting ? 'Guardando…' : submitLabel}
         </Button>
 
         <Button onClick={prevStep} className="mt-2 w-full" variant="outline" disabled={isSubmitting}>

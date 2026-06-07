@@ -3,8 +3,8 @@ import { ListNotifications } from '@/components/user/notifications/notifications
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Notificaciones',
-  description: 'Tus invitaciones y avisos'
+  title: 'Bandeja de avisos',
+  description: 'Invitaciones y notificaciones'
 }
 
 export default async function Notifications () {

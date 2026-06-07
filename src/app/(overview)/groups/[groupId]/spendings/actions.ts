@@ -3,8 +3,7 @@
 import { db } from '@/lib/db'
 import { DistributionModeType, SpendingInfo } from './types'
 import { handleDistribution } from '@/utils/distributions'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { requireGroupMember, requireSession, requireSpendingOwner } from '@/lib/server-auth'
 import { NotificationType } from '../../../../../../prisma/notification-type-enum'
 import { SpendUpdatedEmail } from '@/components/mails/spend-updated'
 import { Resend } from 'resend'
@@ -13,10 +12,7 @@ import { PayedDebtEmail } from '@/components/mails/payed-debt'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function createSpending ({ groupId, spending, mode }: { groupId: string, spending: SpendingInfo, mode: DistributionModeType }) {
-  const session = await getServerSession(authOptions)
-  const userId = session?.user.id
-
-  if (!userId) return
+  const { userId } = await requireGroupMember(groupId)
 
   const createdSpending = await db.spending.create({
     data: {
@@ -63,7 +59,8 @@ export async function createSpending ({ groupId, spending, mode }: { groupId: st
 }
 
 export async function updateSpending ({ spendingId, spending, mode }: { spendingId: string, spending: SpendingInfo, mode: DistributionModeType }) {
-  // Actualizamos el gasto
+  await requireSpendingOwner(spendingId)
+
   const spendingEntity = await db.spending.update({
     where: {
       id: spendingId
@@ -153,6 +150,8 @@ export async function updateSpending ({ spendingId, spending, mode }: { spending
 }
 
 export async function deleteSpending ({ spendingId }: { spendingId: string }) {
+  await requireSpendingOwner(spendingId)
+
   await db.payment.deleteMany({
     where: {
       spendingId
@@ -199,6 +198,19 @@ export async function getCommentsOfSpending ({ spendingId }: { spendingId: strin
 }
 
 export async function payDebt ({ debtId }: { debtId: string }) {
+  const { userId } = await requireSession()
+
+  const existingDebt = await db.debt.findUnique({
+    where: { id: debtId },
+    select: { debterId: true, spending: { select: { groupId: true } } }
+  })
+
+  if (!existingDebt || existingDebt.debterId !== userId) {
+    throw new Error('No autorizado')
+  }
+
+  await requireGroupMember(existingDebt.spending.groupId)
+
   const debt = await db.debt.update({
     where: {
       id: debtId
@@ -249,6 +261,19 @@ export async function payDebt ({ debtId }: { debtId: string }) {
 }
 
 export async function forgiveDebt ({ debtId }: { debtId: string }) {
+  const { userId } = await requireSession()
+
+  const existingDebt = await db.debt.findUnique({
+    where: { id: debtId },
+    select: { creditorId: true, spending: { select: { groupId: true } } }
+  })
+
+  if (!existingDebt || existingDebt.creditorId !== userId) {
+    throw new Error('No autorizado')
+  }
+
+  await requireGroupMember(existingDebt.spending.groupId)
+
   const debt = await db.debt.update({
     where: {
       id: debtId

@@ -7,7 +7,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { updateThemeSettingsSchema } from '@/lib/form'
 import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTheme } from 'next-themes'
+import { useTheme } from '@/components/theme-provider'
+import type { Theme } from '@/lib/theme'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -33,7 +34,7 @@ export const ThemeSetting = () => {
     setIsLogging(true)
 
     try {
-      setTheme(theme)
+      setTheme(theme as Theme)
       displayToast('Tema actualizado correctamente', 'success')
     } catch (error) {
       displayToast('Hubo un error al actualizar el tema', 'error')

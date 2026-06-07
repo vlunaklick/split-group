@@ -2,13 +2,12 @@
 
 import { createSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
 import { DistributionModeType } from '@/app/(overview)/groups/[groupId]/spendings/types'
-import { Step, StepItem, Stepper } from '@/components/ui/stepper'
-import { useGetGroupParticipnts } from '@/data/groups'
+import { Step, Stepper } from '@/components/ui/stepper'
+import { useGetGroupParticipants } from '@/data/groups'
 import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
 import { createSpendingSchema } from '@/lib/form'
 import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSWRConfig } from 'swr'
@@ -16,12 +15,7 @@ import { z } from 'zod'
 import { DebtersForm } from './contributors-form'
 import { GeneralInfoForm } from './general-info-form'
 import { PayersForm } from './payers-form'
-
-const steps = [
-  { label: 'Detalles', description: 'Nombre, monto y categoría', icon: IconUser },
-  { label: 'Quién pagó', description: 'Quién puso el dinero y cuánto', icon: IconCoin },
-  { label: 'Quién debe', description: 'Cómo se reparte entre los participantes', icon: IconUsers }
-] as StepItem[]
+import { SPENDING_STEPS } from './spending-steps'
 
 export const CreateSpendingForm = ({
   groupId,
@@ -37,7 +31,7 @@ export const CreateSpendingForm = ({
 
   const { data: categories, isLoading: isLoadingCategories } = useGetCategories()
   const { data: currencies, isLoading: isLoadingCurrencies } = useGetAvailableCurrencies()
-  const { data: participants, isLoading: isLoadingParticipants } = useGetGroupParticipnts({ groupId })
+  const { data: participants, isLoading: isLoadingParticipants } = useGetGroupParticipants({ groupId })
 
   const form = useForm<z.infer<typeof createSpendingSchema>>({
     resolver: zodResolver(createSpendingSchema),
@@ -60,11 +54,7 @@ export const CreateSpendingForm = ({
   const createSpendingFinalStep = async (spendingData: any) => {
     try {
       setIsLoading(true)
-      await createSpending({
-        groupId,
-        mode,
-        spending: spendingData
-      })
+      await createSpending({ groupId, mode, spending: spendingData })
       displayToast('Gasto creado correctamente', 'success')
       refreshGroupData()
       onSuccess?.()
@@ -76,8 +66,8 @@ export const CreateSpendingForm = ({
   }
 
   return (
-    <Stepper initialStep={0} steps={steps} orientation='vertical'>
-      <Step {...steps[0]} key={steps[0].label}>
+    <Stepper initialStep={0} steps={SPENDING_STEPS} orientation='vertical'>
+      <Step {...SPENDING_STEPS[0]} key={SPENDING_STEPS[0].label}>
         <GeneralInfoForm
           form={form}
           categories={categories}
@@ -86,7 +76,7 @@ export const CreateSpendingForm = ({
           setFinalData={setFinalData}
         />
       </Step>
-      <Step {...steps[1]} key={steps[1].label}>
+      <Step {...SPENDING_STEPS[1]} key={SPENDING_STEPS[1].label}>
         <PayersForm
           participants={participants}
           isLoading={isLoadingParticipants}
@@ -94,7 +84,7 @@ export const CreateSpendingForm = ({
           setFinalData={setFinalData}
         />
       </Step>
-      <Step {...steps[2]} key={steps[2].label}>
+      <Step {...SPENDING_STEPS[2]} key={SPENDING_STEPS[2].label}>
         <DebtersForm
           participants={participants}
           isLoading={isLoadingParticipants}
@@ -106,6 +96,7 @@ export const CreateSpendingForm = ({
           setMode={setMode}
           onSubmit={createSpendingFinalStep}
           isSubmitting={isLoading}
+          submitLabel="Crear gasto"
         />
       </Step>
     </Stepper>

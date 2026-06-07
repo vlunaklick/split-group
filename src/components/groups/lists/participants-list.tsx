@@ -2,7 +2,7 @@
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useGetGroupParticipnts } from '@/data/groups'
+import { useGetGroupParticipants } from '@/data/groups'
 import { cn } from '@/lib/utils'
 import { displayToast } from '@/utils/toast-display'
 import { useState } from 'react'
@@ -13,7 +13,7 @@ export const ParticipantsList = ({ groupId, isOwner, isAdmin, userId }: { groupI
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
-  const { data: members, isLoading: isLoadingMembers } = useGetGroupParticipnts({ groupId })
+  const { data: members, isLoading: isLoadingMembers } = useGetGroupParticipants({ groupId })
 
   const hasPermission = isOwner || isAdmin
 

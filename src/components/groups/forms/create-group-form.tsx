@@ -1,6 +1,6 @@
 'use client'
 
-import { createGroup } from '@/app/(overview)/groups/create/actions'
+import { createGroup } from '@/actions/groups'
 import { GROUP_ICONS } from '@/components/group-icons'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -18,14 +18,14 @@ import { useForm } from 'react-hook-form'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
 
-interface CreateGroupFromProps {
-  callback: () => void
+interface CreateGroupFormProps {
+  callback?: () => void
 }
 
-export const CreateGroupFrom: React.FC<CreateGroupFromProps> = ({ callback }) => {
+export function CreateGroupForm ({ callback }: CreateGroupFormProps) {
   const router = useRouter()
   const { mutate } = useSWRConfig()
-  const [isLogging, setIsLogging] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<z.infer<typeof createGroupFormSchema>>({
     resolver: zodResolver(createGroupFormSchema),
@@ -37,23 +37,19 @@ export const CreateGroupFrom: React.FC<CreateGroupFromProps> = ({ callback }) =>
   })
 
   const onSubmit = async (values: z.infer<typeof createGroupFormSchema>) => {
-    const { name, description, icon } = values
-    setIsLogging(true)
+    setIsSubmitting(true)
 
     try {
-      const group = await createGroup({ name, description, icon })
+      const group = await createGroup(values)
       mutate(['user-groups'])
-
-      displayToast('Grupo creado con éxito. Redirigiendo...', 'success')
-      setTimeout(() => {
-        router.push(`/groups/${group.id}`)
-      }, 2000)
-      callback()
-      setIsLogging(false)
+      displayToast('Grupo creado con éxito', 'success')
       form.reset()
+      callback?.()
+      router.push(`/groups/${group.id}`)
     } catch (error) {
       displayToast('No se ha podido crear el grupo', 'error')
-      setIsLogging(false)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -65,15 +61,9 @@ export const CreateGroupFrom: React.FC<CreateGroupFromProps> = ({ callback }) =>
           name="name"
           render={({ field }: any) => (
             <FormItem className="grid gap-2 space-y-0">
-              <FormLabel>
-                Nombre de grupo
-              </FormLabel>
+              <FormLabel>Nombre de grupo</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Nombre de grupo"
-                  disabled={isLogging}
-                  {...field}
-                />
+                <Input placeholder="Nombre de grupo" disabled={isSubmitting} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -84,15 +74,9 @@ export const CreateGroupFrom: React.FC<CreateGroupFromProps> = ({ callback }) =>
           name="description"
           render={({ field }: any) => (
             <FormItem className="grid gap-2 space-y-0">
-              <FormLabel>
-                Descripción del grupo
-              </FormLabel>
+              <FormLabel>Descripción del grupo</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Este grupo es para..."
-                  disabled={isLogging}
-                  {...field}
-                />
+                <Input placeholder="Este grupo es para..." disabled={isSubmitting} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -110,27 +94,27 @@ export const CreateGroupFrom: React.FC<CreateGroupFromProps> = ({ callback }) =>
                 defaultValue={field.value}
                 className="flex gap-3 flex-wrap"
               >
-                {
-                  GROUP_ICONS.map(({ name, Icon }) => (
-                    <IconSelector key={name} name={name} label={name}>
-                      <Icon className="h-6 w-6" />
-                    </IconSelector>
-                  ))
-                }
+                {GROUP_ICONS.map(({ name, Icon }) => (
+                  <IconSelector key={name} name={name} label={name}>
+                    <Icon className="h-6 w-6" />
+                  </IconSelector>
+                ))}
               </RadioGroup>
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLogging}>
-          {isLogging ? <IconLoader2 className="animate-spin" /> : 'Crear grupo'}
-          <span className='sr-only'>Crear grupo</span>
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? <IconLoader2 className="animate-spin" /> : 'Crear grupo'}
         </Button>
       </form>
     </Form>
   )
 }
 
-export const IconSelector = ({ children, name, label }: { children: React.ReactNode; name: string; label: string }) => {
+/** @deprecated Use CreateGroupForm */
+export const CreateGroupFrom = CreateGroupForm
+
+const IconSelector = ({ children, name, label }: { children: React.ReactNode; name: string; label: string }) => {
   return (
     <FormItem>
       <FormLabel className={cn(

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { ResponsiveSheet } from '@/components/responsive-sheet'
 import { IconCirclePlus } from '@tabler/icons-react'
 import { useState } from 'react'
-import { CreateGroupFrom } from '../forms/create-group-form'
+import { CreateGroupForm } from '../forms/create-group-form'
 
 export function CreateGroupSheet ({ className }: { className?: string }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -22,7 +22,7 @@ export function CreateGroupSheet ({ className }: { className?: string }) {
         </Button>
       }
     >
-      <CreateGroupFrom callback={() => setIsOpen(false)} />
+      <CreateGroupForm callback={() => setIsOpen(false)} />
     </ResponsiveSheet>
   )
 }

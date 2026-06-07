@@ -52,6 +52,9 @@ export function SiteHeader () {
               Calculadora
             </NavLink>
           </nav>
+          <div className="mt-auto border-t border-border pt-4">
+            <ThemeSwitcher />
+          </div>
         </SheetContent>
       </Sheet>
 
@@ -59,7 +62,7 @@ export function SiteHeader () {
         <Link href="/login" className={buttonVariants({ variant: 'default' })}>
           Iniciar sesión
         </Link>
-        <ThemeSwitcher className="hidden md:block" />
+        <ThemeSwitcher />
       </div>
     </header>
   )

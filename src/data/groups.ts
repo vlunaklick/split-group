@@ -6,11 +6,14 @@ export function useGetUserGroups () {
   })
 }
 
-export function useGetGroupParticipnts ({ groupId }: { groupId: string }) {
+export function useGetGroupParticipants ({ groupId }: { groupId: string }) {
   return useSWR(['groupParticipants', groupId], async () => {
     return fetch(`/api/groups/${groupId}?getGroupParticipants=true`).then(res => res.json())
   })
 }
+
+/** @deprecated Use useGetGroupParticipants */
+export const useGetGroupParticipnts = useGetGroupParticipants
 
 export function useGetGroupAdmins ({ groupId }: { groupId: string }) {
   return useSWR(['groupAdmins', groupId], async () => {
@@ -38,6 +41,6 @@ export function useGetUsersInvitedToGroup ({ groupId }: { groupId: string }) {
 
 export function useGetIsGroupOwner ({ groupId }: { groupId: string }) {
   return useSWR(['/api/groups', groupId], async ([url, groupId]) => {
-    return await fetch(`/api/groups/${groupId}?isOwner=true`).then(res => res.json())
+    return await fetch(`/api/groups/${groupId}?getIsGroupOwner=true`).then(res => res.json())
   })
 }

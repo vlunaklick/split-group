@@ -12,8 +12,4 @@ export function useGetGroupNotifications () {
   })
 }
 
-export function useGetAmountNotifications () {
-  return useSWR(['amount-notifications'], async ([_]) => {
-    return await fetch('/api/notifications').then(res => res.json())
-  })
-}
+export const useGetAmountNotifications = useGetNotifications

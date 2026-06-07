@@ -4,14 +4,15 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+const links = [
+  { href: '/settings', label: 'General' },
+  { href: '/notifications', label: 'Bandeja' },
+  { href: '/settings/notifications', label: 'Preferencias' },
+  { href: '/settings/appearance', label: 'Apariencia' }
+]
+
 export const SettingsNav = () => {
   const pathname = usePathname()
-
-  const links = [
-    { href: '/settings', label: 'General' },
-    { href: '/settings/notifications', label: 'Avisos' },
-    { href: '/settings/appearance', label: 'Apariencia' }
-  ]
 
   return (
     <nav className="flex gap-4 overflow-x-auto text-sm text-muted-foreground md:grid md:gap-4 md:overflow-visible">

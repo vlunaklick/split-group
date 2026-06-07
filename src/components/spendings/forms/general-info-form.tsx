@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useStepper } from '@/components/ui/stepper'
 import { formatDate } from '@/lib/dates'
-import { createSpendingSchema } from '@/lib/form'
+import { spendingSchema } from '@/lib/form'
 import { cn } from '@/lib/utils'
 import { Category, Currency } from '@prisma/client'
 import { CalendarIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
@@ -29,7 +29,7 @@ export function GeneralInfoForm ({ categories, currencies, isLoading, setFinalDa
   const { nextStep } = useStepper()
   const [showDescription, setShowDescription] = useState(false)
 
-  const onSubmit = (values: z.infer<typeof createSpendingSchema>) => {
+  const onSubmit = (values: z.infer<typeof spendingSchema>) => {
     const { name, amount, description, categoryId, currencyId, date } = values
     const payload = {
       name,
