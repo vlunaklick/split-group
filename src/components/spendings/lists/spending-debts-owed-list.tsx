@@ -37,7 +37,7 @@ export const SpendingDebtsOwedList = ({ groupId, spendId }: { groupId: string, s
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {owedDebts?.length === 0 && <p className='text-muted-foreground/50'>No te deben dinero</p>}
+        {owedDebts?.length === 0 && <p className="text-sm text-muted-foreground">Nadie te debe en este gasto</p>}
 
         {isLoadingList && (
           <>

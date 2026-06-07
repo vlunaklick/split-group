@@ -4,108 +4,73 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useGetSpendingById } from '@/data/spendings'
 import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
+import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export const SpendingInfo = ({ spendId }: { spendId: string }) => {
+export const SpendingInfo = ({ spendId, compact = false }: { spendId: string, compact?: boolean }) => {
   const { data, isLoading } = useGetSpendingById({ spendingId: spendId })
 
-  if (isLoading) return <SpendInfoSkeleton />
-  if (!data) return <div className="text-muted-foreground text-sm">No se pudo cargar el gasto</div>
+  if (isLoading) return <SpendInfoSkeleton compact={compact} />
+  if (!data) return <div className="text-sm text-muted-foreground">No se pudo cargar el gasto</div>
+
+  const hasDescription = Boolean(data.description?.trim())
 
   return (
-    <Card className='w-full'>
-      <CardHeader>
-        <CardTitle>Gasto</CardTitle>
-        <CardDescription>
-          Información general del gasto
-        </CardDescription>
-      </CardHeader>
-      <CardContent className='space-y-4 text-sm'>
-        <div>
-          <p className='text-muted-foreground/80 text-xs'>Nombre:</p>
-          <p>{data.name}</p>
-        </div>
-
-        <div>
-          <p className='text-muted-foreground/80 text-xs'>Descripción:</p>
-          <p>{data.description}</p>
-        </div>
-
-        <div>
-          <p className='text-muted-foreground/80 text-xs'>Creado por:</p>
-          <p>{data.owner?.name}</p>
-        </div>
-
-        <div>
-          <p className='text-muted-foreground/80 text-xs'>Categoría:</p>
-          <p>{data.category?.name}</p>
-        </div>
-
-        <div>
-          <p className='text-muted-foreground/80 text-xs'>Fecha:</p>
-          <p>{formatDate(data.date)}</p>
-        </div>
-
-        <div className='flex gap-4 justify-between'>
+    <Card className="w-full">
+      {!compact && (
+        <CardHeader>
+          <CardTitle>{data.name}</CardTitle>
+          <CardDescription>Detalle del gasto</CardDescription>
+        </CardHeader>
+      )}
+      <CardContent className={cn('space-y-3 text-sm', compact && 'pt-6')}>
+        {compact && (
           <div>
-            <p className='text-muted-foreground/80 text-xs'>Monto:</p>
-            <p>{formatMoney(data.value)}</p>
+            <p className="text-xs text-muted-foreground">Detalle</p>
+            <p className="font-medium">Información del gasto</p>
           </div>
-          <div>
-            <p className='text-muted-foreground/80 text-xs'>Moneda:</p>
-            <p>{data.currency.name}</p>
-          </div>
-        </div>
+        )}
+
+        <InfoRow label="Categoría" value={data.category?.name} />
+        <InfoRow label="Registrado por" value={data.owner?.name} />
+        <InfoRow label="Fecha" value={formatDate(data.date)} />
+        {!compact && <InfoRow label="Monto" value={formatMoney(data.value)} mono />}
+        <InfoRow label="Moneda" value={data.currency?.name} />
+
+        {hasDescription && (
+          <InfoRow label="Nota" value={data.description} />
+        )}
       </CardContent>
     </Card>
   )
 }
 
-export const SpendInfoSkeleton = () => {
+function InfoRow ({ label, value, mono }: { label: string, value?: string | null, mono?: boolean }) {
+  if (!value) return null
   return (
-    <Card className='w-full'>
-      <CardHeader>
-        <CardTitle>Gasto</CardTitle>
-        <CardDescription>
-          Información general del gasto
-        </CardDescription>
-      </CardHeader>
-      <CardContent className='space-y-4 text-sm'>
-        <div>
-          <p className='text-muted-foreground/80 text-xs'>Nombre:</p>
-          <Skeleton className='w-36 h-5' />
-        </div>
+    <div>
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className={mono ? 'font-mono font-medium' : undefined}>{value}</p>
+    </div>
+  )
+}
 
-        <div>
-          <p className='text-muted-foreground/80 text-xs'>Descripción:</p>
-          <Skeleton className='w-64 h-5' />
-        </div>
-
-        <div>
-          <p className='text-muted-foreground/80 text-xs'>Creado por:</p>
-          <Skeleton className='w-24 h-5' />
-        </div>
-
-        <div>
-          <p className='text-muted-foreground/80 text-xs'>Categoría:</p>
-          <Skeleton className='w-24 h-5' />
-        </div>
-
-        <div>
-          <p className='text-muted-foreground/80 text-xs'>Fecha:</p>
-          <Skeleton className='w-24 h-5' />
-        </div>
-
-        <div className='flex gap-4 justify-between'>
-          <div>
-            <p className='text-muted-foreground/80 text-xs'>Monto:</p>
-            <Skeleton className='w-24 h-5' />
+export const SpendInfoSkeleton = ({ compact = false }: { compact?: boolean }) => {
+  return (
+    <Card className="w-full">
+      {!compact && (
+        <CardHeader>
+          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-4 w-24" />
+        </CardHeader>
+      )}
+      <CardContent className="space-y-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i}>
+            <Skeleton className="mb-1 h-3 w-16" />
+            <Skeleton className="h-5 w-28" />
           </div>
-          <div>
-            <p className='text-muted-foreground/80 text-xs'>Moneda:</p>
-            <Skeleton className='w-12 h-5' />
-          </div>
-          </div>
+        ))}
       </CardContent>
     </Card>
   )

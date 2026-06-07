@@ -1,3 +1,4 @@
+import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
 import { DataTable } from '@/components/data-table/data-table'
 import { DataTableToolbar } from '@/components/data-table/data-table-toolbar'
 import { SpendingIcon, SpendingTypes } from '@/components/spending-icons'
@@ -28,12 +29,11 @@ type SpendingTableType = {
 export function SpendingTable ({ data, groupId }: { data: any, groupId: string }) {
   const columns = useMemo(() => getColumns(), [])
 
-  // Acá podemos definir los campos por los que se puede filtrar la tabla (Nos referimos a buscar)
   const filterFields: DataTableFilterField<SpendingTableType>[] = [
     {
       label: 'Nombre',
       value: 'name',
-      placeholder: 'Buscar por nombre'
+      placeholder: 'Buscar gasto…'
     }
   ]
 
@@ -41,18 +41,12 @@ export function SpendingTable ({ data, groupId }: { data: any, groupId: string }
     data: data.data || [],
     columns,
     pageCount: data.totalPages,
-    /* optional props */
     filterFields,
-    initialState: {
-      columnPinning: { right: ['actions'] }
-    },
     getRowId: (originalRow, index) => `${originalRow.id}-${index}`
   })
 
   return (
-    <DataTable
-      table={table}
-    >
+    <DataTable table={table}>
       <DataTableToolbar table={table} filterFields={filterFields} />
     </DataTable>
   )
@@ -60,46 +54,29 @@ export function SpendingTable ({ data, groupId }: { data: any, groupId: string }
 
 export function MobileSpendingTable ({ data, groupId }: { data: SpendingTableType[], groupId: string }) {
   return (
-    <section className='sm:hidden flex flex-col gap-4'>
-      {data?.map((spending: SpendingTableType) => (
-        <article key={spending.id} className='flex flex-col justify-center gap-4 p-4 border rounded-md'>
-          <header className='flex items-center gap-4'>
-            <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full')}>
-              <SpendingIcon type={spending.category as SpendingTypes} className='text-muted-foreground/80' />
+    <section className="flex flex-col gap-3 sm:hidden">
+      {data?.map((spending) => (
+        <Link
+          key={spending.id}
+          href={`/groups/${groupId}/spendings/${spending.id}`}
+          className="flex flex-col gap-3 rounded-md border p-4 transition-colors hover:bg-muted/40"
+        >
+          <header className="flex items-center gap-3">
+            <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'shrink-0 rounded-full')}>
+              <SpendingIcon type={spending.category as SpendingTypes} className="text-muted-foreground/80" />
             </div>
-
-            <div>
-              <h3 className='font-bold'>{spending.name}</h3>
-              <div className='text-sm text-muted-foreground/80'>{formatDate(spending.date)}</div>
+            <div className="min-w-0">
+              <h3 className="truncate font-semibold">{spending.name}</h3>
+              <p className="text-sm text-muted-foreground">{formatDate(spending.date)} · {spending.createdBy ?? 'Anónimo'}</p>
             </div>
           </header>
 
-          <div className='flex flex-col gap-2'>
-            <p className='text-sm text-muted-foreground/80'>
-              Creada por:{' '}
-              <span className='font-bold'>
-                {spending.createdBy || 'Anónimo'}
-              </span>
-            </p>
-
-            {spending.description && (
-              <p className='text-sm text-muted-foreground/80'>Descripción: {spending.description}</p>
-            )}
-
-            <div className='flex items-center gap-4 justify-between'>
-              <div className='font-bold'>{formatMoney(spending.amount)}</div>
-              {spending.hasDebt && <Badge variant='destructive'>Debes</Badge>}
-              {spending.someoneOwesYou && <Badge variant="secondary">Te deben</Badge>}
-              {!spending.someoneOwesYou && !spending.hasDebt && <Badge variant="default">-</Badge>}
-            </div>
+          <div className="flex items-center justify-between gap-2">
+            <span className="font-mono font-semibold">{formatMoney(spending.amount)}</span>
+            {spending.hasDebt && <Badge variant="destructive">Debés</Badge>}
+            {spending.someoneOwesYou && <Badge variant="secondary">Te deben</Badge>}
           </div>
-
-          <footer>
-            <Link href={`/groups/${groupId}/spendings/${spending.id}`} className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
-              Ver
-            </Link>
-          </footer>
-        </article>
+        </Link>
       ))}
     </section>
   )

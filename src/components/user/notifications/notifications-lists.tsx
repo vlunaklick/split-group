@@ -27,7 +27,7 @@ export const ListNotifications = () => {
           <GroupNotification key={notification.id} notification={notification} />
         ))}
 
-        {groupNotifications?.length === 0 && <p className="text-zinc-500">No tienes invitaciones a grupos</p>}
+        {groupNotifications?.length === 0 && <p className="text-sm text-muted-foreground">No tenés invitaciones pendientes</p>}
 
         {isGroupNotifications && (
           <>
@@ -43,7 +43,7 @@ export const ListNotifications = () => {
         {notifications?.map((notification: Notification) => (
           <GenericNotification key={notification.id} notification={notification} />
         ))}
-        {notifications?.length === 0 && <p className="text-zinc-500">No tienes notificaciones</p>}
+        {notifications?.length === 0 && <p className="text-sm text-muted-foreground">No tenés avisos nuevos</p>}
         {isLoadingNotifications && (
           <>
             <NotificationSkeleton />
@@ -67,7 +67,7 @@ export const GroupNotification = ({ notification }: { notification: Notification
       mutate(['notifications'])
       mutate('user-groups')
       mutate(['group-notifications'])
-      displayToast('Te has unido al grupo!', 'success')
+      displayToast('Te uniste al grupo', 'success')
       setTimeout(() => {
         router.push(`/groups/${notification?.group?.id}`)
       })

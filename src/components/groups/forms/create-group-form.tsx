@@ -26,6 +26,7 @@ export function CreateGroupForm ({ callback }: CreateGroupFormProps) {
   const router = useRouter()
   const { mutate } = useSWRConfig()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showDescription, setShowDescription] = useState(false)
 
   const form = useForm<z.infer<typeof createGroupFormSchema>>({
     resolver: zodResolver(createGroupFormSchema),
@@ -42,12 +43,12 @@ export function CreateGroupForm ({ callback }: CreateGroupFormProps) {
     try {
       const group = await createGroup(values)
       mutate(['user-groups'])
-      displayToast('Grupo creado con éxito', 'success')
+      displayToast('Grupo creado', 'success')
       form.reset()
       callback?.()
       router.push(`/groups/${group.id}`)
     } catch (error) {
-      displayToast('No se ha podido crear el grupo', 'error')
+      displayToast('No se pudo crear el grupo', 'error')
     } finally {
       setIsSubmitting(false)
     }
@@ -61,38 +62,48 @@ export function CreateGroupForm ({ callback }: CreateGroupFormProps) {
           name="name"
           render={({ field }: any) => (
             <FormItem className="grid gap-2 space-y-0">
-              <FormLabel>Nombre de grupo</FormLabel>
+              <FormLabel>Nombre</FormLabel>
               <FormControl>
-                <Input placeholder="Nombre de grupo" disabled={isSubmitting} {...field} />
+                <Input autoFocus placeholder="Ej: Viaje, casa, fútbol…" disabled={isSubmitting} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="description"
           render={({ field }: any) => (
-            <FormItem className="grid gap-2 space-y-0">
-              <FormLabel>Descripción del grupo</FormLabel>
-              <FormControl>
-                <Input placeholder="Este grupo es para..." disabled={isSubmitting} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            showDescription
+              ? (
+                <FormItem className="grid gap-2 space-y-0">
+                  <FormLabel>Descripción (opcional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Para qué es este grupo…" disabled={isSubmitting} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+                )
+              : (
+                <Button type="button" variant="link" className="h-auto justify-start p-0" onClick={() => setShowDescription(true)}>
+                  + Agregar descripción
+                </Button>
+                )
           )}
         />
+
         <FormField
           control={form.control}
           name="icon"
           render={({ field }) => (
-            <FormItem className="space-y-1">
+            <FormItem className="space-y-2">
               <FormLabel>Icono</FormLabel>
               <FormMessage />
               <RadioGroup
                 onValueChange={field.onChange}
                 defaultValue={field.value}
-                className="flex gap-3 flex-wrap"
+                className="flex flex-wrap gap-3"
               >
                 {GROUP_ICONS.map(({ name, Icon }) => (
                   <IconSelector key={name} name={name} label={name}>
@@ -103,6 +114,7 @@ export function CreateGroupForm ({ callback }: CreateGroupFormProps) {
             </FormItem>
           )}
         />
+
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? <IconLoader2 className="animate-spin" /> : 'Crear grupo'}
         </Button>
@@ -125,7 +137,7 @@ const IconSelector = ({ children, name, label }: { children: React.ReactNode; na
         <FormControl>
           <RadioGroupItem value={name} className="sr-only" />
         </FormControl>
-        <div className="flex justify-center items-center w-12 h-12 rounded-md border text-muted-foreground/80 border-muted-foreground/80 hover:border-primary hover:text-primary transition-colors">
+        <div className="flex h-12 w-12 items-center justify-center rounded-md border border-muted-foreground/80 text-muted-foreground/80 transition-colors hover:border-primary hover:text-primary">
           {children}
         </div>
         <span className="sr-only">{label}</span>

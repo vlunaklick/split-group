@@ -20,7 +20,7 @@ export const SpendingDebtsList = ({ groupId, spendId }: { groupId: string, spend
     setIsLoading(true)
     try {
       await payDebt({ debtId })
-      displayToast('Deuda pagada', 'success')
+      displayToast('Marcado como pagado', 'success')
       mutate(['debts', groupId, spendId])
     } catch (error) {
       displayToast('Error al pagar deuda', 'error')
@@ -37,18 +37,18 @@ export const SpendingDebtsList = ({ groupId, spendId }: { groupId: string, spend
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {currentDebts?.length === 0 && <p className='text-muted-foreground/50'>No tienes deudas pendientes</p>}
+        {currentDebts?.length === 0 && <p className="text-sm text-muted-foreground">No debés nada en este gasto</p>}
 
         {isLoadingList && (
           <>
-            <RowSkeleton buttonText="Pagar" />
-            <RowSkeleton buttonText="Pagar" />
-            <RowSkeleton buttonText="Pagar" />
+            <RowSkeleton buttonText="Pagado" />
+            <RowSkeleton buttonText="Pagado" />
+            <RowSkeleton buttonText="Pagado" />
           </>
         )}
 
         {currentDebts?.map((debt: any) => (
-          <Row key={debt.id} name={debt.creditor?.name as string} amount={debt.amount} buttonText="Pagar" onButtonClick={() => handlePayDebt(debt.id)} isLoading={isLoading} />
+          <Row key={debt.id} name={debt.creditor?.name as string} amount={debt.amount} buttonText="Pagado" onButtonClick={() => handlePayDebt(debt.id)} isLoading={isLoading} />
         ))}
       </CardContent>
     </Card>

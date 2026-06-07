@@ -32,7 +32,7 @@ export function CreateSpendingSheet ({
       open={isOpen}
       onOpenChange={handleOpenChange}
       title="Crear gasto"
-      description="Detalles, quién pagó y quién debe — en tres pasos."
+      description="Nombre, monto y quién pagó — listo en tres pasos."
       trigger={
         <Button variant={variant} className={className}>
           Crear gasto

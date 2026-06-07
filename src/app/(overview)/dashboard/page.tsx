@@ -1,5 +1,6 @@
 import { StatsChart } from '@/components/dashboard/chart-spendings'
 import { DashboardQuickActions } from '@/components/dashboard/dashboard-quick-actions'
+import { DashboardQuickActionsSkeleton } from '@/components/dashboard/dashboard-quick-actions-skeleton'
 import { LatestsSpendings, LatestsSpendingsSkeleton } from '@/components/dashboard/latest-spendings'
 import { WeeklySpent, MonthlySpent, TotalRevenue, TotalDebt } from '@/components/dashboard/stats'
 import { Suspense } from 'react'
@@ -19,7 +20,7 @@ export default async function HomeDashboard () {
         <TotalRevenue />
       </section>
 
-      <Suspense fallback={null}>
+      <Suspense fallback={<DashboardQuickActionsSkeleton />}>
         <DashboardQuickActions />
       </Suspense>
 
