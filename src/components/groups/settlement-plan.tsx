@@ -6,8 +6,9 @@ import { useGetGroupSettlement } from '@/data/spendings'
 import { useGetSession } from '@/data/session'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
+import { buildSettlementPlanText, shareSettlementPlanOnWhatsApp } from '@/utils/settlement-share'
 import { displayToast } from '@/utils/toast-display'
-import { ArrowRight, Copy } from 'lucide-react'
+import { ArrowRight, Copy, MessageCircle } from 'lucide-react'
 
 export function SettlementPlan ({ groupId }: { groupId: string }) {
   const { data, isLoading } = useGetGroupSettlement({ groupId })
@@ -32,13 +33,11 @@ export function SettlementPlan ({ groupId }: { groupId: string }) {
   )
 
   const copyPlan = async () => {
-    const lines = data.transfers.map((t: {
-      fromName: string
-      toName: string
-      amount: number
-    }) => `${t.fromName} → ${t.toName}: ${formatMoney(t.amount)}`)
-
-    const text = `Liquidación ${data.transferCount} pagos:\n${lines.join('\n')}`
+    const text = buildSettlementPlanText({
+      groupName: data.groupName,
+      transferCount: data.transferCount,
+      transfers: data.transfers
+    })
 
     try {
       await navigator.clipboard.writeText(text)
@@ -46,6 +45,16 @@ export function SettlementPlan ({ groupId }: { groupId: string }) {
     } catch {
       displayToast('No se pudo copiar', 'error')
     }
+  }
+
+  const shareOnWhatsApp = () => {
+    const text = buildSettlementPlanText({
+      groupName: data.groupName,
+      transferCount: data.transferCount,
+      transfers: data.transfers
+    })
+
+    shareSettlementPlanOnWhatsApp(text)
   }
 
   return (
@@ -58,10 +67,16 @@ export function SettlementPlan ({ groupId }: { groupId: string }) {
             {savings > 0 && ` (en vez de ${data.rawDebtCount} deudas sueltas)`}
           </p>
         </div>
-        <Button type="button" variant="outline" size="sm" className="h-8 shrink-0" onClick={copyPlan}>
-          <Copy className="mr-1.5 h-3.5 w-3.5" />
-          Copiar
-        </Button>
+        <div className="flex shrink-0 flex-wrap gap-2">
+          <Button type="button" variant="outline" size="sm" className="h-8" onClick={shareOnWhatsApp}>
+            <MessageCircle className="mr-1.5 h-3.5 w-3.5" />
+            WhatsApp
+          </Button>
+          <Button type="button" variant="outline" size="sm" className="h-8" onClick={copyPlan}>
+            <Copy className="mr-1.5 h-3.5 w-3.5" />
+            Copiar
+          </Button>
+        </div>
       </div>
 
       <ul className="surface-panel divide-y divide-border">
@@ -100,12 +115,27 @@ export function SettlementPlan ({ groupId }: { groupId: string }) {
       </ul>
 
       {userId && userTransfers.length > 0 && (
-        <p className="text-xs text-muted-foreground">
-          {userTransfers.length === 1
-            ? 'Tenés 1 movimiento en este plan.'
-            : `Tenés ${userTransfers.length} movimientos en este plan.`}
-          {' '}Usá la lista de abajo para marcar pagado o perdonar.
-        </p>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <p>
+            {userTransfers.length === 1
+              ? 'Tenés 1 movimiento en este plan.'
+              : `Tenés ${userTransfers.length} movimientos en este plan.`}
+            {' '}Usá la lista de abajo para marcar pagado o perdonar.
+          </p>
+          <button
+            type="button"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
+            onClick={() => {
+              shareSettlementPlanOnWhatsApp(buildSettlementPlanText({
+                groupName: data.groupName,
+                transferCount: userTransfers.length,
+                transfers: userTransfers
+              }))
+            }}
+          >
+            Compartir mi parte por WhatsApp
+          </button>
+        </div>
       )}
     </section>
   )

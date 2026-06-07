@@ -326,17 +326,23 @@ export async function getSpendingComments ({ spendingId }: { spendingId: string 
 }
 
 export async function getGroupSettlement ({ groupId }: { groupId: string }) {
-  const debts = await db.debt.findMany({
-    where: {
-      spending: { groupId },
-      paid: false,
-      forgiven: false
-    },
-    include: {
-      debter: { select: { id: true, name: true } },
-      creditor: { select: { id: true, name: true } }
-    }
-  })
+  const [group, debts] = await Promise.all([
+    db.group.findUnique({
+      where: { id: groupId },
+      select: { name: true }
+    }),
+    db.debt.findMany({
+      where: {
+        spending: { groupId },
+        paid: false,
+        forgiven: false
+      },
+      include: {
+        debter: { select: { id: true, name: true } },
+        creditor: { select: { id: true, name: true } }
+      }
+    })
+  ])
 
   const balances = new Map<string, { name: string, balance: number }>()
 
@@ -359,6 +365,7 @@ export async function getGroupSettlement ({ groupId }: { groupId: string }) {
   const transfers = simplifyBalances(balances)
 
   return {
+    groupName: group?.name ?? 'Grupo',
     rawDebtCount: debts.length,
     transferCount: transfers.length,
     transfers
