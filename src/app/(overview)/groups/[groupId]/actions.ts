@@ -6,6 +6,7 @@ import { NotificationType } from '../../../../../prisma/notification-type-enum'
 import { Resend } from 'resend'
 import { PayedDebtEmail } from '@/components/mails/payed-debt'
 import { ForgiveDebtEmail } from '@/components/mails/forgive-debt'
+import { DebtReminderEmail } from '@/components/mails/debt-reminder'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -129,6 +130,71 @@ export async function forgiveAllDebt ({ debterId, groupId } : { debterId: string
       console.error(error)
     }
   }
+}
+
+export async function sendDebtReminder ({
+  groupId,
+  debterId
+}: {
+  groupId: string
+  debterId: string
+}) {
+  const { userId, session } = await requireGroupMember(groupId)
+  const creditorName = session.user?.name || 'Un miembro del grupo'
+
+  const debts = await db.debt.findMany({
+    where: {
+      creditorId: userId,
+      debterId,
+      spending: { groupId },
+      paid: false,
+      forgiven: false
+    },
+    include: {
+      debter: { select: { name: true, email: true } },
+      spending: { include: { group: { select: { name: true } } } }
+    }
+  })
+
+  if (debts.length === 0) {
+    throw new Error('No hay deudas pendientes con esa persona')
+  }
+
+  const totalAmount = debts.reduce((acc, debt) => acc + debt.amount, 0)
+  const debter = debts[0].debter
+  const groupName = debts[0].spending.group.name
+
+  await db.notification.create({
+    data: {
+      type: NotificationType.GENERIC,
+      userId: debterId,
+      groupId,
+      title: 'Recordatorio de deuda',
+      message: `${creditorName} te recuerda una deuda de ${totalAmount.toFixed(2)} en ${groupName}.`
+    }
+  })
+
+  if (debter.email && debter.name) {
+    const { error } = await resend.emails.send({
+      from: 'SplitGroup <splitgroup@vmoon.me>',
+      to: debter.email,
+      subject: `Recordatorio: debés ${totalAmount.toFixed(2)} en ${groupName}`,
+      react: DebtReminderEmail({
+        username: debter.name,
+        creditorName,
+        groupName,
+        groupId,
+        amount: totalAmount
+      })
+    })
+
+    if (error) {
+      console.error(error)
+      throw new Error('No se pudo enviar el email')
+    }
+  }
+
+  return { totalAmount }
 }
 
 export async function deleteGroup (groupId: string) {

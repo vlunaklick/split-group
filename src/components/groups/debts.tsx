@@ -1,6 +1,6 @@
 'use client'
 
-import { forgiveAllDebt, payAllDebt } from '@/app/(overview)/groups/[groupId]/actions'
+import { forgiveAllDebt, payAllDebt, sendDebtReminder } from '@/app/(overview)/groups/[groupId]/actions'
 import { SettlementPlan } from './settlement-plan'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -97,6 +97,17 @@ const DebtItem = ({ debt, groupId }: { debt: Debt, groupId: string }) => {
     setIsLoading(false)
   }
 
+  const handleRemind = async () => {
+    setIsLoading(true)
+    try {
+      await sendDebtReminder({ groupId, debterId: debt.userId })
+      displayToast('Recordatorio enviado', 'success')
+    } catch (error) {
+      displayToast(error instanceof Error ? error.message : 'No se pudo enviar el recordatorio', 'error')
+    }
+    setIsLoading(false)
+  }
+
   return (
     <div className="flex items-center gap-3 px-4 py-3">
       <div className="min-w-0 flex-1">
@@ -120,9 +131,14 @@ const DebtItem = ({ debt, groupId }: { debt: Debt, groupId: string }) => {
       )}
 
       {debt.isDebter && (
-        <Button onClick={handleForgiveDebt} variant="ghost" size="sm" className="h-8 px-2 text-xs" disabled={isLoading}>
-          Perdonar
-        </Button>
+        <>
+          <Button onClick={handleRemind} variant="ghost" size="sm" className="h-8 px-2 text-xs" disabled={isLoading}>
+            Recordar
+          </Button>
+          <Button onClick={handleForgiveDebt} variant="ghost" size="sm" className="h-8 px-2 text-xs" disabled={isLoading}>
+            Perdonar
+          </Button>
+        </>
       )}
     </div>
   )

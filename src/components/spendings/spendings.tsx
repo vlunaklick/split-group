@@ -1,4 +1,5 @@
 import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
+import { RecurringSpendingsPanel } from '@/components/spendings/recurring-spendings-panel'
 import { GroupPageHeader } from '@/components/groups/group-page-header'
 import { getGroup } from '@/data/apis/groups'
 import { notFound } from 'next/navigation'
@@ -25,6 +26,7 @@ export async function Spendings ({ groupId, searchParams }: { groupId: string, s
       />
 
       <div className="grid gap-4">
+        <RecurringSpendingsPanel groupId={groupId} />
         <SpendingsList groupId={groupId} searchParams={searchParams} />
       </div>
     </>

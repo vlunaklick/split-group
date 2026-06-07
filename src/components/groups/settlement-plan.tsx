@@ -1,11 +1,13 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetGroupSettlement } from '@/data/spendings'
 import { useGetSession } from '@/data/session'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
-import { ArrowRight } from 'lucide-react'
+import { displayToast } from '@/utils/toast-display'
+import { ArrowRight, Copy } from 'lucide-react'
 
 export function SettlementPlan ({ groupId }: { groupId: string }) {
   const { data, isLoading } = useGetGroupSettlement({ groupId })
@@ -29,14 +31,37 @@ export function SettlementPlan ({ groupId }: { groupId: string }) {
     (t: { fromId: string, toId: string }) => t.fromId === userId || t.toId === userId
   )
 
+  const copyPlan = async () => {
+    const lines = data.transfers.map((t: {
+      fromName: string
+      toName: string
+      amount: number
+    }) => `${t.fromName} → ${t.toName}: ${formatMoney(t.amount)}`)
+
+    const text = `Liquidación ${data.transferCount} pagos:\n${lines.join('\n')}`
+
+    try {
+      await navigator.clipboard.writeText(text)
+      displayToast('Plan copiado al portapapeles', 'success')
+    } catch {
+      displayToast('No se pudo copiar', 'error')
+    }
+  }
+
   return (
     <section className="grid gap-3">
-      <div className="grid gap-1">
-        <h2 className="section-label">Liquidación simplificada</h2>
-        <p className="text-xs text-muted-foreground">
-          {data.transferCount} {data.transferCount === 1 ? 'pago' : 'pagos'} cierran el grupo
-          {savings > 0 && ` (en vez de ${data.rawDebtCount} deudas sueltas)`}
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="grid gap-1">
+          <h2 className="section-label">Liquidación simplificada</h2>
+          <p className="text-xs text-muted-foreground">
+            {data.transferCount} {data.transferCount === 1 ? 'pago' : 'pagos'} cierran el grupo
+            {savings > 0 && ` (en vez de ${data.rawDebtCount} deudas sueltas)`}
+          </p>
+        </div>
+        <Button type="button" variant="outline" size="sm" className="h-8 shrink-0" onClick={copyPlan}>
+          <Copy className="mr-1.5 h-3.5 w-3.5" />
+          Copiar
+        </Button>
       </div>
 
       <ul className="surface-panel divide-y divide-border">
