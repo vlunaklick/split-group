@@ -76,6 +76,7 @@ export function PayDebtDialog ({
 
     mutate('user-onboarding')
     mutate(['group-onboarding', groupId])
+    mutate(['group-activity', groupId])
   }
 
   const onSubmit = async (values: z.infer<typeof schema>) => {

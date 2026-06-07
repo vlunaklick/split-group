@@ -74,7 +74,7 @@ export async function payAllDebt ({
     }
   })
 
-  if (debts.length === 1 && debts[0].creditor.email && debts[0].creditor.name && totalAmount && debts[0].spending?.group?.name) {
+  if (debts[0].creditor.email && debts[0].creditor.name && debts[0].spending?.group?.name) {
     const { error } = await resend.emails.send({
       from: 'SplitGroup <splitgroup@vmoon.me>',
       to: debts[0].creditor.email,
@@ -82,8 +82,11 @@ export async function payAllDebt ({
       react: PayedDebtEmail({
         username: debts[0].creditor.name,
         groupName: debts[0].spending.group.name,
-        allDebt: true,
-        payer: payerName
+        groupId,
+        amount: totalAmount,
+        allDebt: debts.length > 1,
+        payer: payerName,
+        receiptUrl: trimmedReceiptUrl || null
       })
     })
 

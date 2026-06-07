@@ -1,5 +1,6 @@
 import { getGroup } from '@/data/apis/groups'
 import { notFound } from 'next/navigation'
+import { GroupActivityFeed } from './group-activity-feed'
 import { GroupOnboardingChecklist } from './group-onboarding-checklist'
 import { GroupStatusBanner } from './group-status-banner'
 import { GroupWelcomeBanner } from './group-welcome-banner'
@@ -57,7 +58,10 @@ export async function GroupHome ({ groupId }: { groupId: string }) {
 
       <div className="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] lg:gap-8">
         <div className="order-2 min-w-0 lg:order-1">
-          <Spendings groupId={groupId} />
+          <div className="grid gap-6">
+            <Spendings groupId={groupId} />
+            <GroupActivityFeed groupId={groupId} />
+          </div>
         </div>
         <div className="order-1 min-w-0 lg:order-2">
           <Debts groupId={groupId} />

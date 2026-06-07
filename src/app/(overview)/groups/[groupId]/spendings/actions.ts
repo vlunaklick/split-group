@@ -8,6 +8,7 @@ import { NotificationType } from '../../../../../../prisma/notification-type-enu
 import { SpendUpdatedEmail } from '@/components/mails/spend-updated'
 import { Resend } from 'resend'
 import { PayedDebtEmail } from '@/components/mails/payed-debt'
+import { ForgiveDebtEmail } from '@/components/mails/forgive-debt'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -258,21 +259,25 @@ export async function payDebt ({
     }
   })
 
-  const { error } = await resend.emails.send({
-    from: 'SplitGroup <splitgroup@vmoon.me>',
-    to: debt.creditor.email || '',
-    subject: 'Deuda pagada',
-    react: PayedDebtEmail({
-      username: debt.creditor.name || 'Usuario',
-      amount: debt.amount,
-      groupName: debt.spending.group.name,
-      allDebt: false,
-      payer: debt.debter.name || 'Usuario'
+  if (debt.creditor.email) {
+    const { error } = await resend.emails.send({
+      from: 'SplitGroup <splitgroup@vmoon.me>',
+      to: debt.creditor.email,
+      subject: 'Deuda pagada',
+      react: PayedDebtEmail({
+        username: debt.creditor.name || 'Usuario',
+        amount: debt.amount,
+        groupName: debt.spending.group.name,
+        groupId: debt.spending.groupId,
+        allDebt: false,
+        payer: debt.debter.name || 'Usuario',
+        receiptUrl: trimmedReceiptUrl || null
+      })
     })
-  })
 
-  if (error) {
-    console.error(error)
+    if (error) {
+      console.error(error)
+    }
   }
 }
 
@@ -316,26 +321,27 @@ export async function forgiveDebt ({ debtId }: { debtId: string }) {
   await db.notification.create({
     data: {
       type: NotificationType.GENERIC,
-      userId: debt.creditor.id,
+      userId: debt.debterId,
       title: 'Deuda perdonada',
       message: description
     }
   })
 
-  const { error } = await resend.emails.send({
-    from: 'SplitGroup <splitgroup@vmoon.me>',
-    to: debt.creditor.email || '',
-    subject: 'Deuda perdonada',
-    react: PayedDebtEmail({
-      username: debt.creditor.name || 'Usuario',
-      amount: debt.amount,
-      groupName: debt.spending.group.name,
-      allDebt: false,
-      payer: debt.debter.name || 'Usuario'
+  if (debt.debter.email) {
+    const { error } = await resend.emails.send({
+      from: 'SplitGroup <splitgroup@vmoon.me>',
+      to: debt.debter.email,
+      subject: 'Deuda perdonada',
+      react: ForgiveDebtEmail({
+        username: debt.debter.name || 'Usuario',
+        groupName: debt.spending.group.name,
+        allDebt: false,
+        forgiver: debt.creditor.name || 'Usuario'
+      })
     })
-  })
 
-  if (error) {
-    console.error(error)
+    if (error) {
+      console.error(error)
+    }
   }
 }

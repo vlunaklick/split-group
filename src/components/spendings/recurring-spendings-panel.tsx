@@ -1,34 +1,39 @@
 'use client'
 
 import { Category, Currency } from '@prisma/client'
-import { generateRecurringSpending } from '@/app/(overview)/groups/[groupId]/spendings/recurring-actions'
+import {
+  generateRecurringSpending,
+  migrateLegacyRecurringSpendings,
+  removeRecurringSpending,
+  saveRecurringSpending
+} from '@/app/(overview)/groups/[groupId]/spendings/recurring-actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useGetRecurringSpendings } from '@/data/recurring-spendings'
 import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
 import {
-  deleteRecurringSpending,
+  clearLegacyRecurringSpendings,
   frequencyLabel,
-  getRecurringSpendings,
-  markRecurringGenerated,
+  getLegacyRecurringSpendings,
   RecurringFrequency,
-  RecurringSpending,
-  saveRecurringSpending
+  RecurringSpending
 } from '@/lib/recurring-spendings'
 import { formatMoney } from '@/lib/money'
 import { displayToast } from '@/utils/toast-display'
 import { CalendarClock, Play, Plus, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSWRConfig } from 'swr'
 
 export function RecurringSpendingsPanel ({ groupId }: { groupId: string }) {
   const { mutate } = useSWRConfig()
+  const { data: items = [], isLoading, mutate: refreshItems } = useGetRecurringSpendings({ groupId })
   const { data: categories } = useGetCategories()
   const { data: currencies } = useGetAvailableCurrencies()
-  const [items, setItems] = useState<RecurringSpending[]>([])
   const [isAdding, setIsAdding] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState<string | null>(null)
+  const migratedRef = useRef(false)
   const [draft, setDraft] = useState({
     label: '',
     name: '',
@@ -39,8 +44,34 @@ export function RecurringSpendingsPanel ({ groupId }: { groupId: string }) {
   })
 
   useEffect(() => {
-    setItems(getRecurringSpendings(groupId))
-  }, [groupId])
+    if (migratedRef.current || isLoading || items.length > 0) return
+
+    const legacy = getLegacyRecurringSpendings(groupId)
+    if (legacy.length === 0) return
+
+    migratedRef.current = true
+
+    migrateLegacyRecurringSpendings({
+      groupId,
+      items: legacy.map((item) => ({
+        label: item.label,
+        name: item.name,
+        amount: item.amount,
+        categoryId: item.categoryId,
+        currencyId: item.currencyId,
+        description: item.description ?? undefined,
+        frequency: item.frequency
+      }))
+    })
+      .then(() => {
+        clearLegacyRecurringSpendings(groupId)
+        refreshItems()
+        displayToast('Recurrentes sincronizados a tu cuenta', 'success')
+      })
+      .catch(() => {
+        migratedRef.current = false
+      })
+  }, [groupId, isLoading, items.length, refreshItems])
 
   useEffect(() => {
     if (!categories?.length || draft.categoryId) return
@@ -59,36 +90,42 @@ export function RecurringSpendingsPanel ({ groupId }: { groupId: string }) {
     mutate(['last-spendings', groupId])
     mutate(['debts', groupId])
     mutate(['group-settlement', groupId])
+    mutate(['group-settlement-history', groupId])
+    mutate(['group-activity', groupId])
     mutate(['spendings-table', groupId])
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const amount = Number(draft.amount)
     if (!draft.label.trim() || !draft.name.trim() || !draft.categoryId || !draft.currencyId || amount <= 0) {
       displayToast('Completá nombre, monto, categoría y moneda.', 'error')
       return
     }
 
-    const updated = saveRecurringSpending(groupId, {
-      label: draft.label.trim(),
-      name: draft.name.trim(),
-      amount,
-      categoryId: draft.categoryId,
-      currencyId: draft.currencyId,
-      frequency: draft.frequency
-    })
-
-    setItems(updated)
-    setIsAdding(false)
-    setDraft({
-      label: '',
-      name: '',
-      amount: '',
-      categoryId: draft.categoryId,
-      currencyId: draft.currencyId,
-      frequency: 'monthly'
-    })
-    displayToast('Gasto recurrente guardado', 'success')
+    try {
+      await saveRecurringSpending({
+        groupId,
+        label: draft.label.trim(),
+        name: draft.name.trim(),
+        amount,
+        categoryId: draft.categoryId,
+        currencyId: draft.currencyId,
+        frequency: draft.frequency
+      })
+      await refreshItems()
+      setIsAdding(false)
+      setDraft({
+        label: '',
+        name: '',
+        amount: '',
+        categoryId: draft.categoryId,
+        currencyId: draft.currencyId,
+        frequency: 'monthly'
+      })
+      displayToast('Gasto recurrente guardado', 'success')
+    } catch {
+      displayToast('No se pudo guardar', 'error')
+    }
   }
 
   const handleGenerate = async (item: RecurringSpending) => {
@@ -96,13 +133,14 @@ export function RecurringSpendingsPanel ({ groupId }: { groupId: string }) {
     try {
       await generateRecurringSpending({
         groupId,
+        recurringId: item.id,
         name: item.name,
         amount: item.amount,
         categoryId: item.categoryId,
         currencyId: item.currencyId,
-        description: item.description
+        description: item.description ?? undefined
       })
-      setItems(markRecurringGenerated(groupId, item.id))
+      await refreshItems()
       refreshSpendings()
       displayToast(`"${item.name}" cargado`, 'success')
     } catch (error) {
@@ -112,8 +150,14 @@ export function RecurringSpendingsPanel ({ groupId }: { groupId: string }) {
     }
   }
 
-  const handleDelete = (itemId: string) => {
-    setItems(deleteRecurringSpending(groupId, itemId))
+  const handleDelete = async (itemId: string) => {
+    try {
+      await removeRecurringSpending({ groupId, itemId })
+      await refreshItems()
+      displayToast('Recurrente eliminado', 'success')
+    } catch {
+      displayToast('No se pudo eliminar', 'error')
+    }
   }
 
   return (
@@ -125,7 +169,7 @@ export function RecurringSpendingsPanel ({ groupId }: { groupId: string }) {
             <h2 className="section-label">Recurrentes</h2>
           </div>
           <p className="text-xs text-muted-foreground">
-            Guardá gastos fijos y generalos con un click. Vos pagás y se reparte igual entre el resto.
+            Guardá gastos fijos y generalos con un click. Sincronizados en tu cuenta.
           </p>
         </div>
         {!isAdding && (
@@ -229,7 +273,7 @@ export function RecurringSpendingsPanel ({ groupId }: { groupId: string }) {
         </div>
       )}
 
-      {items.length === 0 && !isAdding && (
+      {!isLoading && items.length === 0 && !isAdding && (
         <p className="text-sm text-muted-foreground">
           Ideal para alquiler, servicios o suscripciones del grupo.
         </p>
@@ -237,7 +281,7 @@ export function RecurringSpendingsPanel ({ groupId }: { groupId: string }) {
 
       {items.length > 0 && (
         <ul className="divide-y divide-border rounded-lg border border-border">
-          {items.map((item) => (
+          {items.map((item: RecurringSpending) => (
             <li key={item.id} className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center">
               <div className="min-w-0 flex-1 grid gap-0.5">
                 <p className="truncate text-sm font-medium">{item.label}</p>

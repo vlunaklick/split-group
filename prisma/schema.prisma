@@ -29,6 +29,7 @@ model User {
   payments         Payment[]
   debters        Debt[]
   credit         Debt[]       @relation("Creditor")
+  recurringSpendings RecurringSpending[]
 }
 
 model UserConfig {
@@ -67,6 +68,7 @@ model Group {
   groupInvite   GroupInvite[]
   userGroupRole UserGroupRole[]
   Notification  Notification[]
+  recurringSpendings RecurringSpending[]
 }
 
 // * Notifications
@@ -185,6 +187,34 @@ model Category {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   spending    Spending[]
+  recurringSpendings RecurringSpending[]
+}
+
+enum RecurringFrequency {
+  WEEKLY
+  MONTHLY
+}
+
+model RecurringSpending {
+  id              String             @id @default(cuid())
+  label           String
+  name            String
+  amount          Float
+  description     String?
+  frequency       RecurringFrequency
+  lastGeneratedAt DateTime?
+  groupId         String
+  group           Group              @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdById     String
+  createdBy       User               @relation(fields: [createdById], references: [id])
+  categoryId      String
+  category        Category           @relation(fields: [categoryId], references: [id])
+  currencyId      String
+  currency        Currency           @relation(fields: [currencyId], references: [id])
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@unique([groupId, label])
 }
 
 model Currency {
@@ -194,4 +224,5 @@ model Currency {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   spending  Spending[]
+  recurringSpendings RecurringSpending[]
 }

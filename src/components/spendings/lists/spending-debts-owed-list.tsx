@@ -1,35 +1,15 @@
 'use client'
 
+import { ForgiveDebtDialog } from '@/components/groups/dialogs/forgive-debt-dialog'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetOwedDebts } from '@/data/spendings'
 import { formatMoney } from '@/lib/money'
-import { displayToast } from '@/utils/toast-display'
-import { useState } from 'react'
-import { useSWRConfig } from 'swr'
-import { forgiveDebt } from '../../../app/(overview)/groups/[groupId]/spendings/actions'
 
 export const SpendingDebtsOwedList = ({ groupId, spendId }: { groupId: string, spendId: string }) => {
   const { data: owedDebts, isLoading: isLoadingList } = useGetOwedDebts({ groupId, spendId })
-  const { mutate } = useSWRConfig()
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleForgiveDebt = async (debtId: string) => {
-    setIsLoading(true)
-    try {
-      await forgiveDebt({ debtId })
-      displayToast('Deuda perdonada', 'success')
-      mutate(['owed-debts', groupId, spendId])
-      mutate(['debts', groupId])
-      mutate(['group-settlement', groupId])
-      mutate(['group-settlement-history', groupId])
-    } catch (error) {
-      displayToast('Error al perdonar deuda', 'error')
-    }
-    setIsLoading(false)
-  }
 
   return (
     <Card>
@@ -50,15 +30,38 @@ export const SpendingDebtsOwedList = ({ groupId, spendId }: { groupId: string, s
           </>
         )}
 
-        {owedDebts?.map((debt: any) => (
-          <Row key={debt.id} name={debt.debter?.name as string} amount={debt.amount} buttonText="Perdonar" onButtonClick={() => handleForgiveDebt(debt.id)} isLoading={isLoading} />
+        {owedDebts?.map((debt: {
+          id: string
+          amount: number
+          debter?: { name?: string | null }
+        }) => (
+          <Row
+            key={debt.id}
+            name={debt.debter?.name ?? 'Usuario'}
+            amount={debt.amount}
+            groupId={groupId}
+            spendId={spendId}
+            debtId={debt.id}
+          />
         ))}
       </CardContent>
     </Card>
   )
 }
 
-const Row = ({ name, amount, buttonText, onButtonClick, isLoading }: { name: string, amount: number, buttonText: string, onButtonClick: () => void, isLoading: boolean }) => {
+const Row = ({
+  name,
+  amount,
+  groupId,
+  spendId,
+  debtId
+}: {
+  name: string
+  amount: number
+  groupId: string
+  spendId: string
+  debtId: string
+}) => {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -72,15 +75,20 @@ const Row = ({ name, amount, buttonText, onButtonClick, isLoading }: { name: str
       </div>
       <div className="flex items-center gap-4">
         <p className="font-medium text-sm">{formatMoney(amount)}</p>
-        <Button variant="outline" size="sm" disabled={isLoading} onClick={onButtonClick}>
-          {buttonText}
-        </Button>
+        <ForgiveDebtDialog
+          groupId={groupId}
+          spendId={spendId}
+          debtId={debtId}
+          debterName={name}
+          amount={amount}
+          triggerVariant="outline"
+        />
       </div>
     </div>
   )
 }
 
-const RowSkeleton = ({ buttonText }: {buttonText: string}) => {
+const RowSkeleton = ({ buttonText }: { buttonText: string }) => {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">

@@ -1,6 +1,7 @@
 'use client'
 
-import { forgiveAllDebt, sendDebtReminder } from '@/app/(overview)/groups/[groupId]/actions'
+import { sendDebtReminder } from '@/app/(overview)/groups/[groupId]/actions'
+import { ForgiveDebtDialog } from './dialogs/forgive-debt-dialog'
 import { PayDebtDialog } from './dialogs/pay-debt-dialog'
 import { SettlementPlan } from './settlement-plan'
 import { SettlementHistory } from './settlement-history'
@@ -75,20 +76,6 @@ const DebtItem = ({ debt, groupId }: { debt: Debt, groupId: string }) => {
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleForgiveDebt = async () => {
-    setIsLoading(true)
-    try {
-      await forgiveAllDebt({ groupId, debterId: debt.userId })
-      displayToast('Deuda perdonada', 'success')
-      mutate(['debts', groupId])
-      mutate(['group-settlement', groupId])
-      mutate(['group-settlement-history', groupId])
-    } catch (error) {
-      displayToast('No se pudo perdonar la deuda', 'error')
-    }
-    setIsLoading(false)
-  }
-
   const handleRemind = async () => {
     setIsLoading(true)
     try {
@@ -130,9 +117,12 @@ const DebtItem = ({ debt, groupId }: { debt: Debt, groupId: string }) => {
           <Button onClick={handleRemind} variant="ghost" size="sm" className="h-8 px-2 text-xs" disabled={isLoading}>
             Recordar
           </Button>
-          <Button onClick={handleForgiveDebt} variant="ghost" size="sm" className="h-8 px-2 text-xs" disabled={isLoading}>
-            Perdonar
-          </Button>
+          <ForgiveDebtDialog
+            groupId={groupId}
+            debterId={debt.userId}
+            debterName={debt.name}
+            amount={debt.amount}
+          />
         </>
       )}
     </div>
