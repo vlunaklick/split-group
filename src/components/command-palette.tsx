@@ -266,13 +266,14 @@ function CommandPaletteInner () {
   }, [activeGroupId, open, openCreateGroup, openCreateSpending, search])
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!event.altKey) return
     if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
     if (search.trim().length > 0) return
 
-    event.preventDefault()
     const history = inputHistoryRef.current
-
     if (history.length === 0) return
+
+    event.preventDefault()
 
     if (event.key === 'ArrowUp') {
       const nextIndex = inputHistoryIndex >= history.length - 1 ? history.length - 1 : inputHistoryIndex + 1
@@ -354,7 +355,7 @@ function CommandPaletteInner () {
         )}
       </div>
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog open={open} onOpenChange={setOpen} shouldFilter={!isSearching}>
         <CommandInput
           data-command-palette-input
           placeholder="Buscar grupos, gastos, personas o acciones…"
