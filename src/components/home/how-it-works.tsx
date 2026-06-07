@@ -23,7 +23,10 @@ const steps = [
 
 export function HowItWorks () {
   return (
-    <section className="border-y border-border bg-canvas-soft/60">
+    <section
+      id="como-funciona"
+      className="border-y border-border bg-canvas-soft/60"
+    >
       <div className="container mx-auto px-4 py-10 md:py-12">
         <div className="mb-8 text-center md:mb-10">
           <p className="mb-2 text-xs font-medium uppercase tracking-widest text-primary">

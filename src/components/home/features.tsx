@@ -1,9 +1,9 @@
 import {
+  ArrowRightLeft,
   Bell,
-  Calculator,
-  FileDown,
-  MessageSquare,
+  RefreshCw,
   Scale,
+  Smartphone,
   Users
 } from 'lucide-react'
 
@@ -19,30 +19,33 @@ const features = [
     description: 'Reparte gastos de forma igualitaria o asigna montos específicos por persona. Fecha, categoría y descripción incluidos.'
   },
   {
-    icon: Calculator,
-    title: 'Balances automáticos',
-    description: 'Visualiza quién debe a quién al instante. La app minimiza los pagos entre miembros para que cierres cuentas más rápido.'
+    icon: ArrowRightLeft,
+    title: 'Plan de liquidación',
+    description: 'La app calcula quién debe a quién y minimiza las transferencias. Sabés exactamente cuánto pagar y a quién.'
   },
   {
-    icon: MessageSquare,
-    title: 'Comentarios en gastos',
-    description: 'Añade contexto a cada gasto con comentarios entre miembros. Ideal para aclarar quién consumió qué.'
+    icon: RefreshCw,
+    title: 'Gastos recurrentes',
+    description: 'Configurá alquiler, Netflix o servicios del piso una vez y generá el gasto cada mes sin volver a cargarlo.'
   },
   {
     icon: Bell,
-    title: 'Notificaciones',
-    description: 'Recibe alertas cuando alguien añade un gasto, te invita a un grupo o marca una deuda como pagada.'
+    title: 'Recordatorios de deuda',
+    description: 'Enviá un recordatorio amable por email sin perseguir a tus amigos por WhatsApp.'
   },
   {
-    icon: FileDown,
-    title: 'Exporta tus datos',
-    description: 'Descarga los gastos del grupo en PDF o Excel cuando necesites un resumen para compartir o archivar.'
+    icon: Smartphone,
+    title: 'Instalable en el móvil',
+    description: 'Agregala a la pantalla de inicio y usala como app nativa — sin descargar nada de la store.'
   }
 ]
 
 export function Features () {
   return (
-    <section className="container mx-auto px-4 py-10 md:py-12">
+    <section
+      id="funcionalidades"
+      className="container mx-auto px-4 py-10 md:py-12"
+    >
       <div className="mb-8 text-center md:mb-10">
         <p className="mb-2 text-xs font-medium uppercase tracking-widest text-primary">
           Funcionalidades

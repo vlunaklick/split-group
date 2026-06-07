@@ -12,7 +12,19 @@ export const SiteFooter = () => {
           </p>
         </div>
 
-        <nav className="flex items-center gap-4 text-sm">
+        <nav className="flex flex-wrap items-center gap-4 text-sm">
+          <Link
+            href="/#como-funciona"
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Cómo funciona
+          </Link>
+          <Link
+            href="/#funcionalidades"
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Funcionalidades
+          </Link>
           <Link
             href="/calculator"
             className="text-muted-foreground transition-colors hover:text-foreground"

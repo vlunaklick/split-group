@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 import { formatMoney } from '@/lib/money'
-import { ArrowRight, Receipt, Users } from 'lucide-react'
+import { ArrowRight, Check, Receipt, Users } from 'lucide-react'
 
 const expenses = [
   { initials: 'M', name: 'Martín', label: 'Supermercado', amount: 12400, tone: 'bg-primary/15 text-primary' },
@@ -95,9 +95,9 @@ export function ProductPreview () {
         </div>
 
         <div className="rounded-lg border border-border bg-background p-3">
-          <p className="mb-2.5 text-xs font-medium text-foreground">Quién debe a quién</p>
+          <p className="mb-2.5 text-xs font-medium text-foreground">Plan de liquidación</p>
           <ul className="space-y-2">
-            {balances.map((balance) => (
+            {balances.map((balance, index) => (
               <li
                 key={`${balance.from}-${balance.to}`}
                 className="flex items-center justify-between gap-2 text-sm"
@@ -107,9 +107,17 @@ export function ProductPreview () {
                   <ArrowRight className="mx-1 inline h-3 w-3" aria-hidden="true" />
                   {balance.to}
                 </span>
-                <span className="font-mono text-xs font-medium text-foreground">
-                  {formatMoney(balance.amount)}
-                </span>
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className="font-mono text-xs font-medium text-foreground">
+                    {formatMoney(balance.amount)}
+                  </span>
+                  {index === 0 && (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success">
+                      <Check className="h-2.5 w-2.5" aria-hidden="true" />
+                      Pagado
+                    </span>
+                  )}
+                </div>
               </li>
             ))}
           </ul>

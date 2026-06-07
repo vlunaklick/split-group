@@ -22,7 +22,8 @@ export function Hero () {
 
           <p className="max-w-md text-base leading-relaxed text-muted-foreground md:text-[17px]">
             Registra quién pagó qué, invita al grupo con un enlace y deja que la app
-            calcule quién debe a quién. Olvídate de hojas de cálculo y mensajes interminables.
+            calcule quién debe a quién. Dashboard, plan de liquidación e instalable
+            en el celular — sin hojas de cálculo ni mensajes interminables.
           </p>
 
           <div className="flex flex-wrap justify-center gap-2 lg:justify-start">

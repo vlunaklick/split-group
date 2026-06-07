@@ -23,6 +23,12 @@ export function SiteHeader () {
       </Link>
 
       <nav className="hidden items-center gap-6 md:flex">
+        <NavLink href="/#como-funciona" active={false}>
+          Cómo funciona
+        </NavLink>
+        <NavLink href="/#funcionalidades" active={false}>
+          Funcionalidades
+        </NavLink>
         <NavLink href="/calculator" active={pathname === '/calculator'}>
           Calculadora
         </NavLink>
@@ -48,6 +54,12 @@ export function SiteHeader () {
             <span>{siteConfig.name}</span>
           </Link>
           <nav className="grid items-start space-y-2 px-2 text-sm font-medium">
+            <NavLink href="/#como-funciona" active={false}>
+              Cómo funciona
+            </NavLink>
+            <NavLink href="/#funcionalidades" active={false}>
+              Funcionalidades
+            </NavLink>
             <NavLink href="/calculator" active={pathname === '/calculator'}>
               Calculadora
             </NavLink>
