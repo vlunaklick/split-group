@@ -1,6 +1,12 @@
-import { AddParticipants } from '@/components/calculator/add-participants'
+import { SplitCalculator } from '@/components/calculator/split-calculator'
 import { SiteFooter } from '@/components/home/site-footer'
 import { SiteHeader } from '@/components/home/site-header'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Calculadora de gastos',
+  description: 'Divide un monto en partes iguales sin crear cuenta'
+}
 
 export default function CalculatorPage () {
   return (
@@ -8,7 +14,7 @@ export default function CalculatorPage () {
       <SiteHeader />
 
       <main className="flex-grow">
-        <AddParticipants />
+        <SplitCalculator />
       </main>
 
       <SiteFooter />

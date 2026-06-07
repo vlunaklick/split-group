@@ -12,6 +12,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle
@@ -54,7 +55,7 @@ export function ResponsiveDialog ({
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+          {description && <DrawerDescription>{description}</DrawerDescription>}
         </DrawerHeader>
         <div className="p-4 w-full">
           {children}

@@ -2,9 +2,7 @@
 
 import { exportData } from '@/lib/exports'
 import { Button } from '../ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
-import { useMediaQuery } from '@/hooks/use-media-query'
+import { ResponsiveSheet } from '../responsive-sheet'
 import { IconDownload } from '@tabler/icons-react'
 import { useState } from 'react'
 import { ColorPicker } from '../color-picker'
@@ -26,7 +24,6 @@ function ExportContent ({ groupId, color, setColor }: { groupId: string, color: 
 
 export function ExportButton ({ groupId, triggerIcon }: { groupId: string, triggerIcon?: boolean }) {
   const [color, setColor] = useState('#0f0f0f')
-  const isDesktop = useMediaQuery('(min-width: 768px)')
 
   const trigger = triggerIcon
     ? (
@@ -39,43 +36,14 @@ export function ExportButton ({ groupId, triggerIcon }: { groupId: string, trigg
       <Button variant="outline">Exportar</Button>
       )
 
-  if (isDesktop) {
-    return (
-      <Dialog>
-        <DialogTrigger asChild>
-          {trigger}
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Exportar datos</DialogTitle>
-            <DialogDescription>
-              ¿En qué formato quieres exportar los datos?
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-4">
-            <ExportContent groupId={groupId} color={color} setColor={setColor} />
-          </div>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
   return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        {trigger}
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Exportar datos</DrawerTitle>
-          <DrawerDescription>
-            ¿En qué formato quieres exportar los datos?
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="flex flex-col gap-4 p-4">
-          <ExportContent groupId={groupId} color={color} setColor={setColor} />
-        </div>
-      </DrawerContent>
-    </Drawer>
+    <ResponsiveSheet
+      title="Exportar datos"
+      description="¿En qué formato quieres exportar los datos?"
+      sheetWidth="425px"
+      trigger={trigger}
+    >
+      <ExportContent groupId={groupId} color={color} setColor={setColor} />
+    </ResponsiveSheet>
   )
 }

@@ -1,7 +1,7 @@
+import { ProductPreview } from '@/components/home/product-preview'
 import { TrustedBy } from '@/components/home/trusted-by'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Calculator } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 
 const useCases = ['Viajes', 'Pisos compartidos', 'Cenas en grupo', 'Eventos']
@@ -56,24 +56,7 @@ export function Hero () {
 
         <div className="relative mx-auto w-full max-w-[640px] lg:max-w-none">
           <div className="pointer-events-none absolute -inset-4 rounded-2xl bg-primary/5 blur-2xl" />
-          <div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-            <Image
-              src="/dashboard-dark.png"
-              alt="Dashboard de Split Group mostrando balances y gastos del grupo"
-              width={1000}
-              height={562}
-              priority
-              className="hidden w-full dark:block"
-            />
-            <Image
-              src="/dashboard-light.png"
-              alt="Dashboard de Split Group mostrando balances y gastos del grupo"
-              width={1000}
-              height={562}
-              priority
-              className="block w-full dark:hidden"
-            />
-          </div>
+          <ProductPreview />
         </div>
       </div>
     </section>
