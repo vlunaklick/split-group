@@ -17,7 +17,7 @@ export const LatestsSpendings = async () => {
       <CardHeader>
         <CardTitle>Últimos gastos</CardTitle>
         <CardDescription>
-          Gastos registrados en los últimos 30 días
+          Tocá un gasto para ver el detalle
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -82,7 +82,7 @@ export function LatestsSpendingsSkeleton () {
       <CardHeader>
         <CardTitle>Últimos gastos</CardTitle>
         <CardDescription>
-          Gastos registrados en los últimos 30 días
+          Tocá un gasto para ver el detalle
         </CardDescription>
       </CardHeader>
       <CardContent>

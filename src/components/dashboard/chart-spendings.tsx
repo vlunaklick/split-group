@@ -20,9 +20,9 @@ export const StatsChart = () => {
   return (
     <Card className='xl:col-span-2 h-max'>
       <CardHeader>
-        <CardTitle>Gasto anual</CardTitle>
+        <CardTitle>Gasto por mes</CardTitle>
         <CardDescription>
-          Gasto mensual en los últimos 12 meses
+          Cuánto registraste como deudor en el año
         </CardDescription>
       </CardHeader>
       <CardContent>

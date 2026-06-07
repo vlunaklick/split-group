@@ -1,4 +1,4 @@
-import { GroupNav } from '@/components/groups/group-nav'
+import { GroupPageHeader } from '@/components/groups/group-page-header'
 import { getGroup } from '@/data/apis/groups'
 import { notFound } from 'next/navigation'
 import { ParticipantsList, ParticipantsListSkeleton } from './lists/participants-list'
@@ -16,20 +16,21 @@ export async function Participants ({ groupId }: { groupId: string }) {
 
   return (
     <>
-      <header className="flex flex-col gap-4">
-        <div className="flex md:items-center gap-4 flex-col md:flex-row md:justify-between">
-          <h1 className="text-display-sm">{data.group?.name}</h1>
-          <div className="flex gap-2 md:ml-auto">
+      <GroupPageHeader
+        groupId={groupId}
+        groupName={data.group?.name ?? ''}
+        title="Participantes"
+        actions={
+          <>
             {!data.isOwner && (
               <LeaveGroupButton groupId={groupId} />
             )}
             {data.isOwner && data.isAdmin && (
               <InvitesSheet groupId={groupId} />
             )}
-          </div>
-        </div>
-        <GroupNav groupId={groupId} />
-      </header>
+          </>
+        }
+      />
 
       <div className="flex flex-col gap-6 lg:flex-row">
         <ParticipantsList groupId={groupId} isOwner={data.isOwner} isAdmin={data.isAdmin ?? false} userId={data.userId ?? ''} />

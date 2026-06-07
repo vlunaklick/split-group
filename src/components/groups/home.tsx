@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { HeaderButtons, HeaderButtonsMobile, HeaderButtonsSkeletons } from './home-header-buttons'
 import { Spendings, SpendingsSkeleton } from './spendings'
 import { Debts, DebtsSkeleton } from './debts'
-import { GroupNav } from './group-nav'
+import { GroupPageHeader } from './group-page-header'
 import { Skeleton } from '../ui/skeleton'
 import { Suspense } from 'react'
 
@@ -16,27 +16,21 @@ export async function GroupHome ({ groupId }: { groupId: string }) {
 
   return (
     <>
-      <header className="flex flex-col gap-4">
-        <div className="flex md:justify-between md:items-start gap-4 flex-col md:flex-row">
-          <div className="flex flex-col gap-2 flex-1">
-            <div className="flex items-start gap-2 justify-between">
-              <h1 className="text-display-sm">{data.group.name}</h1>
-              <HeaderButtonsMobile groupId={groupId} />
+      <GroupPageHeader
+        groupId={groupId}
+        groupName={data.group.name}
+        description={data.group.description ?? undefined}
+        actions={
+          <>
+            <HeaderButtonsMobile groupId={groupId} />
+            <div className="hidden md:flex gap-2">
+              <Suspense fallback={<HeaderButtonsSkeletons />}>
+                <HeaderButtons groupId={groupId} />
+              </Suspense>
             </div>
-            {data.group.description && (
-              <p className="text-balance text-muted-foreground">{data.group.description}</p>
-            )}
-          </div>
-
-          <div className="hidden md:flex gap-2 shrink-0">
-            <Suspense fallback={<HeaderButtonsSkeletons />}>
-              <HeaderButtons groupId={groupId} />
-            </Suspense>
-          </div>
-        </div>
-
-        <GroupNav groupId={groupId} />
-      </header>
+          </>
+        }
+      />
 
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
         <div className="order-2 md:order-1 flex-1">

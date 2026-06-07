@@ -37,7 +37,7 @@ export const WeeklySpent = () => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Gasto semanal</CardTitle>
+        <CardTitle className="text-sm font-medium">Esta semana</CardTitle>
         <IconCashBanknote className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
@@ -80,7 +80,7 @@ export const MonthlySpent = () => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Gasto mensual</CardTitle>
+        <CardTitle className="text-sm font-medium">Este mes</CardTitle>
         <IconMoneybag className="h-4 w-4 text-muted-foreground/60" />
       </CardHeader>
       <CardContent>
@@ -112,14 +112,14 @@ export const TotalDebt = () => {
   }
 
   return (
-    <Card>
+    <Card className="border-destructive/20">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Deuda total</CardTitle>
-        <IconTransferOut className="h-4 w-4 text-muted-foreground/60" />
+        <CardTitle className="text-sm font-medium">Debes</CardTitle>
+        <IconTransferOut className="h-4 w-4 text-destructive/70" />
       </CardHeader>
       <CardContent>
-        <div className="font-mono text-2xl font-normal tracking-tight">{value}</div>
-        <p className="text-xs text-muted-foreground/60">Valor entre todos los grupos</p>
+        <div className="font-mono text-2xl font-normal tracking-tight text-destructive">{value}</div>
+        <p className="text-xs text-muted-foreground/60">Pendiente de pagar en todos tus grupos</p>
       </CardContent>
     </Card>
   )
@@ -144,14 +144,14 @@ export const TotalRevenue = () => {
   }
 
   return (
-    <Card>
+    <Card className="border-success/20">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Total a cobrar</CardTitle>
-        <IconTransferIn className="h-4 w-4 text-muted-foreground/60" />
+        <CardTitle className="text-sm font-medium">Te deben</CardTitle>
+        <IconTransferIn className="h-4 w-4 text-success/70" />
       </CardHeader>
       <CardContent>
-        <div className="font-mono text-2xl font-normal tracking-tight">{value}</div>
-        <p className="text-xs text-muted-foreground/60">Valor entre todos los grupos</p>
+        <div className="font-mono text-2xl font-normal tracking-tight text-success">{value}</div>
+        <p className="text-xs text-muted-foreground/60">Pendiente de cobrar en todos tus grupos</p>
       </CardContent>
     </Card>
   )

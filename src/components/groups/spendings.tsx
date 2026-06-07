@@ -1,5 +1,6 @@
 'use client'
 
+import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
 import { SpendingIcon } from '@/components/spending-icons'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -20,7 +21,7 @@ export const Spendings = ({ groupId }: { groupId: string }) => {
       <CardHeader>
         <CardTitle>Gastos recientes</CardTitle>
         <CardDescription>
-          {count > 0 ? 'Toca un gasto para ver el detalle' : 'Aún no hay gastos en este grupo'}
+          {count > 0 ? 'Tocá un gasto para ver el detalle' : 'Registrá el primer gasto del grupo'}
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-4'>
@@ -35,12 +36,19 @@ export const Spendings = ({ groupId }: { groupId: string }) => {
           <SpendingItem key={spending.id} groupId={groupId} spending={spending} />
         ))}
 
+        {!isLoadingSpendings && count === 0 && (
+          <div className="flex flex-col items-center gap-3 py-4 text-center">
+            <p className="text-sm text-muted-foreground">Todavía no hay gastos</p>
+            <CreateSpendingSheet groupId={groupId} variant="default" />
+          </div>
+        )}
+
         {count > 0 && (
           <Link
             href={`/groups/${groupId}/spendings`}
             className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}
           >
-            Ver todos los gastos
+            Ver todos
           </Link>
         )}
       </CardContent>
@@ -65,7 +73,7 @@ const SpendingItem = ({ groupId, spending }: { groupId: string, spending: Spendi
           {formatDate(spending.createdAt)} · {spending.owner.name}
         </p>
       </div>
-      <div className="ml-auto font-medium shrink-0">{formatMoney(spending.value)}</div>
+      <div className="ml-auto font-medium font-mono shrink-0">{formatMoney(spending.value)}</div>
     </Link>
   )
 }

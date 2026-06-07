@@ -1,7 +1,6 @@
 import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
-import { GroupNav } from '@/components/groups/group-nav'
+import { GroupPageHeader } from '@/components/groups/group-page-header'
 import { getGroup } from '@/data/apis/groups'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { SpendingsList } from './lists/spendings-list'
 import { GetSpendingsSchema } from '@/lib/validations'
@@ -17,15 +16,12 @@ export async function Spendings ({ groupId, searchParams }: { groupId: string, s
 
   return (
     <>
-      <header className="flex flex-col gap-4">
-        <div className="flex md:items-center gap-4 flex-col md:flex-row md:justify-between">
-          <h1 className="text-display-sm">
-            {data.group.name}
-          </h1>
-          <CreateSpendingSheet groupId={groupId} variant="default" />
-        </div>
-        <GroupNav groupId={groupId} />
-      </header>
+      <GroupPageHeader
+        groupId={groupId}
+        groupName={data.group.name}
+        title="Gastos"
+        actions={<CreateSpendingSheet groupId={groupId} variant="default" />}
+      />
 
       <div className="grid gap-4">
         <SpendingsList groupId={groupId} searchParams={searchParams} />
