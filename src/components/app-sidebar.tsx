@@ -11,10 +11,10 @@ export function AppSidebar () {
     <Sidebar collapsible='icon'>
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="flex items-center gap-0.5">
             <SidebarMenuButton
               size="lg"
-              className='hover:bg-sidebar-accent/60 bg-transparent active:bg-transparent'
+              className="min-w-0 flex-1 hover:bg-sidebar-accent/60 bg-transparent active:bg-transparent"
               asChild
             >
               <Link href="/dashboard" className="flex items-center gap-2">
@@ -22,9 +22,11 @@ export function AppSidebar () {
                   <Logo />
                 </div>
                 <span className="truncate font-medium">Split Group</span>
-                <NotificationsAmount />
               </Link>
             </SidebarMenuButton>
+            <div className="group-data-[collapsible=icon]:hidden">
+              <NotificationsAmount />
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

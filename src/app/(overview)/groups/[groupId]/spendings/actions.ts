@@ -197,7 +197,15 @@ export async function getCommentsOfSpending ({ spendingId }: { spendingId: strin
   })
 }
 
-export async function payDebt ({ debtId }: { debtId: string }) {
+export async function payDebt ({
+  debtId,
+  note,
+  receiptUrl
+}: {
+  debtId: string
+  note?: string
+  receiptUrl?: string
+}) {
   const { userId } = await requireSession()
 
   const existingDebt = await db.debt.findUnique({
@@ -211,13 +219,18 @@ export async function payDebt ({ debtId }: { debtId: string }) {
 
   await requireGroupMember(existingDebt.spending.groupId)
 
+  const trimmedNote = note?.trim()
+  const trimmedReceiptUrl = receiptUrl?.trim()
+
   const debt = await db.debt.update({
     where: {
       id: debtId
     },
     data: {
       paid: true,
-      settledAt: new Date()
+      settledAt: new Date(),
+      settlementNote: trimmedNote || null,
+      receiptUrl: trimmedReceiptUrl || null
     },
     include: {
       spending: {
@@ -232,7 +245,9 @@ export async function payDebt ({ debtId }: { debtId: string }) {
 
   if (!debt) return
 
-  const description = 'Tu deuda de ' + debt.amount.toFixed(2) + ' en el gasto ' + debt.spending.name + ' ha sido pagada.'
+  const noteSuffix = trimmedNote ? ` Nota: ${trimmedNote}` : ''
+  const receiptSuffix = trimmedReceiptUrl ? ' Comprobante disponible en el historial del grupo.' : ''
+  const description = 'Tu deuda de ' + debt.amount.toFixed(2) + ' en el gasto ' + debt.spending.name + ' ha sido pagada.' + noteSuffix + receiptSuffix
 
   await db.notification.create({
     data: {

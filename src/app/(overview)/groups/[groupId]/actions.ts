@@ -13,11 +13,13 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export async function payAllDebt ({
   crediterId,
   groupId,
-  note
+  note,
+  receiptUrl
 }: {
   crediterId: string
   groupId: string
   note?: string
+  receiptUrl?: string
 }) {
   const { userId, session } = await requireGroupMember(groupId)
   const payerName = session.user?.name || 'Usuario'
@@ -40,6 +42,7 @@ export async function payAllDebt ({
   if (debts.length === 0) return
 
   const trimmedNote = note?.trim()
+  const trimmedReceiptUrl = receiptUrl?.trim()
 
   await db.debt.updateMany({
     where: {
@@ -48,17 +51,19 @@ export async function payAllDebt ({
     data: {
       paid: true,
       settledAt: new Date(),
-      settlementNote: trimmedNote || null
+      settlementNote: trimmedNote || null,
+      receiptUrl: trimmedReceiptUrl || null
     }
   })
 
   const totalAmount = debts.reduce((acc, debt) => acc + debt.amount, 0)
   const spendingName = debts[0].spending.name || 'Gasto'
   const noteSuffix = trimmedNote ? ` Nota: ${trimmedNote}` : ''
+  const receiptSuffix = trimmedReceiptUrl ? ' Comprobante disponible en el historial del grupo.' : ''
 
   const description = debts.length === 1
-    ? `Tu deuda de ${totalAmount.toFixed(2)} en el gasto ${spendingName} ha sido pagada.${noteSuffix}`
-    : `${payerName} marcó como pagadas deudas por ${totalAmount.toFixed(2)} en ${debts[0].spending?.group?.name ?? 'el grupo'}.${noteSuffix}`
+    ? `Tu deuda de ${totalAmount.toFixed(2)} en el gasto ${spendingName} ha sido pagada.${noteSuffix}${receiptSuffix}`
+    : `${payerName} marcó como pagadas deudas por ${totalAmount.toFixed(2)} en ${debts[0].spending?.group?.name ?? 'el grupo'}.${noteSuffix}${receiptSuffix}`
 
   await db.notification.create({
     data: {

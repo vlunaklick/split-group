@@ -403,6 +403,7 @@ export async function getGroupSettlementHistory ({
     status: debt.forgiven ? 'forgiven' as const : 'paid' as const,
     settledAt: debt.settledAt,
     settlementNote: debt.settlementNote,
+    receiptUrl: debt.receiptUrl,
     debterName: debt.debter.name ?? 'Usuario',
     creditorName: debt.creditor.name ?? 'Usuario',
     spendingName: debt.spending.name,

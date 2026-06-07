@@ -5,7 +5,7 @@ import { useGetGroupSettlementHistory } from '@/data/spendings'
 import { formatShortDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
-import { CheckCircle2, HeartHandshake } from 'lucide-react'
+import { CheckCircle2, ExternalLink, HeartHandshake } from 'lucide-react'
 
 type SettlementHistoryItem = {
   id: string
@@ -13,6 +13,7 @@ type SettlementHistoryItem = {
   status: 'paid' | 'forgiven'
   settledAt: string
   settlementNote?: string | null
+  receiptUrl?: string | null
   debterName: string
   creditorName: string
   spendingName: string
@@ -93,6 +94,20 @@ export function SettlementHistory ({ groupId }: { groupId: string }) {
                 <>
                   <span aria-hidden="true">·</span>
                   <span className="truncate">{item.settlementNote}</span>
+                </>
+              )}
+              {item.receiptUrl && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <a
+                    href={item.receiptUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 font-medium text-foreground hover:underline"
+                  >
+                    Ver comprobante
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
                 </>
               )}
             </div>

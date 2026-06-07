@@ -13,24 +13,27 @@ function StatCell ({
   label,
   value,
   hint,
-  tone
+  tone,
+  compact
 }: {
   label: string
   value: string
   hint?: string
   tone?: 'positive' | 'negative' | 'neutral'
+  compact?: boolean
 }) {
   return (
-    <div className="grid gap-1 p-4 sm:p-5">
-      <p className="section-label">{label}</p>
+    <div className={cn('grid gap-0.5', compact ? 'p-3' : 'p-4 sm:p-5')}>
+      <p className="section-label text-[10px] sm:text-xs">{label}</p>
       <p className={cn(
-        'font-mono text-xl tracking-tight sm:text-2xl',
+        'font-mono tracking-tight',
+        compact ? 'text-lg' : 'text-xl sm:text-2xl',
         tone === 'positive' && 'text-success',
         tone === 'negative' && 'text-destructive'
       )}>
         {value}
       </p>
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+      {hint && <p className="text-[11px] leading-snug text-muted-foreground sm:text-xs">{hint}</p>}
     </div>
   )
 }
@@ -40,6 +43,39 @@ function trendHint (current: number, previous: number, suffix: string) {
   if (current > previous) return `↑ vs ${suffix} anterior (${formatMoney(previous)})`
   if (current < previous) return `↓ vs ${suffix} anterior (${formatMoney(previous)})`
   return `Igual que ${suffix} anterior`
+}
+
+function balanceClassName (tone: 'positive' | 'negative' | 'neutral') {
+  return cn(
+    'font-mono text-sm',
+    tone === 'positive' && 'text-success',
+    tone === 'negative' && 'text-destructive',
+    tone === 'neutral' && 'text-muted-foreground'
+  )
+}
+
+function GroupLastSpending ({
+  groupId,
+  lastSpending
+}: {
+  groupId: string
+  lastSpending: { name: string, createdAt: Date, value: number } | null
+}) {
+  if (!lastSpending) {
+    return <p className="text-xs text-muted-foreground">Sin gastos</p>
+  }
+
+  return (
+    <Link
+      href={`/groups/${groupId}`}
+      className="block min-w-0 hover:opacity-80"
+    >
+      <p className="truncate text-sm">{lastSpending.name}</p>
+      <p className="truncate text-xs text-muted-foreground">
+        {formatDate(lastSpending.createdAt)} · {formatMoney(lastSpending.value)}
+      </p>
+    </Link>
+  )
 }
 
 function groupBalanceText (net: number) {
@@ -76,9 +112,10 @@ export async function DashboardContent () {
       : 'neutral'
 
   return (
-    <div className="grid gap-8">
-      <section className="surface-panel grid grid-cols-1 divide-y divide-border overflow-hidden md:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-y-0">
+    <div className="grid min-w-0 gap-6 sm:gap-8">
+      <section className="surface-panel grid min-w-0 grid-cols-2 divide-x divide-y divide-border overflow-hidden lg:grid-cols-4 lg:divide-y-0">
         <StatCell
+          compact
           label="Balance neto"
           value={`${overview.netBalance >= 0 ? '+' : ''}${formatMoney(overview.netBalance)}`}
           hint={overview.netBalance === 0
@@ -87,6 +124,7 @@ export async function DashboardContent () {
           tone={netTone}
         />
         <StatCell
+          compact
           label="Te deben"
           value={formatMoney(overview.totalRevenue)}
           hint={stats.openDebtsCount > 0
@@ -95,12 +133,14 @@ export async function DashboardContent () {
           tone={overview.totalRevenue > 0 ? 'positive' : 'neutral'}
         />
         <StatCell
+          compact
           label="Debés"
           value={formatMoney(overview.totalDebt)}
           hint={overview.totalDebt > 0 ? 'Pendiente de pago' : 'Nada pendiente'}
           tone={overview.totalDebt > 0 ? 'negative' : 'neutral'}
         />
         <StatCell
+          compact
           label="Tu parte este mes"
           value={formatMoney(stats.monthlySpent)}
           hint={trendHint(stats.monthlySpent, stats.monthlySpentPrev, 'mes')}
@@ -116,7 +156,7 @@ export async function DashboardContent () {
             </p>
           </div>
 
-          <div className="surface-panel overflow-hidden">
+          <div className="surface-panel min-w-0 overflow-hidden">
             <div className="hidden border-b border-border bg-muted/20 px-4 py-2.5 text-xs text-muted-foreground md:grid md:grid-cols-[minmax(0,1.4fr)_72px_72px_96px_minmax(0,1fr)_40px] md:gap-3">
               <span>Grupo</span>
               <span className="text-center">Miembros</span>
@@ -126,86 +166,74 @@ export async function DashboardContent () {
               <span />
             </div>
 
-            <ul className="divide-y divide-border">
+            <ul className="min-w-0 divide-y divide-border">
               {overview.groups.map((group) => {
                 const balance = groupBalanceText(group.netBalance)
 
                 return (
-                  <li
-                    key={group.id}
-                    className="px-4 py-3 max-md:space-y-2 md:grid md:grid-cols-[minmax(0,1.4fr)_72px_72px_96px_minmax(0,1fr)_40px] md:items-center md:gap-3"
-                  >
-                    <div className="flex min-w-0 items-center gap-2 md:contents">
-                      <Link href={`/groups/${group.id}`} className="flex min-w-0 flex-1 items-center gap-3">
+                  <li key={group.id} className="min-w-0">
+                    <div className="px-4 py-3 md:hidden">
+                      <div className="flex min-w-0 items-start gap-3">
+                        <Link
+                          href={`/groups/${group.id}`}
+                          className="flex min-w-0 flex-1 items-center gap-3"
+                        >
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
+                            <Icon type={group.icon ?? 'award'} />
+                          </div>
+                          <div className="min-w-0 grid gap-0.5">
+                            <p className="truncate text-sm font-medium">{group.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {group.memberCount} miembros · {group.spendingCount} gastos
+                            </p>
+                          </div>
+                        </Link>
+                        <div className="flex shrink-0 flex-col items-end gap-2">
+                          <span className={balanceClassName(balance.tone)}>{balance.text}</span>
+                          <CreateSpendingSheet
+                            groupId={group.id}
+                            variant="outline"
+                            label=""
+                            className="h-8 w-8 p-0"
+                            icon={<Plus className="h-4 w-4" />}
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-2 min-w-0 pl-12">
+                        <GroupLastSpending groupId={group.id} lastSpending={group.lastSpending} />
+                      </div>
+                    </div>
+
+                    <div className="hidden min-w-0 px-4 py-3 md:grid md:grid-cols-[minmax(0,1.4fr)_72px_72px_96px_minmax(0,1fr)_40px] md:items-center md:gap-3">
+                      <Link href={`/groups/${group.id}`} className="flex min-w-0 items-center gap-3">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
                           <Icon type={group.icon ?? 'award'} />
                         </div>
-                        <div className="min-w-0 grid gap-0.5">
-                          <p className="truncate text-sm font-medium">{group.name}</p>
-                          <p className="text-xs text-muted-foreground md:hidden">
-                            {group.memberCount} miembros · {group.spendingCount} gastos
-                          </p>
-                        </div>
+                        <p className="truncate text-sm font-medium">{group.name}</p>
                       </Link>
 
-                      <span className={cn(
-                        'shrink-0 font-mono text-sm md:hidden',
-                        balance.tone === 'positive' && 'text-success',
-                        balance.tone === 'negative' && 'text-destructive',
-                        balance.tone === 'neutral' && 'text-muted-foreground'
-                      )}>
+                      <p className="text-center text-sm text-muted-foreground">
+                        {group.memberCount}
+                      </p>
+                      <p className="text-center text-sm text-muted-foreground">
+                        {group.spendingCount}
+                      </p>
+                      <p className={cn('text-right', balanceClassName(balance.tone))}>
                         {balance.text}
-                      </span>
+                      </p>
+
+                      <div className="min-w-0">
+                        <GroupLastSpending groupId={group.id} lastSpending={group.lastSpending} />
+                      </div>
 
                       <CreateSpendingSheet
                         groupId={group.id}
                         variant="outline"
                         label=""
-                        className="h-8 w-8 shrink-0 p-0 md:hidden"
+                        className="h-8 w-8 shrink-0 p-0"
                         icon={<Plus className="h-4 w-4" />}
                       />
                     </div>
-
-                    <p className="hidden text-center text-sm text-muted-foreground md:block">
-                      {group.memberCount}
-                    </p>
-                    <p className="hidden text-center text-sm text-muted-foreground md:block">
-                      {group.spendingCount}
-                    </p>
-                    <p className={cn(
-                      'hidden text-right font-mono text-sm md:block',
-                      balance.tone === 'positive' && 'text-success',
-                      balance.tone === 'negative' && 'text-destructive',
-                      balance.tone === 'neutral' && 'text-muted-foreground'
-                    )}>
-                      {balance.text}
-                    </p>
-
-                    <div className="min-w-0 max-md:pl-12">
-                      {group.lastSpending
-                        ? (
-                          <Link
-                            href={`/groups/${group.id}`}
-                            className="block min-w-0 hover:opacity-80"
-                          >
-                            <p className="truncate text-sm">{group.lastSpending.name}</p>
-                            <p className="truncate text-xs text-muted-foreground">
-                              {formatDate(group.lastSpending.createdAt)} · {formatMoney(group.lastSpending.value)}
-                            </p>
-                          </Link>
-                          )
-                        : (
-                          <p className="text-xs text-muted-foreground">Sin gastos</p>
-                          )}
-                    </div>
-
-                    <CreateSpendingSheet
-                      groupId={group.id}
-                      variant="outline"
-                      label=""
-                      className="hidden h-8 w-8 shrink-0 p-0 md:inline-flex"
-                      icon={<Plus className="h-4 w-4" />}
-                    />
                   </li>
                 )
               })}

@@ -142,6 +142,7 @@ model Debt {
   forgiven   Boolean
   settledAt  DateTime?
   settlementNote String?
+  receiptUrl String?
 }
 
 model Spending {

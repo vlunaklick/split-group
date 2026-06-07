@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { siteConfig } from '@/config/site'
@@ -26,7 +26,6 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   manifest: '/manifest.json',
   applicationName: siteConfig.name,
-  themeColor: '#f54e00',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -47,6 +46,12 @@ export const metadata: Metadata = {
   }
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#f54e00'
+}
+
 export default function RootLayout ({
   children
 }: Readonly<{
@@ -57,7 +62,7 @@ export default function RootLayout ({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} overflow-x-hidden font-sans antialiased`}>
         <ThemeProvider>
           {children}
           <Toaster richColors closeButton />
