@@ -371,3 +371,41 @@ export async function getGroupSettlement ({ groupId }: { groupId: string }) {
     transfers
   }
 }
+
+export async function getGroupSettlementHistory ({
+  groupId,
+  limit = 8
+}: {
+  groupId: string
+  limit?: number
+}) {
+  const session = await getServerSession(authOptions)
+  const userId = session?.user.id
+
+  const debts = await db.debt.findMany({
+    where: {
+      spending: { groupId },
+      settledAt: { not: null },
+      OR: [{ paid: true }, { forgiven: true }]
+    },
+    include: {
+      debter: { select: { id: true, name: true } },
+      creditor: { select: { id: true, name: true } },
+      spending: { select: { name: true } }
+    },
+    orderBy: { settledAt: 'desc' },
+    take: limit
+  })
+
+  return debts.map((debt) => ({
+    id: debt.id,
+    amount: debt.amount,
+    status: debt.forgiven ? 'forgiven' as const : 'paid' as const,
+    settledAt: debt.settledAt,
+    settlementNote: debt.settlementNote,
+    debterName: debt.debter.name ?? 'Usuario',
+    creditorName: debt.creditor.name ?? 'Usuario',
+    spendingName: debt.spending.name,
+    involvesYou: debt.debterId === userId || debt.creditorId === userId
+  }))
+}

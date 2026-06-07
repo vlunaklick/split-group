@@ -8,3 +8,7 @@ const locale = es
 export const formatDate = (date: Date) => {
   return format(date, 'PPP', { locale })
 }
+
+export const formatShortDate = (date: Date) => {
+  return format(date, 'd MMM yyyy', { locale })
+}

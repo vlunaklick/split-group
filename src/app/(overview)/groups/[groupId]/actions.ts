@@ -39,16 +39,21 @@ export async function payAllDebt ({
 
   if (debts.length === 0) return
 
+  const trimmedNote = note?.trim()
+
   await db.debt.updateMany({
     where: {
       id: { in: debts.map((d) => d.id) }
     },
-    data: { paid: true }
+    data: {
+      paid: true,
+      settledAt: new Date(),
+      settlementNote: trimmedNote || null
+    }
   })
 
   const totalAmount = debts.reduce((acc, debt) => acc + debt.amount, 0)
   const spendingName = debts[0].spending.name || 'Gasto'
-  const trimmedNote = note?.trim()
   const noteSuffix = trimmedNote ? ` Nota: ${trimmedNote}` : ''
 
   const description = debts.length === 1
@@ -108,7 +113,10 @@ export async function forgiveAllDebt ({ debterId, groupId } : { debterId: string
     where: {
       id: { in: debts.map((d) => d.id) }
     },
-    data: { forgiven: true }
+    data: {
+      forgiven: true,
+      settledAt: new Date()
+    }
   })
 
   const totalAmount = debts.reduce((acc, debt) => acc + debt.amount, 0).toFixed(2)

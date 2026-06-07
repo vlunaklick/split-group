@@ -48,6 +48,7 @@ export function PayDebtDialog ({
       displayToast('Marcado como pagado', 'success')
       mutate(['debts', groupId])
       mutate(['group-settlement', groupId])
+      mutate(['group-settlement-history', groupId])
       setIsOpen(false)
       form.reset()
     } catch (error) {

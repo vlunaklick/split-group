@@ -22,6 +22,9 @@ export const SpendingDebtsList = ({ groupId, spendId }: { groupId: string, spend
       await payDebt({ debtId })
       displayToast('Marcado como pagado', 'success')
       mutate(['debts', groupId, spendId])
+      mutate(['debts', groupId])
+      mutate(['group-settlement', groupId])
+      mutate(['group-settlement-history', groupId])
     } catch (error) {
       displayToast('Error al pagar deuda', 'error')
     }

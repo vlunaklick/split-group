@@ -13,6 +13,12 @@ export function useGetGroupSettlement ({ groupId }: { groupId: string }) {
   })
 }
 
+export function useGetGroupSettlementHistory ({ groupId, limit = 8 }: { groupId: string, limit?: number }) {
+  return useSWR(['group-settlement-history', groupId, limit], async ([, groupId, limit]) => {
+    return await fetch(`/api/groups/${groupId}/spendings?getGroupSettlementHistory=true&limit=${limit}`).then(res => res.json())
+  })
+}
+
 export function useGetLastSpendings ({ groupId }: { groupId: string }) {
   return useSWR(['last-spendings', groupId], async ([, groupId]) => {
     return await fetch(`/api/groups/${groupId}/spendings?getLatestGroupSpendings=true`).then(res => res.json())

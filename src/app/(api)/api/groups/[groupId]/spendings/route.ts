@@ -1,4 +1,4 @@
-import { getGroupDebts, getGroupSettlement, getLatestGroupSpendings, getSpendingsTable } from '@/data/apis/spendings'
+import { getGroupDebts, getGroupSettlement, getGroupSettlementHistory, getLatestGroupSpendings, getSpendingsTable } from '@/data/apis/spendings'
 import { requireGroupMember, toAuthResponse } from '@/lib/server-auth'
 import { getSpendingsSchema } from '@/lib/validations'
 
@@ -27,6 +27,16 @@ export async function GET (
       const settlement = await getGroupSettlement({ groupId })
 
       return Response.json(settlement)
+    }
+
+    if (searchParams.get('getGroupSettlementHistory')) {
+      const limit = Number(searchParams.get('limit') ?? 8)
+      const history = await getGroupSettlementHistory({
+        groupId,
+        limit: Number.isFinite(limit) ? limit : 8
+      })
+
+      return Response.json(history)
     }
 
     if (searchParams.get('getLatestGroupSpendings')) {

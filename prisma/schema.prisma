@@ -140,6 +140,8 @@ model Debt {
   creditorId String
   paid       Boolean
   forgiven   Boolean
+  settledAt  DateTime?
+  settlementNote String?
 }
 
 model Spending {

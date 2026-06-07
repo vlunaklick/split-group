@@ -3,6 +3,7 @@
 import { forgiveAllDebt, sendDebtReminder } from '@/app/(overview)/groups/[groupId]/actions'
 import { PayDebtDialog } from './dialogs/pay-debt-dialog'
 import { SettlementPlan } from './settlement-plan'
+import { SettlementHistory } from './settlement-history'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetDebts } from '@/data/spendings'
@@ -64,6 +65,8 @@ export const Debts = ({ groupId }: { groupId: string }) => {
           )}
         </ul>
       </div>
+
+      <SettlementHistory groupId={groupId} />
     </section>
   )
 }
@@ -79,6 +82,7 @@ const DebtItem = ({ debt, groupId }: { debt: Debt, groupId: string }) => {
       displayToast('Deuda perdonada', 'success')
       mutate(['debts', groupId])
       mutate(['group-settlement', groupId])
+      mutate(['group-settlement-history', groupId])
     } catch (error) {
       displayToast('No se pudo perdonar la deuda', 'error')
     }

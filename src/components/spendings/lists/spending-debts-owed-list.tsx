@@ -22,6 +22,9 @@ export const SpendingDebtsOwedList = ({ groupId, spendId }: { groupId: string, s
       await forgiveDebt({ debtId })
       displayToast('Deuda perdonada', 'success')
       mutate(['owed-debts', groupId, spendId])
+      mutate(['debts', groupId])
+      mutate(['group-settlement', groupId])
+      mutate(['group-settlement-history', groupId])
     } catch (error) {
       displayToast('Error al perdonar deuda', 'error')
     }

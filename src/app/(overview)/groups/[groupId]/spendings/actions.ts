@@ -216,7 +216,8 @@ export async function payDebt ({ debtId }: { debtId: string }) {
       id: debtId
     },
     data: {
-      paid: true
+      paid: true,
+      settledAt: new Date()
     },
     include: {
       spending: {
@@ -279,7 +280,8 @@ export async function forgiveDebt ({ debtId }: { debtId: string }) {
       id: debtId
     },
     data: {
-      forgiven: true
+      forgiven: true,
+      settledAt: new Date()
     },
     include: {
       spending: {

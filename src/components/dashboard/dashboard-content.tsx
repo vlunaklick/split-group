@@ -21,10 +21,10 @@ function StatCell ({
   tone?: 'positive' | 'negative' | 'neutral'
 }) {
   return (
-    <div className="grid gap-1 p-5">
+    <div className="grid gap-1 p-4 sm:p-5">
       <p className="section-label">{label}</p>
       <p className={cn(
-        'font-mono text-2xl tracking-tight',
+        'font-mono text-xl tracking-tight sm:text-2xl',
         tone === 'positive' && 'text-success',
         tone === 'negative' && 'text-destructive'
       )}>
@@ -77,7 +77,7 @@ export async function DashboardContent () {
 
   return (
     <div className="grid gap-8">
-      <section className="surface-panel grid divide-y divide-border overflow-hidden sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-y-0">
+      <section className="surface-panel grid grid-cols-1 divide-y divide-border overflow-hidden md:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-y-0">
         <StatCell
           label="Balance neto"
           value={`${overview.netBalance >= 0 ? '+' : ''}${formatMoney(overview.netBalance)}`}
@@ -109,9 +109,9 @@ export async function DashboardContent () {
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] xl:gap-8">
         <section className="grid min-w-0 gap-3">
-          <div className="flex items-baseline justify-between gap-4">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
             <h2 className="section-label">Grupos</h2>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground sm:text-right">
               {stats.totalSpendings} gastos · {formatMoney(stats.weeklySpent)} esta semana
             </p>
           </div>
@@ -133,19 +133,38 @@ export async function DashboardContent () {
                 return (
                   <li
                     key={group.id}
-                    className="grid gap-3 px-4 py-3 md:grid-cols-[minmax(0,1.4fr)_72px_72px_96px_minmax(0,1fr)_40px] md:items-center md:gap-3"
+                    className="px-4 py-3 max-md:space-y-2 md:grid md:grid-cols-[minmax(0,1.4fr)_72px_72px_96px_minmax(0,1fr)_40px] md:items-center md:gap-3"
                   >
-                    <Link href={`/groups/${group.id}`} className="flex min-w-0 items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
-                        <Icon type={group.icon ?? 'award'} />
-                      </div>
-                      <div className="min-w-0 grid gap-0.5">
-                        <p className="truncate text-sm font-medium">{group.name}</p>
-                        <p className="text-xs text-muted-foreground md:hidden">
-                          {group.memberCount} miembros · {group.spendingCount} gastos
-                        </p>
-                      </div>
-                    </Link>
+                    <div className="flex min-w-0 items-center gap-2 md:contents">
+                      <Link href={`/groups/${group.id}`} className="flex min-w-0 flex-1 items-center gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
+                          <Icon type={group.icon ?? 'award'} />
+                        </div>
+                        <div className="min-w-0 grid gap-0.5">
+                          <p className="truncate text-sm font-medium">{group.name}</p>
+                          <p className="text-xs text-muted-foreground md:hidden">
+                            {group.memberCount} miembros · {group.spendingCount} gastos
+                          </p>
+                        </div>
+                      </Link>
+
+                      <span className={cn(
+                        'shrink-0 font-mono text-sm md:hidden',
+                        balance.tone === 'positive' && 'text-success',
+                        balance.tone === 'negative' && 'text-destructive',
+                        balance.tone === 'neutral' && 'text-muted-foreground'
+                      )}>
+                        {balance.text}
+                      </span>
+
+                      <CreateSpendingSheet
+                        groupId={group.id}
+                        variant="outline"
+                        label=""
+                        className="h-8 w-8 shrink-0 p-0 md:hidden"
+                        icon={<Plus className="h-4 w-4" />}
+                      />
+                    </div>
 
                     <p className="hidden text-center text-sm text-muted-foreground md:block">
                       {group.memberCount}
@@ -162,7 +181,7 @@ export async function DashboardContent () {
                       {balance.text}
                     </p>
 
-                    <div className="min-w-0 md:px-0">
+                    <div className="min-w-0 max-md:pl-12">
                       {group.lastSpending
                         ? (
                           <Link
@@ -180,23 +199,13 @@ export async function DashboardContent () {
                           )}
                     </div>
 
-                    <div className="flex items-center justify-between gap-2 md:justify-end">
-                      <span className={cn(
-                        'font-mono text-sm md:hidden',
-                        balance.tone === 'positive' && 'text-success',
-                        balance.tone === 'negative' && 'text-destructive',
-                        balance.tone === 'neutral' && 'text-muted-foreground'
-                      )}>
-                        {balance.text}
-                      </span>
-                      <CreateSpendingSheet
-                        groupId={group.id}
-                        variant="outline"
-                        label=""
-                        className="h-8 w-8 shrink-0 p-0"
-                        icon={<Plus className="h-4 w-4" />}
-                      />
-                    </div>
+                    <CreateSpendingSheet
+                      groupId={group.id}
+                      variant="outline"
+                      label=""
+                      className="hidden h-8 w-8 shrink-0 p-0 md:inline-flex"
+                      icon={<Plus className="h-4 w-4" />}
+                    />
                   </li>
                 )
               })}
@@ -273,10 +282,10 @@ export async function DashboardContent () {
       </div>
 
       <section className="grid gap-3">
-        <div className="flex items-baseline justify-between gap-4">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
           <h2 className="section-label">Últimos gastos</h2>
           {(latestSpendings?.length ?? 0) > 0 && (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground sm:text-right">
               {latestSpendings!.length} movimientos recientes
             </p>
           )}
@@ -303,20 +312,34 @@ export async function DashboardContent () {
                 <li key={spending.id}>
                   <Link
                     href={`/groups/${spending.groupId}/spendings/${spending.id}`}
-                    className="grid gap-2 px-4 py-3 transition-colors hover:bg-accent/50 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.8fr)_100px_100px_96px] lg:items-center lg:gap-4"
+                    className="block px-4 py-3 transition-colors hover:bg-accent/50 lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.8fr)_100px_100px_96px] lg:items-center lg:gap-4"
                   >
-                    <p className="truncate text-sm font-medium">{spending.name}</p>
-                    <p className="truncate text-sm text-muted-foreground">{spending.group.name}</p>
-                    <p className="truncate text-sm text-muted-foreground">
+                    <div className="flex min-w-0 items-start justify-between gap-3 lg:contents">
+                      <p className="min-w-0 truncate text-sm font-medium">{spending.name}</p>
+                      <p className="shrink-0 font-mono text-sm lg:text-right">
+                        {formatMoney(spending.value)}
+                      </p>
+                    </div>
+                    <p className="mt-1 truncate text-xs text-muted-foreground lg:hidden">
+                      {spending.group.name}
+                      {' · '}
                       {spending.owner.name ?? spending.owner.username ?? '—'}
-                    </p>
-                    <p className="truncate text-xs text-muted-foreground lg:text-sm">
-                      {spending.category?.name ?? '—'}
-                    </p>
-                    <p className="text-xs text-muted-foreground lg:text-sm">
+                      {' · '}
                       {formatDate(spending.date ?? spending.createdAt)}
                     </p>
-                    <p className="font-mono text-sm lg:text-right">
+                    <p className="hidden truncate text-sm text-muted-foreground lg:block">
+                      {spending.group.name}
+                    </p>
+                    <p className="hidden truncate text-sm text-muted-foreground lg:block">
+                      {spending.owner.name ?? spending.owner.username ?? '—'}
+                    </p>
+                    <p className="hidden truncate text-xs text-muted-foreground lg:block lg:text-sm">
+                      {spending.category?.name ?? '—'}
+                    </p>
+                    <p className="hidden text-xs text-muted-foreground lg:block lg:text-sm">
+                      {formatDate(spending.date ?? spending.createdAt)}
+                    </p>
+                    <p className="hidden font-mono text-sm lg:block lg:text-right">
                       {formatMoney(spending.value)}
                     </p>
                   </Link>
