@@ -3,6 +3,7 @@
 import { Icon } from '@/components/group-icons'
 import { CreateGroupSheet } from '@/components/groups/sheets/create-group-sheet'
 import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
+import { Button } from '@/components/ui/button'
 import {
   CommandDialog,
   CommandEmpty,
@@ -31,6 +32,10 @@ import {
   shouldIgnorePaletteShortcut,
   trackPathnameVisit
 } from '@/lib/command-palette-recents'
+import {
+  hasSeenCommandPaletteOnboarding,
+  markCommandPaletteOnboardingSeen
+} from '@/lib/command-palette-onboarding'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
 import {
@@ -100,6 +105,7 @@ function CommandPaletteInner () {
   const [recentItems, setRecentItems] = useState<RecentItem[]>([])
   const [commandHistory, setCommandHistory] = useState<CommandHistoryEntry[]>([])
   const [inputHistoryIndex, setInputHistoryIndex] = useState(-1)
+  const [showOnboarding, setShowOnboarding] = useState(false)
   const inputHistoryRef = useRef<string[]>([])
 
   const debouncedSearch = useDebounce(search, 250)
@@ -109,6 +115,29 @@ function CommandPaletteInner () {
 
   const { data: context } = useCommandPaletteContext(open)
   const { data: searchResults, isLoading: isSearchingRemote } = useGlobalSearch(debouncedSearch, open)
+
+  useEffect(() => {
+    if (hasSeenCommandPaletteOnboarding()) return
+
+    const timer = window.setTimeout(() => setShowOnboarding(true), 900)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  const dismissOnboarding = useCallback(() => {
+    markCommandPaletteOnboardingSeen()
+    setShowOnboarding(false)
+  }, [])
+
+  const openPalette = useCallback(() => {
+    dismissOnboarding()
+    setOpen(true)
+  }, [dismissOnboarding])
+
+  useEffect(() => {
+    if (open && showOnboarding) {
+      dismissOnboarding()
+    }
+  }, [dismissOnboarding, open, showOnboarding])
 
   useEffect(() => {
     trackPathnameVisit(pathname)
@@ -278,22 +307,52 @@ function CommandPaletteInner () {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className={cn(
-          'inline-flex h-9 items-center gap-2 rounded-md border border-border/80 bg-muted/30 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground',
-          'md:min-w-[220px] md:flex-1 md:max-w-sm',
-          'max-md:size-9 max-md:justify-center max-md:px-0'
+      <div className="relative md:min-w-[220px] md:flex-1 md:max-w-sm">
+        <button
+          type="button"
+          onClick={openPalette}
+          className={cn(
+            'inline-flex h-9 w-full items-center gap-2 rounded-md border border-border/80 bg-muted/30 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground',
+            'max-md:size-9 max-md:justify-center max-md:px-0',
+            showOnboarding && 'ring-2 ring-primary/30 ring-offset-2 ring-offset-background'
+          )}
+          aria-label="Buscar"
+        >
+          <IconSearch className="size-4 shrink-0" />
+          <span className="hidden md:inline-flex flex-1 text-left">Buscar…</span>
+          <CommandShortcut className="hidden md:inline" suppressHydrationWarning>
+            {modKeyLabel}K
+          </CommandShortcut>
+        </button>
+
+        {showOnboarding && (
+          <div
+            role="dialog"
+            aria-labelledby="command-palette-onboarding-title"
+            className="absolute left-0 top-[calc(100%+0.5rem)] z-50 w-[min(20rem,calc(100vw-2rem))] rounded-lg border border-border/80 bg-popover p-4 shadow-sm animate-in fade-in-0 slide-in-from-top-2"
+          >
+            <div className="absolute -top-1.5 left-6 size-3 rotate-45 border-l border-t border-border/80 bg-popover" />
+            <p id="command-palette-onboarding-title" className="text-sm font-medium">
+              Movéte más rápido
+            </p>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+              Usá{' '}
+              <kbd className="rounded border border-border/80 bg-muted px-1.5 py-0.5 font-mono text-[11px] text-foreground">
+                {modKeyLabel}K
+              </kbd>{' '}
+              para ir a grupos, crear gastos o encontrar cualquier cosa.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button size="sm" onClick={openPalette}>
+                Probar ahora
+              </Button>
+              <Button size="sm" variant="ghost" onClick={dismissOnboarding}>
+                Entendido
+              </Button>
+            </div>
+          </div>
         )}
-        aria-label="Buscar"
-      >
-        <IconSearch className="size-4 shrink-0" />
-        <span className="hidden md:inline-flex flex-1 text-left">Buscar…</span>
-        <CommandShortcut className="hidden md:inline" suppressHydrationWarning>
-          {modKeyLabel}K
-        </CommandShortcut>
-      </button>
+      </div>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
@@ -407,9 +466,12 @@ function CommandPaletteInner () {
                       )}
                     >
                       <IconReceipt className="size-4" />
-                      <span className="truncate">{spending.name}</span>
-                      <span className="ml-auto truncate text-xs text-muted-foreground">
-                        {spending.groupName}
+                      <span className="min-w-0 truncate">{spending.name}</span>
+                      <span className="ml-auto flex shrink-0 items-center gap-2 text-xs">
+                        <span className="font-mono text-foreground">{formatMoney(spending.value)}</span>
+                        <span className="max-w-[5.5rem] truncate text-muted-foreground">
+                          {spending.groupName}
+                        </span>
                       </span>
                     </PrefetchItem>
                   ))}

@@ -4,6 +4,7 @@ import { NotificationType } from '../../../prisma/notification-type-enum'
 export type SearchSpendingResult = {
   id: string
   name: string
+  value: number
   groupId: string
   groupName: string
   groupIcon: string | null
@@ -156,6 +157,7 @@ export async function globalSearch (userId: string, query: string): Promise<Glob
       select: {
         id: true,
         name: true,
+        value: true,
         groupId: true,
         group: { select: { name: true, icon: true } }
       }
@@ -277,6 +279,7 @@ export async function globalSearch (userId: string, query: string): Promise<Glob
     spendings: spendings.map((spending) => ({
       id: spending.id,
       name: spending.name,
+      value: spending.value,
       groupId: spending.groupId,
       groupName: spending.group.name,
       groupIcon: spending.group.icon
