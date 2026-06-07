@@ -42,6 +42,10 @@ export const updateNotificationsWantedSettingsSchema = z.object({
   payments: z.boolean().default(false).optional()
 })
 
+export const updateWeeklyDigestSettingsSchema = z.object({
+  enabled: z.boolean()
+})
+
 export const updateCurrencySettingsSchema = z.object({
   currency: z.string().min(1, { message: 'Debes seleccionar una moneda' })
 })

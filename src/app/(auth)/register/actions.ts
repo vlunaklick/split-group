@@ -17,7 +17,16 @@ export async function createUser ({ username, password, name, email }: { usernam
         username,
         password: hashedPassword,
         name,
-        email
+        email,
+        userConfig: {
+          create: {
+            inviteNotification: true,
+            spentNotification: true,
+            paymentNotification: true,
+            weeklyDigestEmail: false,
+            limit: 0
+          }
+        }
       }
     })
 

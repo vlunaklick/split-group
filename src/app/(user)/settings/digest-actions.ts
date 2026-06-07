@@ -33,17 +33,24 @@ export async function sendWeeklyDigestToCurrentUser () {
 
 export async function sendWeeklyDigestToAllUsers () {
   const users = await db.user.findMany({
-    where: { email: { not: null } },
+    where: {
+      email: { not: null },
+      userConfig: { weeklyDigestEmail: true }
+    },
     select: { id: true }
   })
 
   let sent = 0
   let failed = 0
+  let skipped = 0
 
   for (const user of users) {
     try {
       const digest = await getWeeklyDigestData(user.id)
-      if (!digest) continue
+      if (!digest) {
+        skipped++
+        continue
+      }
 
       const { error } = await resend.emails.send({
         from: 'SplitGroup <splitgroup@vmoon.me>',
@@ -64,5 +71,16 @@ export async function sendWeeklyDigestToAllUsers () {
     }
   }
 
-  return { sent, failed, total: users.length }
+  return { sent, failed, skipped, total: users.length }
+}
+
+export async function updateWeeklyDigestEmail ({ enabled }: { enabled: boolean }) {
+  const { userId } = await requireSession()
+
+  await db.userConfig.update({
+    where: { userId },
+    data: { weeklyDigestEmail: enabled }
+  })
+
+  return true
 }

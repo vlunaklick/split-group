@@ -11,6 +11,7 @@ export const usersMocks = [
         inviteNotification: true,
         spentNotification: false,
         paymentNotification: true,
+        weeklyDigestEmail: true,
         limit: 500
       }
     }
@@ -25,6 +26,7 @@ export const usersMocks = [
         inviteNotification: false,
         spentNotification: true,
         paymentNotification: false,
+        weeklyDigestEmail: false,
         limit: 2000
       }
     }
@@ -39,6 +41,7 @@ export const usersMocks = [
         inviteNotification: true,
         spentNotification: true,
         paymentNotification: true,
+        weeklyDigestEmail: false,
         limit: 1000
       }
     }

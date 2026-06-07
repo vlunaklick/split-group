@@ -38,6 +38,7 @@ model UserConfig {
   inviteNotification  Boolean
   spentNotification   Boolean
   paymentNotification Boolean
+  weeklyDigestEmail   Boolean @default(false)
   limit               Int
 }
 

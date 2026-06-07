@@ -21,6 +21,7 @@ async function main () {
             inviteNotification: user.user.userConfig.inviteNotification,
             spentNotification: user.user.userConfig.spentNotification,
             paymentNotification: user.user.userConfig.paymentNotification,
+            weeklyDigestEmail: user.user.userConfig.weeklyDigestEmail,
             limit: user.user.userConfig.limit
           }
         }
