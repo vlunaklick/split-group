@@ -1,5 +1,4 @@
-// @ts-ignore
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 
 export function hashPassword (password: string) {
   const salt = bcrypt.genSaltSync(10)
