@@ -77,9 +77,9 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
         }
       })
       displayToast('Gasto actualizado correctamente', 'success')
-      mutate(['lastSpendings', groupId])
-      mutate(['lastDebts', groupId])
-      mutate(['spendings', groupId, spendId])
+      mutate(['last-spendings', groupId])
+      mutate(['debts', groupId])
+      mutate(['spendings-table', groupId])
 
       if (callback) {
         callback()
@@ -102,7 +102,7 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
       </Step>
 
       <Step {...steps[2]} key={steps[2].label}>
-        <DebtersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} payers={finalData.payers} mode={mode} setMode={setMode} />
+        <DebtersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} finalData={finalData} payers={finalData.payers} mode={mode} setMode={setMode} />
       </Step>
       <LastStep onSubmit={updateSpendingFinalStep} isSubmitting={isLoading} />
     </Stepper>

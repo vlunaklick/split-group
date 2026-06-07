@@ -1,5 +1,5 @@
 import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { GroupNav } from '@/components/groups/group-nav'
 import { getGroup } from '@/data/apis/groups'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -17,28 +17,14 @@ export async function Spendings ({ groupId, searchParams }: { groupId: string, s
 
   return (
     <>
-      <header className="flex md:items-center gap-4 flex-col md:flex-row md:justify-between">
-        <div className="flex flex-row gap-4 items-center flex-wrap">
+      <header className="flex flex-col gap-4">
+        <div className="flex md:items-center gap-4 flex-col md:flex-row md:justify-between">
           <h1 className="text-display-sm">
             {data.group.name}
           </h1>
-
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href={`/groups/${groupId}`}>Grupo</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Gastos</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <CreateSpendingSheet groupId={groupId} variant="default" />
         </div>
-
-        <CreateSpendingSheet groupId={groupId} />
+        <GroupNav groupId={groupId} />
       </header>
 
       <div className="grid gap-4">
@@ -51,10 +37,9 @@ export async function Spendings ({ groupId, searchParams }: { groupId: string, s
 export const SpendingsPageSkeleton = () => {
   return (
     <>
-      <header className="flex md:justify-between md:items-center gap-4 flex-col md:flex-row">
-        <div className="flex flex-col gap-2">
-          <Skeleton className="w-40 h-10" />
-        </div>
+      <header className="flex flex-col gap-4">
+        <Skeleton className="w-40 h-10" />
+        <Skeleton className="w-full h-10" />
       </header>
 
       <DataTableSkeleton

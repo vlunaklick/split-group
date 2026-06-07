@@ -1,11 +1,10 @@
 import { TrustedBy } from '@/components/home/trusted-by'
 import { Button } from '@/components/ui/button'
-import { FlipWords } from '@/components/ui/flip-words'
 import { ArrowRight, Calculator } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const useCases = ['viajes', 'pisos compartidos', 'cenas en grupo']
+const useCases = ['Viajes', 'Pisos compartidos', 'Cenas en grupo', 'Eventos']
 
 export function Hero () {
   return (
@@ -17,15 +16,25 @@ export function Hero () {
           </p>
 
           <h1 className="max-w-xl text-[1.75rem] leading-[1.15] tracking-tight sm:text-[2.25rem] lg:text-[2.75rem]">
-            Divide gastos de{' '}
-            <FlipWords words={useCases} className="text-primary" />
-            <span className="block sm:inline"> sin complicaciones</span>
+            Divide gastos con amigos,{' '}
+            <span className="text-primary">sin complicaciones</span>
           </h1>
 
           <p className="max-w-md text-base leading-relaxed text-muted-foreground md:text-[17px]">
-            Registra quién pagó qué, invita al grupo con un enlace y deja que la app calcule
-            quién debe a quién. Olvídate de hojas de cálculo y mensajes interminables.
+            Registra quién pagó qué, invita al grupo con un enlace y deja que la app
+            calcule quién debe a quién. Olvídate de hojas de cálculo y mensajes interminables.
           </p>
+
+          <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
+            {useCases.map((label) => (
+              <span
+                key={label}
+                className="rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
             <Button variant="download" size="lg" asChild>

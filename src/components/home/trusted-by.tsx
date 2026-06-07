@@ -5,6 +5,9 @@ import NumberTicker from '../magicui/number-ticker'
 
 export const TrustedBy = () => {
   const { data, isLoading } = useGetMembersTotal()
+  const count = data ?? 0
+
+  if (isLoading || count === 0) return null
 
   return (
     <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -12,7 +15,7 @@ export const TrustedBy = () => {
       <span>
         Más de{' '}
         <span className="font-mono font-medium text-foreground">
-          {isLoading ? <NumberTicker value={1} /> : <NumberTicker value={data as number} />}
+          <NumberTicker value={count} />
         </span>{' '}
         personas ya dividen gastos aquí
       </span>

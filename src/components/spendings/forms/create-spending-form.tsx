@@ -2,15 +2,13 @@
 
 import { createSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
 import { DistributionModeType } from '@/app/(overview)/groups/[groupId]/spendings/types'
-import { Button } from '@/components/ui/button'
-import { Step, StepItem, Stepper, useStepper } from '@/components/ui/stepper'
+import { Step, StepItem, Stepper } from '@/components/ui/stepper'
 import { useGetGroupParticipnts } from '@/data/groups'
 import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
 import { createSpendingSchema } from '@/lib/form'
 import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { IconCoin, IconUser, IconUsers } from '@tabler/icons-react'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSWRConfig } from 'swr'
@@ -25,10 +23,15 @@ const steps = [
   { label: 'Quién debe', description: 'Cómo se reparte entre los participantes', icon: IconUsers }
 ] as StepItem[]
 
-export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
+export const CreateSpendingForm = ({
+  groupId,
+  onSuccess
+}: {
+  groupId: string
+  onSuccess?: () => void
+}) => {
   const [finalData, setFinalData] = useState<any>({})
   const [mode, setMode] = useState<DistributionModeType>('equal')
-  const router = useRouter()
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -43,67 +46,68 @@ export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
       amount: 0,
       description: '',
       categoryId: '',
-      currencyId: ''
+      currencyId: '',
+      date: new Date()
     }
   })
 
-  const createSpendingFinalStep = async () => {
+  const refreshGroupData = () => {
+    mutate(['last-spendings', groupId])
+    mutate(['debts', groupId])
+    mutate(['spendings-table', groupId])
+  }
+
+  const createSpendingFinalStep = async (spendingData: any) => {
     try {
       setIsLoading(true)
       await createSpending({
         groupId,
         mode,
-        spending: {
-          ...finalData
-        }
+        spending: spendingData
       })
       displayToast('Gasto creado correctamente', 'success')
-      mutate(['lastSpendings', groupId])
-      mutate(['lastDebts', groupId])
-      setTimeout(() => {
-        router.push(`/groups/${groupId}/spendings`)
-      }, 1000)
+      refreshGroupData()
+      onSuccess?.()
     } catch (error) {
-      setIsLoading(false)
       displayToast('Ocurrió un error al crear el gasto', 'error')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <>
-      <Stepper initialStep={0} steps={steps} orientation='vertical'>
-        <Step {...steps[0]} key={steps[0].label}>
-          <GeneralInfoForm form={form}
-           categories={categories} currencies={currencies} isLoading={isLoadingCategories || isLoadingCurrencies} setFinalData={setFinalData} />
-        </Step>
-        <Step {...steps[1]} key={steps[1].label}>
-          <PayersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} />
-        </Step>
-        <Step {...steps[2]} key={steps[2].label}>
-          <DebtersForm participants={participants} isLoading={isLoadingParticipants} totalAmount={finalData.amount} setFinalData={setFinalData} payers={finalData.payers} mode={mode} setMode={setMode} />
-        </Step>
-
-        <LastStep onSubmit={createSpendingFinalStep} isSubmitting={isLoading} />
-      </Stepper>
-    </>
-  )
-}
-
-const LastStep = ({ onSubmit, isSubmitting }: { onSubmit: () => void; isSubmitting?: boolean }) => {
-  const { hasCompletedAllSteps, prevStep } = useStepper()
-
-  if (!hasCompletedAllSteps) {
-    return
-  }
-
-  return (
-    <div className='flex flex-row gap-4 flex-wrap justify-center'>
-      <Button variant='default' onClick={onSubmit} className='mx-auto' disabled={isSubmitting}>
-        {isSubmitting ? 'Creando…' : 'Crear gasto'}
-      </Button>
-      <Button variant='outline' onClick={prevStep} className='mx-auto' disabled={isSubmitting}>
-        Volver
-      </Button>
-    </div>
+    <Stepper initialStep={0} steps={steps} orientation='vertical'>
+      <Step {...steps[0]} key={steps[0].label}>
+        <GeneralInfoForm
+          form={form}
+          categories={categories}
+          currencies={currencies}
+          isLoading={isLoadingCategories || isLoadingCurrencies}
+          setFinalData={setFinalData}
+        />
+      </Step>
+      <Step {...steps[1]} key={steps[1].label}>
+        <PayersForm
+          participants={participants}
+          isLoading={isLoadingParticipants}
+          totalAmount={finalData.amount}
+          setFinalData={setFinalData}
+        />
+      </Step>
+      <Step {...steps[2]} key={steps[2].label}>
+        <DebtersForm
+          participants={participants}
+          isLoading={isLoadingParticipants}
+          totalAmount={finalData.amount}
+          finalData={finalData}
+          setFinalData={setFinalData}
+          payers={finalData.payers}
+          mode={mode}
+          setMode={setMode}
+          onSubmit={createSpendingFinalStep}
+          isSubmitting={isLoading}
+        />
+      </Step>
+    </Stepper>
   )
 }

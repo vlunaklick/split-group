@@ -1,3 +1,4 @@
+import { IconLayoutDashboard } from '@tabler/icons-react'
 import Link from 'next/link'
 import { Logo } from './logo'
 import { NotificationsAmount } from './notifications-amount'
@@ -34,6 +35,14 @@ export function AppSidebar () {
           <SidebarGroupLabel>General</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Panel" asChild>
+                  <Link href="/dashboard">
+                    <IconLayoutDashboard className="h-4 w-4" />
+                    <span>Inicio</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton tooltip="Crear grupo" asChild>
                   <CreateGroupSheet />

@@ -6,6 +6,7 @@ import { getLatestSpendings } from '@/data/apis/dashboard'
 import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 import { SpendingWithOwnerAndGroup } from '../../app/(overview)/dashboard/types'
 
 export const LatestsSpendings = async () => {
@@ -38,20 +39,23 @@ export const LatestsSpendings = async () => {
 
 const SpendingItem = ({ spending }: { spending: SpendingWithOwnerAndGroup }) => {
   return (
-    <div className="flex items-center gap-4">
+    <Link
+      href={`/groups/${spending.groupId}/spendings/${spending.id}`}
+      className="flex items-center gap-4 rounded-md p-2 -mx-2 transition-colors hover:bg-muted/50"
+    >
       <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full shrink-0')}>
         <SpendingIcon type={spending.category.name as 'Comida' | 'Transporte' | 'Entretenimiento' | 'Salud' | 'Educación' | 'Otros'} />
       </div>
-      <div className="grid gap-1">
-        <p className="text-sm font-medium leading-none">
+      <div className="grid gap-1 min-w-0">
+        <p className="text-sm font-medium leading-none truncate">
           {spending.name}
         </p>
         <p className="text-sm text-muted-foreground/50">
-          {formatDate(spending.createdAt)} · Grupo: {spending.group.name}
+          {formatDate(spending.createdAt)} · {spending.group.name}
         </p>
       </div>
-      <div className="ml-auto font-medium">{formatMoney(spending.value)}</div>
-    </div>
+      <div className="ml-auto font-medium shrink-0">{formatMoney(spending.value)}</div>
+    </Link>
   )
 }
 

@@ -35,6 +35,11 @@ export const UserNav = async ({ className }: { className?: string }) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className='cursor-pointer'>
+          <Link href="/dashboard">
+            Panel
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className='cursor-pointer'>
           <Link href={`/user/${session?.user?.username}`}>
             Perfil
           </Link>

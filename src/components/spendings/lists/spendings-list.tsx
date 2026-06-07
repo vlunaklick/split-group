@@ -32,8 +32,12 @@ export const SpendingsList = ({ groupId, searchParams }: { groupId: string, sear
       {
         !isLoading && (
           <>
-            <SpendingTable data={data} groupId={groupId}/>
-            <MobileSpendingTable data={data?.data ?? []} groupId={groupId} />
+            <div className="hidden sm:block">
+              <SpendingTable data={data} groupId={groupId}/>
+            </div>
+            <div className="sm:hidden">
+              <MobileSpendingTable data={data?.data ?? []} groupId={groupId} />
+            </div>
           </>
         )
       }

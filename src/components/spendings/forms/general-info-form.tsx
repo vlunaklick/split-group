@@ -14,6 +14,7 @@ import { createSpendingSchema } from '@/lib/form'
 import { cn } from '@/lib/utils'
 import { Category, Currency } from '@prisma/client'
 import { CalendarIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
+import { useState } from 'react'
 import { z } from 'zod'
 
 interface ExpenseInfoFormProps {
@@ -26,6 +27,7 @@ interface ExpenseInfoFormProps {
 
 export function GeneralInfoForm ({ categories, currencies, isLoading, setFinalData, form }: ExpenseInfoFormProps) {
   const { nextStep } = useStepper()
+  const [showDescription, setShowDescription] = useState(false)
 
   const onSubmit = (values: z.infer<typeof createSpendingSchema>) => {
     const { name, amount, description, categoryId, currencyId, date } = values
@@ -43,12 +45,12 @@ export function GeneralInfoForm ({ categories, currencies, isLoading, setFinalDa
   }
 
   return (
-    <Card className='max-w-[526px] w-full'>
-      <CardHeader>
+    <Card className='max-w-[526px] w-full border-0 shadow-none p-0'>
+      <CardHeader className="px-0 pt-0">
         <CardTitle>Detalles del gasto</CardTitle>
         <CardDescription>Completa la información básica del gasto</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-0">
         <Form {...form} key={form.watch('amount') ? 0 : 1}>
           <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -72,18 +74,26 @@ export function GeneralInfoForm ({ categories, currencies, isLoading, setFinalDa
               control={form.control}
               name="description"
               render={({ field }: any) => (
-                <FormItem className="grid gap-2 space-y-0">
-                  <FormLabel>Descripción</FormLabel>
-                  <FormControl className='mt-0'>
-                    <Input
-                      id='description'
-                      type="text"
-                      placeholder="Descripción del gasto"
-                      className='mt-0'
-                      {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                showDescription
+                  ? (
+                    <FormItem className="grid gap-2 space-y-0">
+                      <FormLabel>Descripción</FormLabel>
+                      <FormControl className='mt-0'>
+                        <Input
+                          id='description'
+                          type="text"
+                          placeholder="Descripción del gasto (opcional)"
+                          className='mt-0'
+                          {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                    )
+                  : (
+                    <Button type="button" variant="link" className="h-auto p-0 justify-start" onClick={() => setShowDescription(true)}>
+                      + Añadir descripción
+                    </Button>
+                    )
               )} />
             <FormField
               control={form.control}

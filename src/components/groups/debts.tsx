@@ -57,7 +57,7 @@ const DebtItem = ({ debt, groupId }: { debt: { name: string, userId: string, amo
     try {
       await payAllDebt({ groupId, crediterId: debt.userId })
       displayToast('Deuda pagada', 'success')
-      mutate(['lastDebts', groupId])
+      mutate(['debts', groupId])
     } catch (error) {
       displayToast('No se pudo pagar la deuda', 'error')
     }
@@ -69,7 +69,7 @@ const DebtItem = ({ debt, groupId }: { debt: { name: string, userId: string, amo
     try {
       await forgiveAllDebt({ groupId, debterId: debt.userId })
       displayToast('Deuda perdonada', 'success')
-      mutate(['lastDebts', groupId])
+      mutate(['debts', groupId])
     } catch (error) {
       displayToast('No se pudo perdonar la deuda', 'error')
     }

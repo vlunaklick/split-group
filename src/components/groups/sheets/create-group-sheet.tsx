@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { IconCirclePlus, IconSettings } from '@tabler/icons-react'
+import { IconCirclePlus, IconLayoutDashboard } from '@tabler/icons-react'
 import { CreateGroupFrom } from '../forms/create-group-form'
 import { useState } from 'react'
 
@@ -41,7 +41,8 @@ export function CreateGroupSheet ({ className }: { className?: string }) {
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger className={className} asChild>
         <Button variant="outline" size='icon'>
-          <IconSettings />
+          <IconCirclePlus className="h-4 w-4" />
+          <span className="sr-only">Crear grupo</span>
         </Button>
       </DrawerTrigger>
       <DrawerContent>

@@ -16,21 +16,16 @@ interface EqualDistributionFormProps {
   totalAmount: number
 }
 
-export function EqualDistributionForm ({ setDebters, totalAmount, debters, participants, isLoading, payers, handleSelectChange, isOptionSelected }: EqualDistributionFormProps) {
-  const handleUserSelection = (userId: string) => {
-    handleSelectChange(userId)
-
-    const amount = totalAmount / debters.length
-
-    setDebters((prev: any) => {
-      return prev.map((debter: any) => {
-        return {
-          userId: debter.userId,
-          amount
-        }
-      })
-    })
-  }
+export function EqualDistributionForm ({
+  totalAmount,
+  debters,
+  participants,
+  isLoading,
+  payers,
+  handleSelectChange,
+  isOptionSelected
+}: EqualDistributionFormProps) {
+  const participantLabel = (participant: User) => participant.name ?? participant.username
 
   return (
     <>
@@ -43,7 +38,7 @@ export function EqualDistributionForm ({ setDebters, totalAmount, debters, parti
         <DropdownMenuContent className="w-full max-w-[320px]" onCloseAutoFocus={(e) => e.preventDefault()}>
           <DropdownMenuLabel>Participantes</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {participants?.map((participant: User, index: number) => {
+          {participants?.map((participant: User) => {
             if (payers?.find((payer: any) => payer.userId === participant.id)) {
               return null
             }
@@ -51,11 +46,11 @@ export function EqualDistributionForm ({ setDebters, totalAmount, debters, parti
             return (
               <DropdownMenuCheckboxItem
                 onSelect={(e) => e.preventDefault()}
-                key={index}
+                key={participant.id}
                 checked={isOptionSelected(participant.id)}
-                onCheckedChange={() => handleUserSelection(participant.id)}
+                onCheckedChange={() => handleSelectChange(participant.id)}
               >
-                @{participant.username} - {participant.email}
+                {participantLabel(participant)}
               </DropdownMenuCheckboxItem>
             )
           })}
@@ -64,22 +59,24 @@ export function EqualDistributionForm ({ setDebters, totalAmount, debters, parti
 
       {debters.length > 0 && (
         <div className="grid gap-4 mt-4">
-          {debters.map((debter: any, index: number) => (
-            <div key={index} className="flex gap-4 items-center p-2">
-              <Avatar>
-                <AvatarFallback>
-                  {participants?.find((participant: User) => participant.id === debter.userId)?.username[0]}
-                </AvatarFallback>
-              </Avatar>
+          {debters.map((debter: any) => {
+            const participant = participants?.find((p: User) => p.id === debter.userId)
+            const label = participant ? participantLabel(participant) : '?'
 
-              <div className="flex flex-col gap-1">
-                <span>{participants?.find((participant: User) => participant.id === debter.userId)?.username}</span>
-                <span className="text-sm text-muted-foreground">
-                  {participants?.find((participant: User) => participant.id === debter.userId)?.email}
-                </span>
+            return (
+              <div key={debter.userId} className="flex gap-4 items-center p-2">
+                <Avatar>
+                  <AvatarFallback>{(label || '?')[0]}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-1 flex-1">
+                  <span>{label}</span>
+                  <span className="text-sm text-muted-foreground">
+                    ${debter.amount} de ${totalAmount}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </>
