@@ -1,18 +1,20 @@
 'use server'
 
 import { GroupInviteEmail } from '@/components/mails/group-invite'
-import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { AuthError, requireGroupAdmin, requireGroupMember } from '@/lib/server-auth'
 import crypto from 'crypto'
-import { getServerSession } from 'next-auth'
 import { Resend } from 'resend'
 import { NotificationType } from '../../../../../../prisma/notification-type-enum'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function leaveGroup (groupId: string) {
-  const session = await getServerSession(authOptions)
-  const userId = session?.user.id
+  const { userId, group } = await requireGroupMember(groupId)
+
+  if (group.ownerId === userId) {
+    throw new AuthError('El dueño no puede abandonar el grupo. Elimínalo o transfiere la propiedad.')
+  }
 
   await db.group.update({
     where: { id: groupId },
@@ -32,10 +34,11 @@ export async function leaveGroup (groupId: string) {
 }
 
 export async function removeMemberFromGroup (userId: string, groupId: string) {
+  await requireGroupAdmin(groupId)
+
   const group = await db.group.findFirst({
-    where: {
-      id: groupId
-    }
+    where: { id: groupId },
+    select: { ownerId: true }
   })
 
   if (!group || group.ownerId === userId) {
@@ -43,23 +46,16 @@ export async function removeMemberFromGroup (userId: string, groupId: string) {
   }
 
   await db.group.update({
-    where: {
-      id: groupId
-    },
+    where: { id: groupId },
     data: {
       users: {
-        disconnect: {
-          id: userId
-        }
+        disconnect: { id: userId }
       }
     }
   })
 
   const userGroupRole = await db.userGroupRole.findFirst({
-    where: {
-      userId,
-      groupId
-    }
+    where: { userId, groupId }
   })
 
   if (!userGroupRole) {
@@ -67,46 +63,39 @@ export async function removeMemberFromGroup (userId: string, groupId: string) {
   }
 
   return await db.userGroupRole.delete({
-    where: {
-      id: userGroupRole.id
-    }
+    where: { id: userGroupRole.id }
   })
 }
 
 export async function giveAdminPermission (userId: string, groupId: string) {
+  await requireGroupAdmin(groupId)
+
   const userGroupRole = await db.userGroupRole.findFirst({
-    where: {
-      userId,
-      groupId
-    }
+    where: { userId, groupId }
   })
 
   if (userGroupRole) {
     return await db.userGroupRole.update({
-      where: {
-        id: userGroupRole.id
-      },
-      data: {
-        role: 'ADMIN'
-      }
+      where: { id: userGroupRole.id },
+      data: { role: 'ADMIN' }
     })
   }
 
   return await db.userGroupRole.create({
-    data: {
-      userId,
-      groupId,
-      role: 'ADMIN'
-    }
+    data: { userId, groupId, role: 'ADMIN' }
   })
 }
 
 export async function removeAdminPermission (userId: string, groupId: string) {
+  const { group } = await requireGroupMember(groupId)
+  await requireGroupAdmin(groupId)
+
+  if (group.ownerId === userId) {
+    throw new AuthError('No puedes quitar permisos al dueño del grupo')
+  }
+
   const userGroupRole = await db.userGroupRole.findFirst({
-    where: {
-      userId,
-      groupId
-    }
+    where: { userId, groupId }
   })
 
   if (!userGroupRole) {
@@ -114,35 +103,25 @@ export async function removeAdminPermission (userId: string, groupId: string) {
   }
 
   return await db.userGroupRole.update({
-    where: {
-      id: userGroupRole.id
-    },
-    data: {
-      role: 'USER'
-    }
+    where: { id: userGroupRole.id },
+    data: { role: 'USER' }
   })
 }
 
 export async function inviteMemberToGroup (email: string, groupId: string) {
+  await requireGroupAdmin(groupId)
+
   const user = await db.user.findFirst({
-    where: {
-      email
-    }
+    where: { email }
   })
 
   if (!user) {
-    return {
-      error: 'Usuario no encontrado'
-    }
+    return { error: 'Usuario no encontrado' }
   }
 
   const group = await db.group.findFirst({
-    where: {
-      id: groupId
-    },
-    include: {
-      users: true
-    }
+    where: { id: groupId },
+    include: { users: true }
   })
 
   if (!group) {
@@ -152,9 +131,7 @@ export async function inviteMemberToGroup (email: string, groupId: string) {
   const isUserInGroup = group.users.some(u => u.id === user.id)
 
   if (isUserInGroup) {
-    return {
-      error: 'El usuario ya está en el grupo'
-    }
+    return { error: 'El usuario ya está en el grupo' }
   }
 
   const notification = await db.notification.findFirst({
@@ -166,9 +143,7 @@ export async function inviteMemberToGroup (email: string, groupId: string) {
   })
 
   if (notification) {
-    return {
-      error: 'El usuario ya ha sido invitado'
-    }
+    return { error: 'El usuario ya ha sido invitado' }
   }
 
   await db.notification.create({
@@ -192,17 +167,15 @@ export async function inviteMemberToGroup (email: string, groupId: string) {
   })
 
   if (error) {
-    return {
-      error: 'Error al enviar el correo'
-    }
+    return { error: 'Error al enviar el correo' }
   }
 }
 
 export async function generateInvitationLink (groupId: string, maxUses: number) {
+  await requireGroupAdmin(groupId)
+
   const group = await db.group.findFirst({
-    where: {
-      id: groupId
-    }
+    where: { id: groupId }
   })
 
   if (!group) {
@@ -220,19 +193,26 @@ export async function generateInvitationLink (groupId: string, maxUses: number) 
   })
 }
 
-export async function removeInvitationLink (code: string) {
+export async function removeInvitationLink (code: string, groupId: string) {
+  await requireGroupAdmin(groupId)
+
+  const invite = await db.groupInvite.findFirst({
+    where: { code, groupId }
+  })
+
+  if (!invite) {
+    throw new AuthError('Enlace de invitación no encontrado')
+  }
+
   return db.groupInvite.delete({
-    where: {
-      code
-    }
+    where: { code }
   })
 }
 
 export async function removeUserInvitation (userId: string, groupId: string) {
+  await requireGroupAdmin(groupId)
+
   return db.notification.deleteMany({
-    where: {
-      userId,
-      groupId
-    }
+    where: { userId, groupId }
   })
 }

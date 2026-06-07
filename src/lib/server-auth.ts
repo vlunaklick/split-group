@@ -39,7 +39,11 @@ export async function requireGroupMember (groupId: string) {
 }
 
 export async function requireGroupAdmin (groupId: string) {
-  const { userId } = await requireGroupMember(groupId)
+  const { userId, group } = await requireGroupMember(groupId)
+
+  if (group.ownerId === userId) {
+    return { userId }
+  }
 
   const adminRole = await db.userGroupRole.findFirst({
     where: { groupId, userId, role: 'ADMIN' }
@@ -50,6 +54,40 @@ export async function requireGroupAdmin (groupId: string) {
   }
 
   return { userId }
+}
+
+export async function requireGroupOwner (groupId: string) {
+  const { userId, group } = await requireGroupMember(groupId)
+
+  if (group.ownerId !== userId) {
+    throw new AuthError('Solo el dueño puede realizar esta acción')
+  }
+
+  return { userId }
+}
+
+export async function requireSpendingMember (spendingId: string) {
+  const spending = await db.spending.findFirst({
+    where: { id: spendingId },
+    select: { id: true, groupId: true }
+  })
+
+  if (!spending) {
+    throw new AuthError('Gasto no encontrado')
+  }
+
+  await requireGroupMember(spending.groupId)
+
+  return spending
+}
+
+export function toAuthResponse (error: unknown) {
+  if (error instanceof AuthError) {
+    const status = error.message === 'No autorizado' ? 401 : 403
+    return Response.json({ error: error.message }, { status })
+  }
+
+  return null
 }
 
 export async function requireSpendingOwner (spendingId: string) {

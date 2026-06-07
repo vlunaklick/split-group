@@ -1,6 +1,6 @@
 'use server'
 
-import { requireGroupMember } from '@/lib/server-auth'
+import { requireGroupAdmin, requireGroupMember, requireGroupOwner } from '@/lib/server-auth'
 import { db } from '@/lib/db'
 import { NotificationType } from '../../../../../prisma/notification-type-enum'
 import { Resend } from 'resend'
@@ -132,6 +132,7 @@ export async function forgiveAllDebt ({ debterId, groupId } : { debterId: string
 }
 
 export async function deleteGroup (groupId: string) {
+  await requireGroupOwner(groupId)
   await db.userGroupRole.deleteMany({
     where: {
       groupId
@@ -182,6 +183,8 @@ export async function deleteGroup (groupId: string) {
 }
 
 export async function updateGroup (groupId: string, name: string, description: string) {
+  await requireGroupAdmin(groupId)
+
   return await db.group.update({
     where: {
       id: groupId

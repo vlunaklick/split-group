@@ -1,16 +1,11 @@
 'use server'
 
-import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { getServerSession } from 'next-auth'
+import { AuthError, requireSession, requireSpendingMember } from '@/lib/server-auth'
 
 export const createComment = async ({ spendingId, comment }: { spendingId: string, comment: string }) => {
-  const session = await getServerSession(authOptions)
-  const userId = session?.user.id
-
-  if (!userId) {
-    return null
-  }
+  const { userId } = await requireSession()
+  await requireSpendingMember(spendingId)
 
   const newComment = await db.comment.create({
     data: {
@@ -24,18 +19,17 @@ export const createComment = async ({ spendingId, comment }: { spendingId: strin
 }
 
 export const deleteComment = async ({ commentId }: { commentId: string }) => {
-  const session = await getServerSession(authOptions)
-  const userId = session?.user.id
+  const { userId } = await requireSession()
 
-  if (!userId) {
-    return null
+  const comment = await db.comment.findFirst({
+    where: { id: commentId, userId }
+  })
+
+  if (!comment) {
+    throw new AuthError('No puedes eliminar este comentario')
   }
 
   await db.comment.delete({
-    where: {
-      id: commentId
-    }
-  }).catch(() => {
-    return null
+    where: { id: commentId }
   })
 }

@@ -18,7 +18,7 @@ export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
   const handleDeleteLink = async (code: string) => {
     setIsLoading(true)
     try {
-      await removeInvitationLink(code)
+      await removeInvitationLink(code, groupId)
       mutate(['/api/groups/invitation-link', groupId])
     } catch (error) {
       displayToast('Hubo un error al enviar la invitación al miembro.', 'error')

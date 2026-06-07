@@ -22,8 +22,8 @@ export const LeaveGroupButton = ({ groupId }: { groupId: string }) => {
         router.push('/dashboard')
       }, 2000)
     } catch (error) {
-      console.error(error)
-      displayToast('Ha ocurrido un error al intentar abandonar el grupo', 'error')
+      const message = error instanceof Error ? error.message : 'Ha ocurrido un error al intentar abandonar el grupo'
+      displayToast(message, 'error')
       setIsLoading(false)
     }
   }
