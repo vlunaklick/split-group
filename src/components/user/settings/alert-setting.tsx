@@ -1,69 +1,65 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useGetAlertsSizeSelected } from '@/data/settings'
 import { updateAlertSizeSettingsSchema } from '@/lib/form'
 import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 
 export const AlertSettings = () => {
   const { data: alert, isLoading: isLoadingCurrent } = useGetAlertsSizeSelected()
 
-  const [isLoading, setIsLoading] = useState(false)
-
   const form = useForm<z.infer<typeof updateAlertSizeSettingsSchema>>({
     resolver: zodResolver(updateAlertSizeSettingsSchema),
-    values: {
-      size: alert || ''
-    }
+    values: { size: alert || 'simple' }
   })
 
-  const onSubmit = async (values: z.infer<typeof updateAlertSizeSettingsSchema>) => {
-    setIsLoading(true)
+  const handleSizeChange = (size: string) => {
+    form.setValue('size', size)
     try {
-      localStorage.setItem('alert-size', values.size)
-    } catch (error) {
-      displayToast('Hubo un error al actualizar el tamaño de las alertas', 'error')
-      setIsLoading(false)
-      return
+      localStorage.setItem('alert-size', size)
+      displayToast('Estilo de avisos actualizado', 'success')
+    } catch {
+      displayToast('No se pudo guardar la preferencia', 'error')
     }
-
-    displayToast('Tamaño de alertas actualizado correctamente', 'success')
-    setIsLoading(false)
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tamaño de alertas</CardTitle>
+        <CardTitle>Estilo de avisos</CardTitle>
         <CardDescription>
-          Personaliza el tamaño de las alertas que se muestran en la aplicación.
+          Simple muestra lo esencial; Avanzado incluye más detalle en cada toast.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} key={form.watch('size') ? 0 : 1}>
-          <CardContent className="space-y-4">
+        <form>
+          <CardContent>
             <FormField
               control={form.control}
               name="size"
               render={({ field }) => (
                 <FormItem>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value)
+                      handleSizeChange(value)
+                    }}
+                    value={field.value}
+                    disabled={isLoadingCurrent}
+                  >
                     <FormControl>
-                      <SelectTrigger disabled={isLoadingCurrent}>
-                        <SelectValue placeholder="Selecciona una moneda" />
+                      <SelectTrigger className="max-w-xs">
+                        <SelectValue placeholder="Elegí un estilo" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                    <SelectItem value="simple">Simple</SelectItem>
-                    <SelectItem value="advanced">Avanzado</SelectItem>
+                      <SelectItem value="simple">Simple</SelectItem>
+                      <SelectItem value="advanced">Avanzado</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -71,11 +67,6 @@ export const AlertSettings = () => {
               )}
             />
           </CardContent>
-          <CardFooter className="border-t px-6 py-4 flex justify-end">
-            <Button type="submit" disabled={isLoading || isLoadingCurrent}>
-              Guardar
-            </Button>
-          </CardFooter>
         </form>
       </Form>
     </Card>

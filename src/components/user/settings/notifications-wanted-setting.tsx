@@ -8,23 +8,36 @@ import { updateNotificationsWantedSettingsSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 import { updateNotificationsWanted } from '../../../app/(user)/settings/notifications/actions'
 import { useGetUserConfiguration } from '@/data/settings'
 import { displayToast } from '@/utils/toast-display'
 
+const OPTIONS = [
+  {
+    name: 'invitations' as const,
+    label: 'Invitaciones a grupos',
+    description: 'Cuando alguien te invite a un grupo nuevo.'
+  },
+  {
+    name: 'payments' as const,
+    label: 'Pagos y deudas',
+    description: 'Cuando marquen una deuda como pagada o perdonada.'
+  },
+  {
+    name: 'spents' as const,
+    label: 'Cambios en gastos',
+    description: 'Cuando editen un gasto en el que participás.'
+  }
+]
+
 export const NotificationsWantedSettings = () => {
   const { data: configuration, isLoading: isLoadingConfiguration } = useGetUserConfiguration()
-
   const [isLoading, setIsLoading] = useState(false)
+
   const form = useForm<z.infer<typeof updateNotificationsWantedSettingsSchema>>({
     resolver: zodResolver(updateNotificationsWantedSettingsSchema),
-    defaultValues: {
-      invitations: false,
-      payments: false,
-      spents: false
-    },
+    defaultValues: { invitations: false, payments: false, spents: false },
     values: {
       invitations: configuration?.inviteNotification || false,
       payments: configuration?.paymentNotification || false,
@@ -40,91 +53,50 @@ export const NotificationsWantedSettings = () => {
         payments: values.payments || false,
         spents: values.spents || false
       })
+      displayToast('Preferencias guardadas', 'success')
     } catch (error) {
-      displayToast('Ha ocurrido un error, por favor intenta de nuevo.', 'error')
+      displayToast('No se pudieron guardar las preferencias', 'error')
+    } finally {
       setIsLoading(false)
-      return
     }
-
-    displayToast('Las notificaciones deseadas han sido actualizadas.', 'success')
-    setIsLoading(false)
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Notificaciones deseadas</CardTitle>
+        <CardTitle>Qué avisos recibir</CardTitle>
         <CardDescription>
-          Elige qué notificaciones quieres recibir: invitaciones a grupos, nuevos gastos y pagos de deudas.
+          Elegí qué eventos te avisan dentro de la app.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
-            <FormField
-              control={form.control}
-              name="invitations"
-              render={({ field }: any) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isLoading || isLoadingConfiguration}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Invitaciones de grupos
-                    </FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="payments"
-              render={({ field }: any) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isLoading || isLoadingConfiguration}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Pagos de deudas
-                    </FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="spents"
-              render={({ field }: any) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isLoading || isLoadingConfiguration}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Actualizaciones de gastos
-                    </FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
+          <CardContent className="space-y-5">
+            {OPTIONS.map((option) => (
+              <FormField
+                key={option.name}
+                control={form.control}
+                name={option.name}
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start gap-3 space-y-0 rounded-lg border border-border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isLoading || isLoadingConfiguration}
+                        className="mt-0.5"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="font-medium">{option.label}</FormLabel>
+                      <p className="text-sm text-muted-foreground">{option.description}</p>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            ))}
           </CardContent>
-          <CardFooter className="border-t px-6 py-4 flex justify-end">
+          <CardFooter className="flex justify-end border-t px-6 py-4">
             <Button type="submit" disabled={isLoading || isLoadingConfiguration}>
               Guardar
             </Button>

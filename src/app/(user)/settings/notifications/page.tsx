@@ -3,11 +3,11 @@ import { NotificationsWantedSettings } from '@/components/user/settings/notifica
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Preferencias de avisos',
-  description: 'Configura qué notificaciones recibir'
+  title: 'Alertas',
+  description: 'Configurá qué avisos recibir y tus límites de gasto'
 }
 
-export default async function Notifications () {
+export default async function NotificationsSettings () {
   return (
     <>
       <NotificationsWantedSettings />

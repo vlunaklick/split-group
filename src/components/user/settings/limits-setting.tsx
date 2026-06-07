@@ -9,45 +9,38 @@ import { updateAlertLimitSettingsSchema } from '@/lib/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 import { updateLimit } from '../../../app/(user)/settings/notifications/actions'
 import { displayToast } from '@/utils/toast-display'
 
 export const LimitSetting = () => {
   const { data: configuration, isLoading: isLoadingConfiguration } = useGetUserConfiguration()
-
   const [isLoading, setIsLoading] = useState(false)
+
   const form = useForm<z.infer<typeof updateAlertLimitSettingsSchema>>({
     resolver: zodResolver(updateAlertLimitSettingsSchema),
-    defaultValues: {
-      amount: 0
-    },
-    values: {
-      amount: configuration?.limit || 0
-    }
+    defaultValues: { amount: 0 },
+    values: { amount: configuration?.limit || 0 }
   })
 
   const onSubmit = async (values: z.infer<typeof updateAlertLimitSettingsSchema>) => {
     setIsLoading(true)
     try {
       await updateLimit({ newLimit: values.amount })
+      displayToast('Límite actualizado', 'success')
     } catch (error) {
-      displayToast('Ha ocurrido un error, por favor intenta de nuevo.', 'error')
+      displayToast('No se pudo actualizar el límite', 'error')
+    } finally {
       setIsLoading(false)
-      return
     }
-
-    displayToast('El límite de alerta ha sido actualizado.', 'success')
-    setIsLoading(false)
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Alertas ante gastos excesivos</CardTitle>
+        <CardTitle>Límite de gasto mensual</CardTitle>
         <CardDescription>
-          Recibe notificaciones cuando tus gastos superen un límite establecido, ayudándote a mantener un control de tus finanzas y evitar gastos innecesarios.
+          Te avisamos si tu deuda del mes supera este monto. Dejalo en 0 para desactivar.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
@@ -56,18 +49,18 @@ export const LimitSetting = () => {
             <FormField
               control={form.control}
               name="amount"
-              render={({ field }: any) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <div className="flex">
-                      <div className="flex items-center px-3 bg-border text-muted-foreground rounded-l-md">
+                    <div className="flex max-w-xs">
+                      <div className="flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">
                         $
                       </div>
                       <Input
-                        id='amount'
-                        placeholder="140000"
-                        className='rounded-l-none'
+                        placeholder="0"
+                        className="rounded-l-none"
                         type="number"
+                        min={0}
                         {...field}
                         disabled={isLoading || isLoadingConfiguration}
                       />
@@ -78,7 +71,7 @@ export const LimitSetting = () => {
               )}
             />
           </CardContent>
-          <CardFooter className="border-t px-6 py-4 flex justify-end">
+          <CardFooter className="flex justify-end border-t px-6 py-4">
             <Button type="submit" disabled={isLoading || isLoadingConfiguration}>
               Guardar
             </Button>

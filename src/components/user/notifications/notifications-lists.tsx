@@ -1,13 +1,14 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetGroupNotifications, useGetNotifications } from '@/data/notifications'
 import { cn } from '@/lib/utils'
 import { useTimeAgo } from '@/utils/time'
 import { displayToast } from '@/utils/toast-display'
 import { Notification } from '@prisma/client'
-import { IconUsers } from '@tabler/icons-react'
+import { IconBell, IconUsers } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useSWRConfig } from 'swr'
@@ -16,42 +17,48 @@ import { NotificationWithGroups } from '../../../app/(user)/notifications/types'
 
 export const ListNotifications = () => {
   const { data: notifications, isLoading: isLoadingNotifications } = useGetNotifications()
-  const { data: groupNotifications, isLoading: isGroupNotifications } = useGetGroupNotifications()
+  const { data: groupNotifications, isLoading: isLoadingGroupNotifications } = useGetGroupNotifications()
 
   return (
-    <>
-      <h2 className="text-sm font-medium">Invitaciones a grupos</h2>
+    <div className="grid gap-8">
+      <section className="grid gap-3">
+        <h2 className="text-sm font-medium text-muted-foreground">Invitaciones</h2>
 
-      <div className="grid gap-3 w-full">
-        {groupNotifications?.map((notification: NotificationWithGroups) => (
+        {isLoadingGroupNotifications && (
+          <div className="grid gap-3">
+            <NotificationSkeleton />
+            <NotificationSkeleton />
+          </div>
+        )}
+
+        {!isLoadingGroupNotifications && groupNotifications?.length === 0 && (
+          <p className="text-sm text-muted-foreground">No tenés invitaciones pendientes</p>
+        )}
+
+        {!isLoadingGroupNotifications && groupNotifications?.map((notification: NotificationWithGroups) => (
           <GroupNotification key={notification.id} notification={notification} />
         ))}
+      </section>
 
-        {groupNotifications?.length === 0 && <p className="text-sm text-muted-foreground">No tenés invitaciones pendientes</p>}
+      <section className="grid gap-3">
+        <h2 className="text-sm font-medium text-muted-foreground">Actividad</h2>
 
-        {isGroupNotifications && (
-          <>
+        {isLoadingNotifications && (
+          <div className="grid gap-3">
             <NotificationSkeleton />
             <NotificationSkeleton />
-          </>
+          </div>
         )}
-      </div>
 
-      <h2 className="text-sm font-medium">Otras notificaciones</h2>
+        {!isLoadingNotifications && notifications?.length === 0 && (
+          <p className="text-sm text-muted-foreground">No tenés avisos nuevos</p>
+        )}
 
-      <div className="grid gap-3 w-full">
-        {notifications?.map((notification: Notification) => (
+        {!isLoadingNotifications && notifications?.map((notification: Notification) => (
           <GenericNotification key={notification.id} notification={notification} />
         ))}
-        {notifications?.length === 0 && <p className="text-sm text-muted-foreground">No tenés avisos nuevos</p>}
-        {isLoadingNotifications && (
-          <>
-            <NotificationSkeleton />
-            <NotificationSkeleton />
-          </>
-        )}
-      </div>
-    </>
+      </section>
+    </div>
   )
 }
 
@@ -68,13 +75,12 @@ export const GroupNotification = ({ notification }: { notification: Notification
       mutate('user-groups')
       mutate(['group-notifications'])
       displayToast('Te uniste al grupo', 'success')
-      setTimeout(() => {
-        router.push(`/groups/${notification?.group?.id}`)
-      })
+      router.push(`/groups/${notification?.group?.id}`)
     } catch (error) {
-      displayToast('Error al unirse al grupo', 'error')
+      const message = error instanceof Error ? error.message : 'No se pudo unir al grupo'
+      displayToast(message, 'error')
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   const handleRejectGroup = async () => {
@@ -83,64 +89,42 @@ export const GroupNotification = ({ notification }: { notification: Notification
       await rejectGroup(notification.id)
       mutate(['notifications'])
       mutate(['group-notifications'])
-      displayToast('Has rechazado la invitación', 'success')
+      displayToast('Invitación rechazada', 'success')
     } catch (error) {
-      displayToast('Error al rechazar la invitación', 'error')
+      displayToast('No se pudo rechazar la invitación', 'error')
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
-  }
-
-  const handleMarkAsRead = async () => {
-    setIsLoading(true)
-    try {
-      await markAsRead(notification.id)
-      mutate(['notifications'])
-      displayToast('Notificación marcada como leída', 'success')
-    } catch (error) {
-      displayToast('Error al marcar la notificación como leída', 'error')
-    }
-    setIsLoading(false)
   }
 
   const createdAt = new Date(notification.createdAt ?? new Date())
   const { timeAgo } = useTimeAgo(createdAt.getTime())
 
   return (
-    <div className={cn('flex items-start gap-3 w-full relative')}>
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-        <IconUsers className="h-4 w-4" />
-      </div>
-      <div className="flex-1 space-y-1">
-        <div className="flex items-center justify-between">
-          <div className="font-semibold">{notification.group?.name}</div>
-          <div className="ml-auto text-xs text-zinc-500">{timeAgo}</div>
+    <Card className={cn(!notification.read && 'border-primary/30 bg-primary/5')}>
+      <CardContent className="flex gap-3 p-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
+          <IconUsers className="h-4 w-4" />
         </div>
-        <p className="text-sm text-zinc-500">{notification.message}</p>
-        <div className="flex items-center gap-2 flex-wrap">
-          <Button variant="outline" size="sm" onClick={handleJoinGroup} disabled={isLoading}>
-            Aceptar
-          </Button>
-          <Button variant="ghost" size="sm" onClick={handleRejectGroup} disabled={isLoading}>
-            Rechazar
-          </Button>
-          {!notification.read
-            ? (
-            <Button variant="ghost" size="sm" onClick={handleMarkAsRead} disabled={isLoading}>
-              Marcar como leído
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <p className="font-semibold">{notification.group?.name}</p>
+              <p className="text-sm text-muted-foreground">{notification.message}</p>
+            </div>
+            <span className="shrink-0 text-xs text-muted-foreground">{timeAgo}</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" onClick={handleJoinGroup} disabled={isLoading}>
+              {isLoading ? 'Uniéndote…' : 'Aceptar'}
             </Button>
-              )
-            : null}
-        </div>
-      </div>
-
-      {!notification.read && (
-        <div className="absolute top-0 left-5">
-          <div className="h-3 w-3 bg-green-500 rounded-full">
-            <div className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-700 opacity-75"></div>
+            <Button variant="outline" size="sm" onClick={handleRejectGroup} disabled={isLoading}>
+              Rechazar
+            </Button>
           </div>
         </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -153,11 +137,12 @@ export const GenericNotification = ({ notification }: { notification: Notificati
     try {
       await deleteNotification(notification.id)
       mutate(['notifications'])
-      displayToast('Notificación eliminada', 'success')
+      displayToast('Aviso eliminado', 'success')
     } catch (error) {
-      displayToast('Error al eliminar la notificación', 'error')
+      displayToast('No se pudo eliminar', 'error')
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   const handleMarkAsRead = async () => {
@@ -165,72 +150,57 @@ export const GenericNotification = ({ notification }: { notification: Notificati
     try {
       await markAsRead(notification.id)
       mutate(['notifications'])
-      displayToast('Notificación marcada como leída', 'success')
     } catch (error) {
-      displayToast('Error al marcar la notificación como leída', 'error')
+      displayToast('No se pudo marcar como leído', 'error')
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   const createdAt = new Date(notification.createdAt ?? new Date())
   const { timeAgo } = useTimeAgo(createdAt.getTime())
 
   return (
-    <div className="flex items-start gap-3 w-full relative">
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-        <IconUsers className="h-4 w-4" />
-      </div>
-      <div className="flex-1 space-y-1">
-        <div className="flex items-center justify-between">
-          <div className="font-semibold">{notification?.title || 'Notificación'}</div>
-          <div className="ml-auto text-xs text-zinc-500">{timeAgo}</div>
+    <Card className={cn(!notification.read && 'border-primary/30 bg-primary/5')}>
+      <CardContent className="flex gap-3 p-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
+          <IconBell className="h-4 w-4" />
         </div>
-        <p className="text-sm text-zinc-500">{notification.message}</p>
-        <div className="flex items-center gap-2 flex-wrap">
-          {!notification.read && (
-            <Button variant="outline" size="sm" onClick={handleMarkAsRead} disabled={isLoading}>
-              Marcar como leído
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <p className="font-semibold">{notification.title || 'Aviso'}</p>
+              <p className="text-sm text-muted-foreground">{notification.message}</p>
+            </div>
+            <span className="shrink-0 text-xs text-muted-foreground">{timeAgo}</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {!notification.read && (
+              <Button variant="outline" size="sm" onClick={handleMarkAsRead} disabled={isLoading}>
+                Marcar leído
+              </Button>
+            )}
+            <Button variant="ghost" size="sm" onClick={handleDelete} disabled={isLoading}>
+              Eliminar
             </Button>
-          )}
-          <Button variant="ghost" size="sm" onClick={handleDelete} disabled={isLoading}>
-            Eliminar
-          </Button>
-        </div>
-      </div>
-
-      {!notification.read && (
-        <div className="absolute top-0 left-5">
-          <div className="h-3 w-3 bg-green-500 rounded-full">
-            <div className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-700 opacity-75"></div>
           </div>
         </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 
 export const NotificationSkeleton = () => {
   return (
-    <div className="flex items-start gap-3 w-full">
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-        <Skeleton className="h-4 w-4" />
-      </div>
-      <div className="flex-1 space-y-1">
-        <div className="flex items-center justify-between">
-          <div className="font-semibold">
-            <Skeleton className="w-20 h-6" />
-          </div>
-          <div className="ml-auto text-xs text-zinc-500">
-            <Skeleton className="w-10 h-5" />
-          </div>
+    <Card>
+      <CardContent className="flex gap-3 p-4">
+        <Skeleton className="h-9 w-9 rounded-full" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-8 w-40" />
         </div>
-        <Skeleton className="w-full h-4" />
-
-        <div className="flex items-center gap-2">
-          <Skeleton className="w-20 h-9" />
-          <Skeleton className="w-20 h-9" />
-        </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

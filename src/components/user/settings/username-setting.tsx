@@ -6,41 +6,46 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { changeUsernameSchema } from '@/lib/form'
+import { useGetSession } from '@/data/session'
 import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 export const UsernameSettings = () => {
+  const { data: session } = useGetSession()
   const [isLoading, setIsLoading] = useState(false)
+
   const form = useForm<z.infer<typeof changeUsernameSchema>>({
     resolver: zodResolver(changeUsernameSchema),
-    defaultValues: {
-      username: ''
-    }
+    defaultValues: { username: '' }
   })
+
+  useEffect(() => {
+    if (session?.user?.username) {
+      form.reset({ username: session.user.username })
+    }
+  }, [session?.user?.username, form])
 
   const onSubmit = async (values: z.infer<typeof changeUsernameSchema>) => {
     setIsLoading(true)
     try {
       await updateUsername({ newUsername: values.username })
+      displayToast('Usuario actualizado', 'success')
     } catch (error) {
-      displayToast('Hubo un error al actualizar tu nombre de usuario.', 'error')
+      displayToast('No se pudo actualizar el usuario', 'error')
+    } finally {
       setIsLoading(false)
-      return
     }
-
-    displayToast('Nombre de usuario actualizado correctamente.', 'success')
-    setIsLoading(false)
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nombre de usuario</CardTitle>
+        <CardTitle>Usuario</CardTitle>
         <CardDescription>
-          Nombre que se utilizará para acceder a la plataforma.
+          Lo usás para iniciar sesión. Solo letras y números.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
@@ -49,22 +54,17 @@ export const UsernameSettings = () => {
             <FormField
               control={form.control}
               name="username"
-              render={({ field }: any) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      id='username'
-                      placeholder="@johndoe"
-                      {...field}
-                      disabled={isLoading}
-                    />
+                    <Input placeholder="tuusuario" {...field} disabled={isLoading} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </CardContent>
-          <CardFooter className="border-t px-6 py-4 flex justify-end">
+          <CardFooter className="flex justify-end border-t px-6 py-4">
             <Button type="submit" disabled={isLoading}>
               Guardar
             </Button>

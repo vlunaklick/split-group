@@ -15,17 +15,18 @@ export const MarkAllAsRead = () => {
     try {
       await markAllAsRead()
       mutate(['notifications'])
-      displayToast('Todas las notificaciones han sido marcadas como leídas', 'success')
+      mutate(['group-notifications'])
+      displayToast('Todos los avisos marcados como leídos', 'success')
     } catch (error) {
-      console.error(error)
-      displayToast('Ha ocurrido un error al marcar todas las notificaciones como leídas', 'error')
+      displayToast('No se pudieron marcar los avisos', 'error')
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   return (
-    <Button onClick={handleOnClick} disabled={isLoading}>
-      Marcar todas como leídas
+    <Button variant="outline" size="sm" onClick={handleOnClick} disabled={isLoading}>
+      {isLoading ? 'Marcando…' : 'Marcar todo leído'}
     </Button>
   )
 }
