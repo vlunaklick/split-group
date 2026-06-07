@@ -4,8 +4,8 @@ import { UsernameSettings } from '@/components/user/settings/username-setting'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'General',
-  description: 'Dashboard'
+  title: 'Ajustes',
+  description: 'Configura tu cuenta en Split Group'
 }
 
 export default async function General () {

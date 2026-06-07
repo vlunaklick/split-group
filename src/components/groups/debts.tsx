@@ -19,7 +19,7 @@ export const Debts = ({ groupId }: { groupId: string }) => {
     <Card className='md:max-w-[526px] w-full h-min'>
       <CardHeader>
         <CardTitle>Deudas</CardTitle>
-        <CardDescription>Dinero que debes o te deben</CardDescription>
+        <CardDescription>Tu balance con el resto del grupo</CardDescription>
       </CardHeader>
       <CardContent className='space-y-4'>
 
@@ -39,7 +39,7 @@ export const Debts = ({ groupId }: { groupId: string }) => {
         })}
 
         {!isLoadingDebts && debts && debts.length === 0 && (
-          <p className="text-center text-muted-foreground">No tienes deudas pendientes</p>
+          <p className="text-center text-muted-foreground">Estás al día — no hay deudas pendientes</p>
         )}
       </CardContent>
     </Card>

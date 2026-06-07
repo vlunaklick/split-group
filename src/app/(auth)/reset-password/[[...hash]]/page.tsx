@@ -4,8 +4,8 @@ import { Metadata } from 'next'
 import { isValidChangePassword } from './actions'
 
 export const metadata: Metadata = {
-  title: 'Reset Password',
-  description: 'Reset your password'
+  title: 'Recuperar contraseña',
+  description: 'Recupera el acceso a tu cuenta'
 }
 
 export default async function ResetPassword ({ params } : { params: { hash: string[] } }) {
@@ -26,7 +26,7 @@ export default async function ResetPassword ({ params } : { params: { hash: stri
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Nueva contraseña</h1>
         <p className="text-balance text-muted-foreground">
-          Actualiza tu contreseña aquí. Anótala en algún lado para poder recordarla facilmente.
+          Elige una contraseña nueva. Guárdala en un lugar seguro para no olvidarla.
         </p>
       </div>
       <ResetPasswordForm code={code} />

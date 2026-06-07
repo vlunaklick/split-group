@@ -20,9 +20,9 @@ import { GeneralInfoForm } from './general-info-form'
 import { PayersForm } from './payers-form'
 
 const steps = [
-  { label: 'Información del gasto', description: 'Ingresa la información del gasto', icon: IconUser },
-  { label: 'Contribuyentes', description: 'Selecciona los contribuyentes', icon: IconCoin },
-  { label: 'Deudores', description: 'Selecciona los deudores', icon: IconUsers }
+  { label: 'Detalles', description: 'Nombre, monto y categoría', icon: IconUser },
+  { label: 'Quién pagó', description: 'Quién puso el dinero y cuánto', icon: IconCoin },
+  { label: 'Quién debe', description: 'Cómo se reparte entre los participantes', icon: IconUsers }
 ] as StepItem[]
 
 export const CreateSpendingForm = ({ groupId }: { groupId: string }) => {
@@ -99,9 +99,9 @@ const LastStep = ({ onSubmit, isSubmitting }: { onSubmit: () => void; isSubmitti
   return (
     <div className='flex flex-row gap-4 flex-wrap justify-center'>
       <Button variant='default' onClick={onSubmit} className='mx-auto' disabled={isSubmitting}>
-        Cargar gasto
+        {isSubmitting ? 'Creando…' : 'Crear gasto'}
       </Button>
-      <Button variant='default' onClick={prevStep} className='mx-auto' disabled={isSubmitting}>
+      <Button variant='outline' onClick={prevStep} className='mx-auto' disabled={isSubmitting}>
         Volver
       </Button>
     </div>

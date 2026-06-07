@@ -13,7 +13,7 @@ export async function Join ({ code }: { code: string }) {
       <>
         <IconMoodConfuzedFilled className="h-24 w-24 text-muted-foreground" aria-hidden="true" />
         <h1 className="text-display-sm">Invitación no válida</h1>
-        <p className="text-balance text-muted-foreground">La invitación que intenta usar no es válida o la cantidad máxima de usos ha sido alcanzada.</p>
+        <p className="text-balance text-muted-foreground">Este enlace no es válido o ya alcanzó el límite de usos.</p>
       </>
     )
   }
@@ -29,7 +29,7 @@ export async function Join ({ code }: { code: string }) {
 
       <div className="grid gap-2 text-center">
         <p className="text-balance text-muted-foreground">
-          Usted ha sido invitado a unirse a {invitation?.group.name}. Una vez que se una, podrá ver y compartir gastos con los miembros del grupo.
+          Te invitaron a unirte a {invitation?.group.name}. Al aceptar, podrás ver y registrar gastos con el resto del grupo.
         </p>
 
         <ActionButtons code={code} groupId={invitation.group.id} />

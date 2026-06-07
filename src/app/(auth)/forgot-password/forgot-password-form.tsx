@@ -67,7 +67,7 @@ export const ForgotPasswordForm = () => {
           )}
         />
         <Button type="submit" className="w-full" disabled={isWaiting}>
-          {isWaiting ? <IconLoader2 className="animate-spin" /> : 'Recuperar contreseña'}
+          {isWaiting ? <IconLoader2 className="animate-spin" /> : 'Recuperar contraseña'}
           <span className='sr-only'>Recuperar contraseña</span>
         </Button>
       </form>

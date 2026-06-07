@@ -4,8 +4,8 @@ import { ThemeSetting } from '@/components/user/settings/theme-setting'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Appearance',
-  description: 'Change the appearance of the app'
+  title: 'Apariencia',
+  description: 'Personaliza la apariencia de la app'
 }
 
 export default async function Appearance () {

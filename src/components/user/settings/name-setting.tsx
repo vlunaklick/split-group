@@ -32,7 +32,7 @@ export const NameSettings = () => {
       return
     }
 
-    displayToast('Tu nombre actualizado correctamente.', 'success')
+    displayToast('Tu nombre se actualizó correctamente.', 'success')
     setIsLoading(false)
   }
 
@@ -55,7 +55,7 @@ export const NameSettings = () => {
                   <FormControl>
                     <Input
                       id='name'
-                      placeholder="Jhon doe"
+                      placeholder="Tu nombre"
                       {...field}
                       disabled={isLoading}
                     />

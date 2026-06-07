@@ -51,14 +51,14 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData 
     setError(null)
 
     if (payers.length === 0) {
-      setError('Debes seleccionar al menos un contribuyente')
+      setError('Selecciona al menos una persona que haya pagado')
       return
     }
 
     const totalPayersAmount = payers.reduce((acc: number, payer: any) => acc + payer.amount, 0)
 
     if (totalPayersAmount !== totalAmount) {
-      setError('La suma de los montos de los contribuyentes debe ser igual al monto total')
+      setError('Los montos pagados deben sumar el total del gasto')
       return
     }
 
@@ -80,8 +80,8 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData 
     <Card className='max-w-[526px] w-full'>
       <CardHeader className="flex justify-between items-center flex-row">
         <div className="flex flex-col">
-          <CardTitle>Contribuyentes</CardTitle>
-          <CardDescription>Selecciona los participantes que contribuirán al gasto</CardDescription>
+          <CardTitle>Quién pagó</CardTitle>
+          <CardDescription>Indica quién puso el dinero y cuánto aportó cada uno</CardDescription>
         </div>
         <Badge>${totalAmount}</Badge>
       </CardHeader>
@@ -89,7 +89,7 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex gap-2 w-full" disabled={isLoading}>
-              Seleccionar contribuyentes
+              Seleccionar quienes pagaron
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-full max-w-[320px]" onCloseAutoFocus={(e) => e.preventDefault()}>
@@ -115,7 +115,7 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData 
 
         <div className="grid gap-4">
           {payers?.length === 0 && (
-            <p>No hay contribuyentes seleccionados</p>
+            <p className="text-muted-foreground text-sm">Nadie seleccionado todavía</p>
           )}
 
           {payers?.length > 0 && (

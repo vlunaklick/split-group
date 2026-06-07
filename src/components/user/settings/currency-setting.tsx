@@ -44,7 +44,7 @@ export const CurrencySetting = () => {
       <CardHeader>
         <CardTitle>Moneda por defecto</CardTitle>
         <CardDescription>
-          Selecciona la moneda que deseas utilizar en la aplicación. Esta se utilizará para mostrar las estadísticas y resumenes financieros.
+          Selecciona la moneda para mostrar estadísticas y resúmenes en el panel.
         </CardDescription>
       </CardHeader>
       <Form {...form}>

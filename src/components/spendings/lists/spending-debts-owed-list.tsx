@@ -31,9 +31,9 @@ export const SpendingDebtsOwedList = ({ groupId, spendId }: { groupId: string, s
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Adeudan</CardTitle>
+        <CardTitle>Te deben</CardTitle>
         <CardDescription>
-          Estas son las personas que te deben dinero.
+          Personas que te deben dinero por este gasto.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

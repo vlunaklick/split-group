@@ -55,7 +55,7 @@ export const NotificationsWantedSettings = () => {
       <CardHeader>
         <CardTitle>Notificaciones deseadas</CardTitle>
         <CardDescription>
-          Elije las notificaciones que deseas recibir, desde invitaciones a grupos hasta actualizaciones de gastos y pagos de deudas.
+          Elige qué notificaciones quieres recibir: invitaciones a grupos, nuevos gastos y pagos de deudas.
         </CardDescription>
       </CardHeader>
       <Form {...form}>

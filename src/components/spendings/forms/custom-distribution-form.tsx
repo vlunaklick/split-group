@@ -37,7 +37,7 @@ export function CustomDistributionForm ({ debters, setDebters, isLoading, partic
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="flex gap-2 w-full" disabled={isLoading}>
-            Seleccionar deudores
+            Seleccionar participantes
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-full max-w-[320px]" onCloseAutoFocus={(e) => e.preventDefault()}>

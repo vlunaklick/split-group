@@ -61,7 +61,7 @@ export function ResponsiveDialog ({
         </div>
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">Cancelar</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

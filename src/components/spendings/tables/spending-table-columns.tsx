@@ -21,7 +21,7 @@ export function getColumns (): ColumnDef<SpendingTableType>[] {
     {
       accessorKey: 'category',
       header: ({ column }) => (
-        <p>Category</p>
+        <p>Categoría</p>
       ),
       cell: ({ cell }) => {
         const spending = cell.row.original

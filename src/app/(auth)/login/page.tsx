@@ -4,8 +4,8 @@ import { Metadata } from 'next'
 import { Suspense } from 'react'
 
 export const metadata: Metadata = {
-  title: 'Sign In',
-  description: 'Sign in to your account'
+  title: 'Iniciar sesión',
+  description: 'Accede a tu cuenta de Split Group'
 }
 
 export default function SignIn () {
@@ -14,16 +14,16 @@ export default function SignIn () {
       <div className="grid gap-2 text-center">
         <h1 className="text-display-md">Iniciar sesión</h1>
         <p className="text-balance text-muted-foreground">
-          Ingrese su nombre de usuario y contraseña para acceder a su cuenta
+          Ingresa tu nombre de usuario y contraseña para acceder a tu cuenta
         </p>
       </div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div className="text-muted-foreground text-sm">Cargando…</div>}>
         <LoginForm />
       </Suspense>
       <div className="mt-4 text-center text-sm">
-        No tienes cuenta?{' '}
+        ¿No tienes cuenta?{' '}
         <Link href="/register" className="underline">
-          Registrate
+          Regístrate
         </Link>
       </div>
     </div>

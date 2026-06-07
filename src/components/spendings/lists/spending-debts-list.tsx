@@ -31,9 +31,9 @@ export const SpendingDebtsList = ({ groupId, spendId }: { groupId: string, spend
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Deudas actuales</CardTitle>
+        <CardTitle>Lo que debes</CardTitle>
         <CardDescription>
-          Estas son las personas a las que les debes dinero.
+          Personas a las que les debes dinero por este gasto.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

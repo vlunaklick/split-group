@@ -22,13 +22,13 @@ export const FaqPage = () => {
         <AccordionItem value="item-2">
           <AccordionTrigger>¿Qué formas hay para dividir los gastos?</AccordionTrigger>
           <AccordionContent className="text-muted-foreground">
-            Actualmente, los gastos se pueden dividir de manera igualitaria o especificando los montos de cada persona. También, se le puede agregar datos adicionales a cada gasto como la fecha, la categoría y una descripción lo cuál facilita luego la visualización de los gastos.
+            Actualmente puedes dividir los gastos en partes iguales o con montos personalizados por persona. También puedes agregar fecha, categoría y descripción para organizarlos mejor.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3">
           <AccordionTrigger>¿Se pueden exportar los gastos?</AccordionTrigger>
           <AccordionContent className="text-muted-foreground">
-            Nos encontramos trabajando en esta funcionalidad. Pronto podrás exportar tus gastos en formato CSV u otro formato que prefieras.
+            Sí. Desde la página del grupo puedes exportar todos los gastos en Excel o PDF, con el color de acento que prefieras.
           </AccordionContent>
         </AccordionItem>
       </Accordion>

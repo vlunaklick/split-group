@@ -45,8 +45,8 @@ export function GeneralInfoForm ({ categories, currencies, isLoading, setFinalDa
   return (
     <Card className='max-w-[526px] w-full'>
       <CardHeader>
-        <CardTitle>Información del gasto</CardTitle>
-        <CardDescription>Ingresa la información del gasto</CardDescription>
+        <CardTitle>Detalles del gasto</CardTitle>
+        <CardDescription>Completa la información básica del gasto</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form} key={form.watch('amount') ? 0 : 1}>

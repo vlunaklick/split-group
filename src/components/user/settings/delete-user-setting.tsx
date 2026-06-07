@@ -37,7 +37,7 @@ export const DeleteSetting = () => {
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Estas seguro?</AlertDialogTitle>
+            <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
             <AlertDialogDescription>
               Esta acción no se puede deshacer. Tu cuenta será desactivada y no podrás acceder a la plataforma.
             </AlertDialogDescription>

@@ -38,7 +38,7 @@ export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setF
 
   const handleNextStep = () => {
     if (debters.length === 0) {
-      setError('Debes seleccionar al menos un contribuyente')
+      setError('Selecciona al menos una persona que deba su parte')
       return
     }
 
@@ -46,7 +46,7 @@ export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setF
       const totalDebtersAmount = debters.reduce((acc: number, debter: any) => acc + debter.amount, 0)
 
       if (totalDebtersAmount !== totalAmount) {
-        setError('La suma de los montos de los contribuyentes debe ser igual al monto total')
+        setError('Las partes deben sumar el total del gasto')
         return
       }
     }
@@ -79,21 +79,21 @@ export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setF
     <Card className='max-w-[526px] w-full'>
       <CardHeader className='flex justify-between items-center flex-row'>
         <div className='flex flex-col'>
-          <CardTitle>Deudores</CardTitle>
-          <CardDescription>Selecciona los deudores</CardDescription>
+          <CardTitle>Quién debe</CardTitle>
+          <CardDescription>Elige quién participa en la división y cómo se reparte</CardDescription>
         </div>
         <Badge>${totalAmount}</Badge>
       </CardHeader>
       <CardContent>
         <div className="flex gap-4 items-center">
-          <Label>Modo de distribución</Label>
+          <Label>Reparto</Label>
           <Select onValueChange={changeModeSelect} defaultValue={mode}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="equal">Igualitaria</SelectItem>
-              <SelectItem value="custom">Por monto</SelectItem>
+              <SelectItem value="equal">Partes iguales</SelectItem>
+              <SelectItem value="custom">Montos personalizados</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -109,7 +109,7 @@ export const DebtersForm = ({ participants, isLoading, totalAmount, payers, setF
         )}
 
         {debters.length === 0 && (
-          <p className="mt-4">No hay deudores seleccionados</p>
+          <p className="mt-4 text-muted-foreground text-sm">Nadie seleccionado todavía</p>
         )}
 
         {debters.length > 0 && (

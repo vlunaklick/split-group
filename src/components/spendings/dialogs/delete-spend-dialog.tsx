@@ -41,9 +41,9 @@ export function DeleteSpendingDialog ({ groupId, spendId, show }: { groupId: str
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Estas seguro?</AlertDialogTitle>
+          <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
           <AlertDialogDescription>
-            Si eliminas este gasto, no podrás recuperarlo.
+            Este gasto se eliminará de forma permanente.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -53,7 +53,7 @@ export function DeleteSpendingDialog ({ groupId, spendId, show }: { groupId: str
           <AlertDialogAction onClick={(e) => { e.preventDefault(); handleDelete() }} disabled={isLoading}>
             {
               isLoading
-                ? 'Eliminando...'
+                ? 'Eliminando…'
                 : 'Eliminar'
             }
           </AlertDialogAction>

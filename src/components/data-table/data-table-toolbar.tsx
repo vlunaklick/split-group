@@ -79,7 +79,7 @@ export function DataTableToolbar<TData> ({
           )}
         {isFiltered && (
           <Button
-            aria-label="Reset filters"
+            aria-label="Restablecer filtros"
             variant="ghost"
             className="h-8 px-2 lg:px-3"
             onClick={() => table.resetColumnFilters()}

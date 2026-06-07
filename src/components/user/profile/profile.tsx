@@ -34,7 +34,7 @@ export async function Profile ({ username }: { username: string }) {
           <div className="grid gap-2">
             <h3 className="text-lg font-semibold">Sobre mí</h3>
             <p className="text-muted-foreground">
-              Proximamente...
+              Próximamente…
             </p>
           </div>
           <Separator />

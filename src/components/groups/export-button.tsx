@@ -18,12 +18,12 @@ export function ExportButton ({ groupId }: { groupId: string }) {
         <DialogHeader>
           <DialogTitle>Exportar datos</DialogTitle>
           <DialogDescription>
-            En que formato deseas exportar los datos?
+            ¿En qué formato quieres exportar los datos?
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex gap-4">
-          <p>Selecciona que color de acentuación deseas para el archivo.</p>
+          <p className="text-sm text-muted-foreground">Elige el color de acento para el archivo.</p>
 
           <ColorPicker value={color} onChange={(v) => setColor(v)} />
         </div>

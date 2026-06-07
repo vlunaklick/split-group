@@ -21,7 +21,7 @@ export function CreateSpendingSheet ({ groupId, className }: { groupId: string, 
           <SheetHeader>
             <SheetTitle>Crear gasto</SheetTitle>
             <SheetDescription>
-              Aquí podrás crear un nuevo gasto.
+              Tres pasos: detalles, quién pagó y quién debe.
             </SheetDescription>
           </SheetHeader>
           <div className='overflow-y-auto flex flex-col gap-4'>
@@ -41,11 +41,11 @@ export function CreateSpendingSheet ({ groupId, className }: { groupId: string, 
         <DrawerHeader>
           <DrawerTitle>Crear gasto</DrawerTitle>
           <DrawerDescription>
-            Aquí podrás crear un nuevo gasto.
+            Tres pasos: detalles, quién pagó y quién debe.
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className='p-4 overflow-y-auto max-h-96'>
+        <div className='p-4 overflow-y-auto max-h-[70vh]'>
           <CreateSpendingForm groupId={groupId} />
         </div>
 

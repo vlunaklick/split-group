@@ -10,7 +10,7 @@ export const SpendingInfo = ({ spendId }: { spendId: string }) => {
   const { data, isLoading } = useGetSpendingById({ spendingId: spendId })
 
   if (isLoading) return <SpendInfoSkeleton />
-  if (!data) return <div>Failed to load</div>
+  if (!data) return <div className="text-muted-foreground text-sm">No se pudo cargar el gasto</div>
 
   return (
     <Card className='w-full'>

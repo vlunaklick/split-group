@@ -15,8 +15,8 @@ export const ContributorsList = ({ groupId, spendId }: { groupId: string; spendI
   return (
     <Card className='h-min'>
       <CardHeader>
-        <CardTitle>Contribuyentes</CardTitle>
-        <CardDescription>Estas son las personas que participaron del gasto.</CardDescription>
+        <CardTitle>División del gasto</CardTitle>
+        <CardDescription>Quién pagó y quién debe su parte</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4">
@@ -84,8 +84,8 @@ export const ContributorsListSkeleton = () => {
   return (
     <Card className='h-min'>
       <CardHeader>
-        <CardTitle>Contribuyentes</CardTitle>
-        <CardDescription>Estas son las personas que participaron del gasto.</CardDescription>
+        <CardTitle>División del gasto</CardTitle>
+        <CardDescription>Quién pagó y quién debe su parte</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4">

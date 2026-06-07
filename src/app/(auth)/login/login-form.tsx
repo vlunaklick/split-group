@@ -87,7 +87,7 @@ export const LoginForm = () => {
                   href="/forgot-password"
                   className="ml-auto inline-block text-sm underline"
                 >
-                  Olvidaste tu contraseña?
+                  ¿Olvidaste tu contraseña?
                 </Link>
               </div>
               <FormControl className='mt-0'>

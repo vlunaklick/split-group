@@ -13,8 +13,8 @@ export const SpendingsList = ({ groupId, searchParams }: { groupId: string, sear
     mutate(['spendings-table', groupId])
   }, [searchParams])
 
-  if (error) return <div>Failed to load</div>
-  if (!data) return <div>Loading...</div>
+  if (error) return <div className="text-muted-foreground text-sm">No se pudieron cargar los gastos</div>
+  if (!data) return <div className="text-muted-foreground text-sm">Cargando…</div>
 
   return (
     <>

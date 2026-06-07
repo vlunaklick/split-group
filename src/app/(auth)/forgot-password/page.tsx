@@ -2,8 +2,8 @@ import { Metadata } from 'next'
 import { ForgotPasswordForm } from './forgot-password-form'
 
 export const metadata: Metadata = {
-  title: 'Forgot Password',
-  description: 'Forgot your password'
+  title: 'Recuperar contraseña',
+  description: 'Recupera el acceso a tu cuenta'
 }
 
 export default function ForgotPassword () {
@@ -12,7 +12,7 @@ export default function ForgotPassword () {
       <div className="grid gap-2 text-center">
         <h1 className="text-display-md">Recuperar contraseña</h1>
         <p className="text-balance text-muted-foreground">
-          Le enviaremos un correo con un enlace para restablecer la misma.
+          Te enviaremos un correo con un enlace para restablecer tu contraseña.
         </p>
       </div>
       <ForgotPasswordForm />
