@@ -26,6 +26,9 @@ export function SiteHeader () {
         <NavLink href="/#como-funciona" active={false}>
           Cómo funciona
         </NavLink>
+        <NavLink href="/#app-en-accion" active={false}>
+          La app
+        </NavLink>
         <NavLink href="/#funcionalidades" active={false}>
           Funcionalidades
         </NavLink>
@@ -56,6 +59,9 @@ export function SiteHeader () {
           <nav className="grid items-start space-y-2 px-2 text-sm font-medium">
             <NavLink href="/#como-funciona" active={false}>
               Cómo funciona
+            </NavLink>
+            <NavLink href="/#app-en-accion" active={false}>
+              La app
             </NavLink>
             <NavLink href="/#funcionalidades" active={false}>
               Funcionalidades

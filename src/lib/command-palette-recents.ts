@@ -23,7 +23,8 @@ export type CommandHistoryEntry = {
 const PAGE_LABELS: Record<string, string> = {
   '/dashboard': 'Inicio',
   '/notifications': 'Notificaciones',
-  '/settings': 'Configuración',
+  '/settings': 'Mi cuenta',
+  '/settings/account': 'Datos de cuenta',
   '/settings/appearance': 'Apariencia',
   '/settings/notifications': 'Alertas'
 }

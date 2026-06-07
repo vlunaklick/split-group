@@ -44,7 +44,7 @@ export function AppSidebar () {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <CreateGroupSheet className="w-full justify-start bg-transparent shadow-none hover:bg-sidebar-accent/60" />
+                <CreateGroupSheet sidebarTrigger />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

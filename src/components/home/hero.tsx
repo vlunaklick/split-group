@@ -1,4 +1,4 @@
-import { ProductPreview } from '@/components/home/product-preview'
+import { LandingScreenshot } from '@/components/home/landing-screenshot'
 import { TrustedBy } from '@/components/home/trusted-by'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Calculator } from 'lucide-react'
@@ -57,7 +57,12 @@ export function Hero () {
 
         <div className="relative mx-auto w-full max-w-[640px] lg:max-w-none">
           <div className="pointer-events-none absolute -inset-4 rounded-2xl bg-primary/5 blur-2xl" />
-          <ProductPreview />
+          <LandingScreenshot
+            name="dashboard"
+            title="Inicio"
+            alt="Dashboard de Split Group con balance neto, grupos y gastos recientes"
+            priority
+          />
         </div>
       </div>
     </section>
