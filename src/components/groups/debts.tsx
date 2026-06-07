@@ -1,6 +1,7 @@
 'use client'
 
 import { forgiveAllDebt, payAllDebt } from '@/app/(overview)/groups/[groupId]/actions'
+import { SettlementPlan } from './settlement-plan'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetDebts } from '@/data/spendings'
@@ -23,41 +24,45 @@ export const Debts = ({ groupId }: { groupId: string }) => {
   }, [debts])
 
   return (
-    <section className="grid h-full w-full min-w-0 gap-3">
-      <div className="flex items-baseline justify-between gap-4">
-        <h2 className="section-label">Balance</h2>
-        {!isLoadingDebts && debts && debts.length > 0 && (
-          <p className={cn(
-            'font-mono text-sm',
-            netBalance > 0 && 'text-success',
-            netBalance < 0 && 'text-destructive',
-            netBalance === 0 && 'text-muted-foreground'
-          )}>
-            {netBalance >= 0 ? '+' : ''}{formatMoney(netBalance)}
-          </p>
-        )}
+    <section className="grid h-full w-full min-w-0 gap-4">
+      <SettlementPlan groupId={groupId} />
+
+      <div className="grid gap-3">
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 className="section-label">Tu balance</h2>
+          {!isLoadingDebts && debts && debts.length > 0 && (
+            <p className={cn(
+              'font-mono text-sm',
+              netBalance > 0 && 'text-success',
+              netBalance < 0 && 'text-destructive',
+              netBalance === 0 && 'text-muted-foreground'
+            )}>
+              {netBalance >= 0 ? '+' : ''}{formatMoney(netBalance)}
+            </p>
+          )}
+        </div>
+
+        <ul className="surface-panel flex min-h-[180px] flex-col divide-y divide-border">
+          {isLoadingDebts && (
+            <>
+              <DebtItemSkeleton />
+              <DebtItemSkeleton />
+            </>
+          )}
+
+          {!isLoadingDebts && debts?.map((debt: Debt) => (
+            <li key={(debt.id ?? debt.userId) + new Date(debt.createdAt).getTime()}>
+              <DebtItem debt={debt} groupId={groupId} />
+            </li>
+          ))}
+
+          {!isLoadingDebts && debts && debts.length === 0 && (
+            <li className="flex flex-1 items-center justify-center px-4 py-10 text-center text-sm text-muted-foreground">
+              Al día
+            </li>
+          )}
+        </ul>
       </div>
-
-      <ul className="surface-panel flex min-h-[220px] flex-col divide-y divide-border">
-        {isLoadingDebts && (
-          <>
-            <DebtItemSkeleton />
-            <DebtItemSkeleton />
-          </>
-        )}
-
-        {!isLoadingDebts && debts?.map((debt: Debt) => (
-          <li key={(debt.id ?? debt.userId) + new Date(debt.createdAt).getTime()}>
-            <DebtItem debt={debt} groupId={groupId} />
-          </li>
-        ))}
-
-        {!isLoadingDebts && debts && debts.length === 0 && (
-          <li className="flex flex-1 items-center justify-center px-4 py-10 text-center text-sm text-muted-foreground">
-            Al día
-          </li>
-        )}
-      </ul>
     </section>
   )
 }
@@ -72,6 +77,7 @@ const DebtItem = ({ debt, groupId }: { debt: Debt, groupId: string }) => {
       await payAllDebt({ groupId, crediterId: debt.userId })
       displayToast('Marcado como pagado', 'success')
       mutate(['debts', groupId])
+      mutate(['group-settlement', groupId])
     } catch (error) {
       displayToast('No se pudo marcar como pagado', 'error')
     }
@@ -84,6 +90,7 @@ const DebtItem = ({ debt, groupId }: { debt: Debt, groupId: string }) => {
       await forgiveAllDebt({ groupId, debterId: debt.userId })
       displayToast('Deuda perdonada', 'success')
       mutate(['debts', groupId])
+      mutate(['group-settlement', groupId])
     } catch (error) {
       displayToast('No se pudo perdonar la deuda', 'error')
     }
@@ -134,12 +141,15 @@ const DebtItemSkeleton = () => (
 
 export const DebtsSkeleton = () => {
   return (
-    <section className="grid h-full w-full min-w-0 gap-3">
-      <Skeleton className="h-3 w-16" />
-      <ul className="surface-panel flex min-h-[220px] flex-col divide-y divide-border">
-        <DebtItemSkeleton />
-        <DebtItemSkeleton />
-      </ul>
+    <section className="grid h-full w-full min-w-0 gap-4">
+      <Skeleton className="h-24 w-full rounded-lg" />
+      <div className="grid gap-3">
+        <Skeleton className="h-3 w-16" />
+        <ul className="surface-panel flex min-h-[180px] flex-col divide-y divide-border">
+          <DebtItemSkeleton />
+          <DebtItemSkeleton />
+        </ul>
+      </div>
     </section>
   )
 }

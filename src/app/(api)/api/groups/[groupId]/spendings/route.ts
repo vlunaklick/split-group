@@ -1,4 +1,4 @@
-import { getGroupDebts, getLatestGroupSpendings, getSpendingsTable } from '@/data/apis/spendings'
+import { getGroupDebts, getGroupSettlement, getLatestGroupSpendings, getSpendingsTable } from '@/data/apis/spendings'
 import { requireGroupMember, toAuthResponse } from '@/lib/server-auth'
 import { getSpendingsSchema } from '@/lib/validations'
 
@@ -21,6 +21,12 @@ export async function GET (
       const groupDebts = await getGroupDebts({ groupId })
 
       return Response.json(groupDebts)
+    }
+
+    if (searchParams.get('getGroupSettlement')) {
+      const settlement = await getGroupSettlement({ groupId })
+
+      return Response.json(settlement)
     }
 
     if (searchParams.get('getLatestGroupSpendings')) {

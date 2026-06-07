@@ -7,6 +7,12 @@ export function useGetDebts ({ groupId }: { groupId: string }) {
   })
 }
 
+export function useGetGroupSettlement ({ groupId }: { groupId: string }) {
+  return useSWR(['group-settlement', groupId], async ([, groupId]) => {
+    return await fetch(`/api/groups/${groupId}/spendings?getGroupSettlement=true`).then(res => res.json())
+  })
+}
+
 export function useGetLastSpendings ({ groupId }: { groupId: string }) {
   return useSWR(['last-spendings', groupId], async ([, groupId]) => {
     return await fetch(`/api/groups/${groupId}/spendings?getLatestGroupSpendings=true`).then(res => res.json())

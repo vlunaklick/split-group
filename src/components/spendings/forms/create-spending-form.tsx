@@ -8,25 +8,41 @@ import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
 import { createSpendingSchema } from '@/lib/form'
 import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSWRConfig } from 'swr'
 import { z } from 'zod'
 import { DebtersForm } from './contributors-form'
 import { GeneralInfoForm } from './general-info-form'
 import { PayersForm } from './payers-form'
+import { SpendingPrefill, SpendingTemplatePicker } from './spending-prefill'
 
 const STEP_LABELS = ['Detalle', 'Pago', 'División']
 
 export const CreateSpendingForm = ({
   groupId,
-  onSuccess
+  onSuccess,
+  prefill
 }: {
   groupId: string
   onSuccess?: () => void
+  prefill?: SpendingPrefill
 }) => {
-  const [finalData, setFinalData] = useState<any>({})
-  const [mode, setMode] = useState<DistributionModeType>('equal')
+  const [finalData, setFinalData] = useState<any>(() => (
+    prefill
+      ? {
+          name: prefill.name,
+          amount: prefill.amount,
+          description: prefill.description ?? '',
+          categoryId: prefill.categoryId,
+          currencyId: prefill.currencyId,
+          date: prefill.date,
+          payers: prefill.payers,
+          debters: prefill.debters
+        }
+      : {}
+  ))
+  const [mode, setMode] = useState<DistributionModeType>(prefill?.mode ?? 'equal')
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -37,18 +53,43 @@ export const CreateSpendingForm = ({
   const form = useForm<z.infer<typeof createSpendingSchema>>({
     resolver: zodResolver(createSpendingSchema),
     defaultValues: {
-      name: '',
-      amount: 0,
-      description: '',
-      categoryId: '',
-      currencyId: '',
-      date: new Date()
+      name: prefill?.name ?? '',
+      amount: prefill?.amount ?? 0,
+      description: prefill?.description ?? '',
+      categoryId: prefill?.categoryId ?? '',
+      currencyId: prefill?.currencyId ?? '',
+      date: prefill?.date ?? new Date()
     }
   })
+
+  useEffect(() => {
+    if (!prefill) return
+
+    form.reset({
+      name: prefill.name,
+      amount: prefill.amount,
+      description: prefill.description ?? '',
+      categoryId: prefill.categoryId,
+      currencyId: prefill.currencyId,
+      date: prefill.date ?? new Date()
+    })
+    setMode(prefill.mode ?? 'equal')
+    setFinalData({
+      name: prefill.name,
+      amount: prefill.amount,
+      description: prefill.description ?? '',
+      categoryId: prefill.categoryId,
+      currencyId: prefill.currencyId,
+      date: prefill.date,
+      payers: prefill.payers,
+      debters: prefill.debters
+    })
+  }, [prefill, form])
 
   const refreshGroupData = () => {
     mutate(['last-spendings', groupId])
     mutate(['debts', groupId])
+    mutate(['group-settlement', groupId])
     mutate(['spendings-table', groupId])
   }
 
@@ -93,16 +134,53 @@ export const CreateSpendingForm = ({
     return true
   }
 
+  const applyPrefill = (next: SpendingPrefill) => {
+    form.reset({
+      name: next.name,
+      amount: next.amount,
+      description: next.description ?? '',
+      categoryId: next.categoryId,
+      currencyId: next.currencyId,
+      date: next.date ?? new Date()
+    })
+    setMode(next.mode ?? 'equal')
+    setFinalData({
+      name: next.name,
+      amount: next.amount,
+      description: next.description ?? '',
+      categoryId: next.categoryId,
+      currencyId: next.currencyId,
+      date: next.date,
+      payers: next.payers,
+      debters: next.debters
+    })
+  }
+
+  const formValues = form.watch()
+
   return (
     <FormStepsProvider steps={STEP_LABELS}>
       <FormStep index={0}>
-        <GeneralInfoForm
-          form={form}
-          categories={categories}
-          currencies={currencies}
-          isLoading={isLoadingCategories || isLoadingCurrencies}
-          setFinalData={setFinalData}
-        />
+        <div className="grid gap-5">
+          <SpendingTemplatePicker
+            groupId={groupId}
+            formValues={{
+              name: formValues.name ?? '',
+              amount: formValues.amount ?? 0,
+              description: formValues.description,
+              categoryId: formValues.categoryId ?? '',
+              currencyId: formValues.currencyId ?? ''
+            }}
+            onApply={applyPrefill}
+          />
+          <GeneralInfoForm
+            form={form}
+            categories={categories}
+            currencies={currencies}
+            isLoading={isLoadingCategories || isLoadingCurrencies}
+            setFinalData={setFinalData}
+          />
+        </div>
       </FormStep>
       <FormStep index={1}>
         <PayersForm
@@ -111,6 +189,7 @@ export const CreateSpendingForm = ({
           totalAmount={finalData.amount}
           finalData={finalData}
           setFinalData={setFinalData}
+          initialPayers={prefill?.payers ?? finalData.payers}
           onExpressSubmit={handleExpressSubmit}
           isSubmitting={isLoading}
         />
@@ -128,6 +207,7 @@ export const CreateSpendingForm = ({
           onSubmit={createSpendingFinalStep}
           isSubmitting={isLoading}
           submitLabel="Crear gasto"
+          initialDebters={prefill?.debters ?? finalData.debters}
         />
       </FormStep>
     </FormStepsProvider>

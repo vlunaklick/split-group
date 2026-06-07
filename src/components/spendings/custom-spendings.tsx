@@ -7,6 +7,7 @@ import { DeleteSpendingDialog } from './dialogs/delete-spend-dialog'
 import { ContributorsList, ContributorsListSkeleton } from './lists/contributors-list'
 import { SpendingDebtsList, SpendingDebtsListSkeleton } from './lists/spending-debts-list'
 import { SpendingDebtsOwedList, SpendingDebtsOwedListSkeleton } from './lists/spending-debts-owed-list'
+import { DuplicateSpendingSheet } from './sheets/duplicate-spending-sheet'
 import { EditSpendingSheet } from './sheets/edit-spending-sheet'
 import { SpendInfoSkeleton, SpendingInfo } from './spending-info'
 import { CommentsSheet } from './sheets/comments-sheet'
@@ -40,6 +41,7 @@ export async function CustomSpendingInfo ({ groupId, spendId }: { groupId: strin
           </div>
 
           <div className="flex flex-wrap gap-2">
+            <DuplicateSpendingSheet groupId={groupId} spendId={spendId} />
             <CommentsSheet spendingId={spendId} />
             {data.isOwner && (
               <>

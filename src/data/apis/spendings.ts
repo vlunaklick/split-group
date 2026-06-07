@@ -1,4 +1,5 @@
 import { authOptions } from '@/lib/auth'
+import { simplifyBalances } from '@/utils/settlement'
 import { db } from '@/lib/db'
 import { GetSpendingsSchema } from '@/lib/validations'
 import { getServerSession } from 'next-auth'
@@ -321,5 +322,45 @@ export async function getSpendingComments ({ spendingId }: { spendingId: string 
   return {
     commentsList: comments ?? [],
     userId
+  }
+}
+
+export async function getGroupSettlement ({ groupId }: { groupId: string }) {
+  const debts = await db.debt.findMany({
+    where: {
+      spending: { groupId },
+      paid: false,
+      forgiven: false
+    },
+    include: {
+      debter: { select: { id: true, name: true } },
+      creditor: { select: { id: true, name: true } }
+    }
+  })
+
+  const balances = new Map<string, { name: string, balance: number }>()
+
+  for (const debt of debts) {
+    const debterEntry = balances.get(debt.debterId) ?? {
+      name: debt.debter.name ?? 'Usuario',
+      balance: 0
+    }
+    debterEntry.balance -= debt.amount
+    balances.set(debt.debterId, debterEntry)
+
+    const creditorEntry = balances.get(debt.creditorId) ?? {
+      name: debt.creditor.name ?? 'Usuario',
+      balance: 0
+    }
+    creditorEntry.balance += debt.amount
+    balances.set(debt.creditorId, creditorEntry)
+  }
+
+  const transfers = simplifyBalances(balances)
+
+  return {
+    rawDebtCount: debts.length,
+    transferCount: transfers.length,
+    transfers
   }
 }
