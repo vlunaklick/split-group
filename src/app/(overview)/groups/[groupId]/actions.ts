@@ -10,7 +10,15 @@ import { DebtReminderEmail } from '@/components/mails/debt-reminder'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-export async function payAllDebt ({ crediterId, groupId }: { crediterId: string, groupId: string }) {
+export async function payAllDebt ({
+  crediterId,
+  groupId,
+  note
+}: {
+  crediterId: string
+  groupId: string
+  note?: string
+}) {
   const { userId, session } = await requireGroupMember(groupId)
   const payerName = session.user?.name || 'Usuario'
 
@@ -40,8 +48,12 @@ export async function payAllDebt ({ crediterId, groupId }: { crediterId: string,
 
   const totalAmount = debts.reduce((acc, debt) => acc + debt.amount, 0)
   const spendingName = debts[0].spending.name || 'Gasto'
+  const trimmedNote = note?.trim()
+  const noteSuffix = trimmedNote ? ` Nota: ${trimmedNote}` : ''
 
-  const description = 'Tu deuda de ' + totalAmount.toFixed(2) + ' en el gasto ' + spendingName + ' ha sido pagada.'
+  const description = debts.length === 1
+    ? `Tu deuda de ${totalAmount.toFixed(2)} en el gasto ${spendingName} ha sido pagada.${noteSuffix}`
+    : `${payerName} marcó como pagadas deudas por ${totalAmount.toFixed(2)} en ${debts[0].spending?.group?.name ?? 'el grupo'}.${noteSuffix}`
 
   await db.notification.create({
     data: {

@@ -1,6 +1,7 @@
 'use client'
 
-import { forgiveAllDebt, payAllDebt, sendDebtReminder } from '@/app/(overview)/groups/[groupId]/actions'
+import { forgiveAllDebt, sendDebtReminder } from '@/app/(overview)/groups/[groupId]/actions'
+import { PayDebtDialog } from './dialogs/pay-debt-dialog'
 import { SettlementPlan } from './settlement-plan'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -71,19 +72,6 @@ const DebtItem = ({ debt, groupId }: { debt: Debt, groupId: string }) => {
   const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
-  const handlePayDebt = async () => {
-    setIsLoading(true)
-    try {
-      await payAllDebt({ groupId, crediterId: debt.userId })
-      displayToast('Marcado como pagado', 'success')
-      mutate(['debts', groupId])
-      mutate(['group-settlement', groupId])
-    } catch (error) {
-      displayToast('No se pudo marcar como pagado', 'error')
-    }
-    setIsLoading(false)
-  }
-
   const handleForgiveDebt = async () => {
     setIsLoading(true)
     try {
@@ -125,9 +113,12 @@ const DebtItem = ({ debt, groupId }: { debt: Debt, groupId: string }) => {
       </p>
 
       {!debt.isDebter && (
-        <Button onClick={handlePayDebt} variant="ghost" size="sm" className="h-8 px-2 text-xs" disabled={isLoading}>
-          Pagado
-        </Button>
+        <PayDebtDialog
+          groupId={groupId}
+          crediterId={debt.userId}
+          crediterName={debt.name}
+          amount={debt.amount}
+        />
       )}
 
       {debt.isDebter && (

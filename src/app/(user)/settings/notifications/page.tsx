@@ -1,5 +1,6 @@
 import { LimitSetting } from '@/components/user/settings/limits-setting'
 import { NotificationsWantedSettings } from '@/components/user/settings/notifications-wanted-setting'
+import { WeeklyDigestSetting } from '@/components/user/settings/weekly-digest-setting'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export default async function NotificationsSettings () {
   return (
     <>
       <NotificationsWantedSettings />
+      <WeeklyDigestSetting />
       <LimitSetting />
     </>
   )
