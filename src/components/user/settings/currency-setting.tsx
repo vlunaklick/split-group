@@ -20,7 +20,7 @@ export const CurrencySetting = () => {
   const form = useForm<z.infer<typeof updateCurrencySettingsSchema>>({
     resolver: zodResolver(updateCurrencySettingsSchema),
     values: {
-      currency: currencies?.find((curr: any) => curr.name === currency)?.id
+      currency: currencies?.find((curr: any) => curr.name === currency)?.id ?? ''
     }
   })
 
@@ -29,42 +29,40 @@ export const CurrencySetting = () => {
     try {
       const name = currencies.find((curr: any) => curr.id === values.currency)?.name || ''
       localStorage.setItem('currency', name)
+      displayToast('Moneda actualizada', 'success')
     } catch (error) {
-      displayToast('Hubo un error al actualizar tu moneda', 'error')
+      displayToast('No se pudo actualizar la moneda', 'error')
+    } finally {
       setIsLoading(false)
-      return
     }
-
-    displayToast('Tu moneda ha sido actualizada correctamente.', 'success')
-    setIsLoading(false)
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Moneda por defecto</CardTitle>
+        <CardTitle>Moneda del panel</CardTitle>
         <CardDescription>
-          Selecciona la moneda para mostrar estadísticas y resúmenes en el panel.
+          Usada para mostrar totales en el inicio y estadísticas personales.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} key={(!isLoadingAvailables && form.watch('currency') ? 0 : 1)}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
             <FormField
               control={form.control}
               name="currency"
               render={({ field }) => (
                 <FormItem>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger disabled={isLoadingAvailables || isLoadingCurrent}>
-                        <SelectValue placeholder="Selecciona una moneda" />
+                        <SelectValue placeholder="Elegí una moneda" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {currencies?.map((currency: any) => (
-                        <SelectItem key={currency.id} value={currency.id}>
-                          {currency.name}
+                      {currencies?.map((item: any) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -74,7 +72,7 @@ export const CurrencySetting = () => {
               )}
             />
           </CardContent>
-          <CardFooter className="border-t px-6 py-4 flex justify-end">
+          <CardFooter className="flex justify-end border-t px-6 py-4">
             <Button type="submit" disabled={isLoading || isLoadingAvailables || isLoadingCurrent}>
               Guardar
             </Button>
@@ -86,14 +84,12 @@ export const CurrencySetting = () => {
 }
 
 export const SelectSkeleton = () => (
-    <Select disabled>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Moneda" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="loading">
-          Cargando...
-        </SelectItem>
-      </SelectContent>
-    </Select>
+  <Select disabled>
+    <SelectTrigger className="w-[180px]">
+      <SelectValue placeholder="Moneda" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="loading">Cargando…</SelectItem>
+    </SelectContent>
+  </Select>
 )

@@ -18,24 +18,27 @@ export const ActionButtons = ({ code, groupId }: { code: string, groupId: string
     setIsLoading(true)
     try {
       await joinInvitation(code)
-      displayToast('Te uniste al grupo correctamente', 'success')
+      displayToast('Te uniste al grupo', 'success')
       mutate('user-groups')
       router.push(`/groups/${groupId}`)
     } catch (error) {
-      console.error(error)
-      displayToast('No se pudo unir al grupo', 'error')
+      const message = error instanceof Error ? error.message : 'No se pudo unir al grupo'
+      displayToast(message, 'error')
       setIsLoading(false)
     }
   }
 
   return (
-    <>
-      <Button onClick={handleOnClick} className='mt-4' disabled={isLoading}>
-        Unirse al grupo
+    <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center">
+      <Button onClick={handleOnClick} className="w-full sm:w-auto" disabled={isLoading}>
+        {isLoading ? 'Uniéndote…' : 'Unirme al grupo'}
       </Button>
-      <Link href="/dashboard" className={cn(buttonVariants({ variant: 'outline' }), isLoading ? 'pointer-events-none' : '')}>
+      <Link
+        href="/dashboard"
+        className={cn(buttonVariants({ variant: 'outline' }), 'w-full sm:w-auto', isLoading && 'pointer-events-none opacity-50')}
+      >
         Ahora no
       </Link>
-    </>
+    </div>
   )
 }

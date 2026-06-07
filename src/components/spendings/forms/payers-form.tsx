@@ -13,20 +13,33 @@ import { User } from '@prisma/client'
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
-export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData }: { participants?: any[]; isLoading: boolean; totalAmount: number; setFinalData: (data: any) => void }) => {
+export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData, initialPayers }: {
+  participants?: any[]
+  isLoading: boolean
+  totalAmount: number
+  setFinalData: (data: any) => void
+  initialPayers?: { userId: string, amount: number }[]
+}) => {
   const { nextStep, prevStep } = useStepper()
   const { data: session } = useGetSession()
   const [error, setError] = useState<string | null>(null)
-  const [payers, setPayers] = useState<{ userId: string; amount: number }[]>([])
-  const autoFilled = useRef(false)
+  const [payers, setPayers] = useState<{ userId: string, amount: number }[]>(initialPayers ?? [])
+  const autoFilled = useRef(Boolean(initialPayers?.length))
 
   const currentUserId = session?.user?.id as string | undefined
 
   useEffect(() => {
-    if (autoFilled.current || !currentUserId || totalAmount <= 0) return
+    if (initialPayers?.length) {
+      setPayers(initialPayers)
+      autoFilled.current = true
+    }
+  }, [initialPayers])
+
+  useEffect(() => {
+    if (autoFilled.current || initialPayers?.length || !currentUserId || totalAmount <= 0) return
     setPayers([{ userId: currentUserId, amount: totalAmount }])
     autoFilled.current = true
-  }, [currentUserId, totalAmount])
+  }, [currentUserId, totalAmount, initialPayers?.length])
 
   const handleSelectChange = (value: string) => {
     if (payers.find((payer) => payer.userId === value)) {

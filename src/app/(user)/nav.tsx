@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const links = [
-  { href: '/settings', label: 'General' },
-  { href: '/notifications', label: 'Bandeja' },
-  { href: '/settings/notifications', label: 'Preferencias' },
+  { href: '/settings', label: 'Cuenta' },
+  { href: '/notifications', label: 'Avisos' },
+  { href: '/settings/notifications', label: 'Alertas' },
   { href: '/settings/appearance', label: 'Apariencia' }
 ]
 

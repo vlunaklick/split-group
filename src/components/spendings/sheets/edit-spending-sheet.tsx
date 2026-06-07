@@ -15,7 +15,7 @@ export function EditSpendingSheet ({ spendId, groupId, className, show }: { spen
       open={isOpen}
       onOpenChange={setIsOpen}
       title="Editar gasto"
-      description="Modifica los detalles, pagadores o división."
+      description="Ajustá monto, pagadores o división."
       trigger={
         <Button variant="outline" className={className}>
           Editar

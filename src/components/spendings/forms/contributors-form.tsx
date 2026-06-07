@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator'
 import { useStepper } from '@/components/ui/stepper'
 import { formatMoney } from '@/lib/money'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { EqualDistributionForm } from './equal-distribution-form'
 import { CustomDistributionForm } from './custom-distribution-form'
 import { Badge } from '@/components/ui/badge'
@@ -23,7 +23,8 @@ export const DebtersForm = ({
   setMode,
   onSubmit,
   isSubmitting,
-  submitLabel = 'Crear gasto'
+  submitLabel = 'Crear gasto',
+  initialDebters
 }: {
   participants?: any[]
   isLoading: boolean
@@ -36,10 +37,12 @@ export const DebtersForm = ({
   onSubmit?: (data: any) => void
   isSubmitting?: boolean
   submitLabel?: string
+  initialDebters?: { userId: string, amount: number }[]
 }) => {
   const { prevStep } = useStepper()
   const [error, setError] = useState<string | null>(null)
-  const [debters, setDebters] = useState<{ userId: string; amount: number }[]>([])
+  const [debters, setDebters] = useState<{ userId: string, amount: number }[]>(initialDebters ?? [])
+  const seededDebters = useRef(Boolean(initialDebters?.length))
 
   const payerIds = new Set(payers?.map((p: any) => p.userId) ?? [])
 
@@ -52,11 +55,19 @@ export const DebtersForm = ({
   }
 
   useEffect(() => {
+    if (initialDebters?.length) {
+      setDebters(initialDebters)
+      seededDebters.current = true
+    }
+  }, [initialDebters])
+
+  useEffect(() => {
+    if (seededDebters.current || initialDebters?.length) return
     if (mode === DistributionMode.EQUAL && debters.length === 0 && participants?.length) {
       selectAllEligible()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, participants, payers, totalAmount])
+  }, [mode, participants, payers, totalAmount, initialDebters?.length])
 
   const handleSelectChange = (value: string) => {
     setDebters((prev) => {

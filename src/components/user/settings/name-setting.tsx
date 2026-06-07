@@ -1,47 +1,50 @@
 'use client'
 
-import { toast } from 'sonner'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { changeNameSchema } from '@/lib/form'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { updateName } from '../../../app/(user)/settings/actions'
 import { displayToast } from '@/utils/toast-display'
+import { useGetSession } from '@/data/session'
 
 export const NameSettings = () => {
+  const { data: session } = useGetSession()
   const [isLoading, setIsLoading] = useState(false)
   const form = useForm<z.infer<typeof changeNameSchema>>({
     resolver: zodResolver(changeNameSchema),
-    defaultValues: {
-      name: ''
-    }
+    defaultValues: { name: '' }
   })
+
+  useEffect(() => {
+    if (session?.user?.name) {
+      form.reset({ name: session.user.name })
+    }
+  }, [session?.user?.name, form])
 
   const onSubmit = async (values: z.infer<typeof changeNameSchema>) => {
     setIsLoading(true)
     try {
       await updateName({ newName: values.name })
+      displayToast('Nombre actualizado', 'success')
     } catch (error) {
-      displayToast('Hubo un error al actualizar tu nombre', 'error')
+      displayToast('No se pudo actualizar el nombre', 'error')
+    } finally {
       setIsLoading(false)
-      return
     }
-
-    displayToast('Tu nombre se actualizó correctamente.', 'success')
-    setIsLoading(false)
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nombre de la cuenta</CardTitle>
+        <CardTitle>Tu nombre</CardTitle>
         <CardDescription>
-          Nombre que se mostrará en la plataforma para el resto de usuarios.
+          Así te ven el resto de participantes en grupos y gastos.
         </CardDescription>
       </CardHeader>
       <Form {...form}>
@@ -53,19 +56,14 @@ export const NameSettings = () => {
               render={({ field }: any) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      id='name'
-                      placeholder="Tu nombre"
-                      {...field}
-                      disabled={isLoading}
-                    />
+                    <Input placeholder="Tu nombre" {...field} disabled={isLoading} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </CardContent>
-          <CardFooter className="border-t px-6 py-4 flex justify-end">
+          <CardFooter className="flex justify-end border-t px-6 py-4">
             <Button type="submit" disabled={isLoading}>
               Guardar
             </Button>

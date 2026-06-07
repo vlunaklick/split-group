@@ -6,19 +6,34 @@ import { ResponsiveSheet } from '../responsive-sheet'
 import { IconDownload } from '@tabler/icons-react'
 import { useState } from 'react'
 import { ColorPicker } from '../color-picker'
+import { displayToast } from '@/utils/toast-display'
 
 function ExportContent ({ groupId, color, setColor }: { groupId: string, color: string, setColor: (v: string) => void }) {
+  const [isExporting, setIsExporting] = useState(false)
+
+  const handleExport = async (type: 'excel' | 'pdf') => {
+    setIsExporting(true)
+    try {
+      await exportData({ groupId, type, props: { color } })
+      displayToast(type === 'excel' ? 'Excel descargado' : 'PDF descargado', 'success')
+    } catch {
+      displayToast('No se pudo exportar', 'error')
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   return (
-    <>
-      <p className="text-sm text-muted-foreground">Elige el color de acento para el archivo.</p>
+    <div className="grid gap-4">
+      <p className="text-sm text-muted-foreground">Elegí formato y color de acento.</p>
       <ColorPicker value={color} onChange={(v) => setColor(v)} />
-      <Button onClick={async () => await exportData({ groupId, type: 'excel', props: { color } })}>
-        Exportar en Excel
+      <Button disabled={isExporting} onClick={() => handleExport('excel')}>
+        Descargar Excel
       </Button>
-      <Button variant="outline" onClick={async () => await exportData({ groupId, type: 'pdf', props: { color } })}>
-        Exportar en PDF
+      <Button variant="outline" disabled={isExporting} onClick={() => handleExport('pdf')}>
+        Descargar PDF
       </Button>
-    </>
+    </div>
   )
 }
 
@@ -38,8 +53,8 @@ export function ExportButton ({ groupId, triggerIcon }: { groupId: string, trigg
 
   return (
     <ResponsiveSheet
-      title="Exportar datos"
-      description="¿En qué formato quieres exportar los datos?"
+      title="Exportar grupo"
+      description="Descargá gastos y balances del grupo."
       sheetWidth="425px"
       trigger={trigger}
     >
