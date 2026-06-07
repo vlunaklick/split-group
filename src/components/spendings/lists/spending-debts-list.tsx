@@ -1,35 +1,15 @@
 'use client'
 
+import { PayDebtDialog } from '@/components/groups/dialogs/pay-debt-dialog'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetCurrentDebts } from '@/data/spendings'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
-import { displayToast } from '@/utils/toast-display'
-import { useState } from 'react'
-import { useSWRConfig } from 'swr'
-import { payDebt } from '../../../app/(overview)/groups/[groupId]/spendings/actions'
 
 export const SpendingDebtsList = ({ groupId, spendId }: { groupId: string, spendId: string }) => {
   const { data: currentDebts, isLoading: isLoadingList } = useGetCurrentDebts({ groupId, spendId })
-  const { mutate } = useSWRConfig()
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handlePayDebt = async (debtId: string) => {
-    setIsLoading(true)
-    try {
-      await payDebt({ debtId })
-      displayToast('Marcado como pagado', 'success')
-      mutate(['debts', groupId, spendId])
-      mutate(['debts', groupId])
-      mutate(['group-settlement', groupId])
-      mutate(['group-settlement-history', groupId])
-    } catch (error) {
-      displayToast('Error al pagar deuda', 'error')
-    }
-    setIsLoading(false)
-  }
 
   return (
     <Card>
@@ -50,15 +30,38 @@ export const SpendingDebtsList = ({ groupId, spendId }: { groupId: string, spend
           </>
         )}
 
-        {currentDebts?.map((debt: any) => (
-          <Row key={debt.id} name={debt.creditor?.name as string} amount={debt.amount} buttonText="Pagado" onButtonClick={() => handlePayDebt(debt.id)} isLoading={isLoading} />
+        {currentDebts?.map((debt: {
+          id: string
+          amount: number
+          creditor?: { name?: string | null }
+        }) => (
+          <Row
+            key={debt.id}
+            name={debt.creditor?.name ?? 'Usuario'}
+            amount={debt.amount}
+            groupId={groupId}
+            spendId={spendId}
+            debtId={debt.id}
+          />
         ))}
       </CardContent>
     </Card>
   )
 }
 
-const Row = ({ name, amount, buttonText, onButtonClick, isLoading }: { name: string, amount: number, buttonText: string, onButtonClick: () => void, isLoading: boolean }) => {
+const Row = ({
+  name,
+  amount,
+  groupId,
+  spendId,
+  debtId
+}: {
+  name: string
+  amount: number
+  groupId: string
+  spendId: string
+  debtId: string
+}) => {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -72,15 +75,20 @@ const Row = ({ name, amount, buttonText, onButtonClick, isLoading }: { name: str
       </div>
       <div className="flex items-center gap-4">
         <p className="font-medium text-sm">{formatMoney(amount)}</p>
-        <Button variant="outline" size="sm" disabled={isLoading} onClick={onButtonClick}>
-          {buttonText}
-        </Button>
+        <PayDebtDialog
+          groupId={groupId}
+          spendId={spendId}
+          debtId={debtId}
+          crediterName={name}
+          amount={amount}
+          triggerVariant="outline"
+        />
       </div>
     </div>
   )
 }
 
-const RowSkeleton = ({ buttonText }: {buttonText: string}) => {
+const RowSkeleton = ({ buttonText }: { buttonText: string }) => {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">

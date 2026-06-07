@@ -1,6 +1,7 @@
 'use client'
 
 import { payAllDebt } from '@/app/(overview)/groups/[groupId]/actions'
+import { payDebt } from '@/app/(overview)/groups/[groupId]/spendings/actions'
 import { ResponsiveDialog } from '@/components/responsive-dialog'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -8,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { uploadPaymentReceipt } from '@/lib/upload-payment-receipt'
 import { formatMoney } from '@/lib/money'
+import { cn } from '@/lib/utils'
 import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Paperclip, X } from 'lucide-react'
@@ -24,17 +26,27 @@ const schema = z.object({
   )
 })
 
+type PayDebtDialogProps = {
+  groupId: string
+  crediterName: string
+  amount: number
+  crediterId?: string
+  debtId?: string
+  spendId?: string
+  triggerVariant?: 'ghost' | 'outline'
+  triggerClassName?: string
+}
+
 export function PayDebtDialog ({
   groupId,
   crediterId,
   crediterName,
-  amount
-}: {
-  groupId: string
-  crediterId: string
-  crediterName: string
-  amount: number
-}) {
+  amount,
+  debtId,
+  spendId,
+  triggerVariant = 'ghost',
+  triggerClassName
+}: PayDebtDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [receiptFile, setReceiptFile] = useState<File | null>(null)
@@ -52,6 +64,17 @@ export function PayDebtDialog ({
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
+  const refreshCaches = () => {
+    mutate(['debts', groupId])
+    mutate(['group-settlement', groupId])
+    mutate(['group-settlement-history', groupId])
+
+    if (spendId) {
+      mutate(['current-debts', groupId, spendId])
+      mutate(['debts', groupId, spendId])
+    }
+  }
+
   const onSubmit = async (values: z.infer<typeof schema>) => {
     setIsLoading(true)
     try {
@@ -61,16 +84,18 @@ export function PayDebtDialog ({
         receiptUrl = await uploadPaymentReceipt(receiptFile)
       }
 
-      await payAllDebt({
-        groupId,
-        crediterId,
-        note: values.note?.trim() || undefined,
-        receiptUrl
-      })
+      const note = values.note?.trim() || undefined
+
+      if (debtId) {
+        await payDebt({ debtId, note, receiptUrl })
+      } else if (crediterId) {
+        await payAllDebt({ groupId, crediterId, note, receiptUrl })
+      } else {
+        throw new Error('No se pudo identificar la deuda')
+      }
+
       displayToast('Marcado como pagado', 'success')
-      mutate(['debts', groupId])
-      mutate(['group-settlement', groupId])
-      mutate(['group-settlement-history', groupId])
+      refreshCaches()
       setIsOpen(false)
       resetForm()
     } catch (error) {
@@ -88,9 +113,12 @@ export function PayDebtDialog ({
   return (
     <>
       <Button
-        variant="ghost"
+        variant={triggerVariant}
         size="sm"
-        className="h-8 px-2 text-xs"
+        className={cn(
+          triggerVariant === 'ghost' && 'h-8 px-2 text-xs',
+          triggerClassName
+        )}
         onClick={() => setIsOpen(true)}
       >
         Pagado
