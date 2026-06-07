@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input'
 import { inviteMemberSchema } from '@/lib/form'
 import { displayToast } from '@/utils/toast-display'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PlusCircledIcon } from '@radix-ui/react-icons'
 import { IconLoader2 } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -46,18 +45,16 @@ export function InviteMemberForm ({ groupId }: { groupId: string }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
         <FormField
           control={form.control}
           name="email"
           render={({ field }: any) => (
             <FormItem className="grid gap-2 space-y-0">
-              <FormLabel>
-                Email del usuario
-              </FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="demo@example.com"
+                  placeholder="nombre@ejemplo.com"
                   {...field}
                   disabled={isLoading}
                 />
@@ -66,15 +63,8 @@ export function InviteMemberForm ({ groupId }: { groupId: string }) {
             </FormItem>
           )}
         />
-        <Button type="submit" className='w-full' disabled={isLoading}>
-          {isLoading
-            ? <IconLoader2 className='animate-spin' />
-            : (
-                <span className='flex items-center justify-center gap-2'>
-                  <PlusCircledIcon className="h-4 w-4" />
-                  Invitar miembro
-                </span>
-              )}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? <IconLoader2 className="animate-spin" /> : 'Enviar invitación'}
         </Button>
       </form>
     </Form>

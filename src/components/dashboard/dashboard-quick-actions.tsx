@@ -2,7 +2,6 @@ import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spendi
 import { CreateGroupSheet } from '@/components/groups/sheets/create-group-sheet'
 import { Icon } from '@/components/group-icons'
 import { buttonVariants } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { getUserGroups } from '@/data/apis/groups'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
@@ -12,46 +11,49 @@ export async function DashboardQuickActions () {
 
   if (groups.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Empezá acá</CardTitle>
-          <CardDescription>
-            Creá un grupo para dividir gastos con amigos, roomies o viajes.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <CreateGroupSheet className="w-full sm:w-auto" />
-        </CardContent>
-      </Card>
+      <section className="surface-panel grid gap-4 p-5">
+        <div className="grid gap-1">
+          <h2 className="text-base font-medium">Tu primer grupo</h2>
+          <p className="text-sm text-muted-foreground">
+            Creá un espacio para dividir gastos con tu gente.
+          </p>
+        </div>
+        <CreateGroupSheet className="w-fit" />
+      </section>
     )
   }
 
   return (
-    <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {groups.map((group) => (
-        <Card key={group.id} className="flex flex-col">
-          <CardHeader className="pb-3">
+    <section className="grid gap-3">
+      <h2 className="section-label">Tus grupos</h2>
+      <ul className="surface-panel divide-y divide-border">
+        {groups.map((group) => (
+          <li key={group.id} className="flex items-center gap-3 px-4 py-3.5">
             <Link
               href={`/groups/${group.id}`}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              className="flex min-w-0 flex-1 items-center gap-3 hover:opacity-80 transition-opacity"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted">
                 <Icon type={group.icon ?? 'award'} />
               </div>
-              <CardTitle className="text-base truncate">{group.name}</CardTitle>
+              <span className="truncate text-sm font-medium">{group.name}</span>
             </Link>
-          </CardHeader>
-          <CardContent className="mt-auto flex gap-2">
-            <CreateSpendingSheet groupId={group.id} variant="default" className="flex-1" />
-            <Link
-              href={`/groups/${group.id}`}
-              className={cn(buttonVariants({ variant: 'outline' }), 'flex-1')}
-            >
-              Ver grupo
-            </Link>
-          </CardContent>
-        </Card>
-      ))}
+            <div className="flex shrink-0 gap-2">
+              <CreateSpendingSheet
+                groupId={group.id}
+                variant="default"
+                className="h-8 px-3 text-xs"
+              />
+              <Link
+                href={`/groups/${group.id}`}
+                className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'h-8 px-3 text-xs')}
+              >
+                Ver
+              </Link>
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }

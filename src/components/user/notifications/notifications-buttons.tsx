@@ -25,7 +25,7 @@ export const MarkAllAsRead = () => {
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handleOnClick} disabled={isLoading}>
+    <Button variant="ghost" size="sm" onClick={handleOnClick} disabled={isLoading}>
       {isLoading ? 'Marcando…' : 'Marcar todo leído'}
     </Button>
   )

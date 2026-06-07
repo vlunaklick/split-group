@@ -1,13 +1,8 @@
-import { CreateSpendingSheet } from '@/components/spendings/sheets/create-spending-sheet'
 import { DataTable } from '@/components/data-table/data-table'
 import { DataTableToolbar } from '@/components/data-table/data-table-toolbar'
-import { SpendingIcon, SpendingTypes } from '@/components/spending-icons'
-import { Badge } from '@/components/ui/badge'
-import { buttonVariants } from '@/components/ui/button'
 import { useDataTable } from '@/hooks/use-data-table'
 import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
-import { cn } from '@/lib/utils'
 import { DataTableFilterField } from '@/types'
 import Link from 'next/link'
 import { useMemo } from 'react'
@@ -28,6 +23,7 @@ type SpendingTableType = {
 
 export function SpendingTable ({ data, groupId }: { data: any, groupId: string }) {
   const columns = useMemo(() => getColumns(), [])
+  const count = data?.total ?? data?.data?.length ?? 0
 
   const filterFields: DataTableFilterField<SpendingTableType>[] = [
     {
@@ -46,38 +42,50 @@ export function SpendingTable ({ data, groupId }: { data: any, groupId: string }
   })
 
   return (
-    <DataTable table={table}>
-      <DataTableToolbar table={table} filterFields={filterFields} />
-    </DataTable>
+    <section className="surface-panel overflow-hidden">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
+        <p className="text-sm text-muted-foreground">
+          {count} {count === 1 ? 'gasto' : 'gastos'} en el grupo
+        </p>
+      </div>
+      <div className="p-4">
+        <DataTable table={table} className="space-y-4 [&>div:nth-child(2)]:border-0">
+          <DataTableToolbar table={table} filterFields={filterFields} showViewOptions={false} />
+        </DataTable>
+      </div>
+    </section>
   )
 }
 
 export function MobileSpendingTable ({ data, groupId }: { data: SpendingTableType[], groupId: string }) {
   return (
-    <section className="flex flex-col gap-3 sm:hidden">
+    <ul className="surface-panel divide-y divide-border sm:hidden">
       {data?.map((spending) => (
-        <Link
-          key={spending.id}
-          href={`/groups/${groupId}/spendings/${spending.id}`}
-          className="flex flex-col gap-3 rounded-md border p-4 transition-colors hover:bg-muted/40"
-        >
-          <header className="flex items-center gap-3">
-            <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'shrink-0 rounded-full')}>
-              <SpendingIcon type={spending.category as SpendingTypes} className="text-muted-foreground/80" />
+        <li key={spending.id}>
+          <Link
+            href={`/groups/${groupId}/spendings/${spending.id}`}
+            className="list-row"
+          >
+            <div className="min-w-0 flex-1 grid gap-0.5">
+              <p className="truncate text-sm font-medium">{spending.name}</p>
+              <p className="truncate text-xs text-muted-foreground">
+                {spending.category}
+                {spending.createdBy && ` · ${spending.createdBy}`}
+              </p>
+              <p className="text-xs text-muted-foreground">{formatDate(spending.date)}</p>
             </div>
-            <div className="min-w-0">
-              <h3 className="truncate font-semibold">{spending.name}</h3>
-              <p className="text-sm text-muted-foreground">{formatDate(spending.date)} · {spending.createdBy ?? 'Anónimo'}</p>
+            <div className="shrink-0 text-right">
+              <span className="font-mono text-sm">{formatMoney(spending.amount)}</span>
+              {spending.hasDebt && (
+                <p className="text-xs text-destructive">Debés</p>
+              )}
+              {spending.someoneOwesYou && (
+                <p className="text-xs text-success">Te deben</p>
+              )}
             </div>
-          </header>
-
-          <div className="flex items-center justify-between gap-2">
-            <span className="font-mono font-semibold">{formatMoney(spending.amount)}</span>
-            {spending.hasDebt && <Badge variant="destructive">Debés</Badge>}
-            {spending.someoneOwesYou && <Badge variant="secondary">Te deben</Badge>}
-          </div>
-        </Link>
+          </Link>
+        </li>
       ))}
-    </section>
+    </ul>
   )
 }

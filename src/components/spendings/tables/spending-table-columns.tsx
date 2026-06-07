@@ -1,9 +1,6 @@
 'use client'
 
 import { type ColumnDef } from '@tanstack/react-table'
-
-import { SpendingIcon, SpendingTypes } from '@/components/spending-icons'
-import { Badge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/dates'
 import { SpendingTableType } from '@/lib/exports'
 import { formatMoney } from '@/lib/money'
@@ -13,52 +10,53 @@ export function getColumns (): ColumnDef<SpendingTableType>[] {
   return [
     {
       accessorKey: 'name',
-      header: () => <p>Nombre</p>,
+      header: 'Gasto',
       cell: ({ cell }) => {
         const spending = cell.row.original
         const url = `/groups/${spending.groupId}/spendings/${spending.id}`
 
         return (
-          <Link href={url} className="font-medium hover:underline">
-            {spending.name}
+          <Link href={url} className="group block min-w-0 py-0.5">
+            <span className="font-medium group-hover:text-primary transition-colors">{spending.name}</span>
+            {spending.createdBy && (
+              <span className="mt-0.5 block text-xs text-muted-foreground">{spending.createdBy}</span>
+            )}
           </Link>
         )
       }
     },
     {
       accessorKey: 'category',
-      header: () => <p>Categoría</p>,
+      header: 'Categoría',
+      cell: ({ cell }) => (
+        <span className="text-sm text-muted-foreground">{cell.row.original.category}</span>
+      )
+    },
+    {
+      accessorKey: 'date',
+      header: 'Fecha',
+      cell: ({ cell }) => (
+        <span className="text-sm">{formatDate(cell.row.original.date)}</span>
+      )
+    },
+    {
+      accessorKey: 'amount',
+      header: () => <span className="text-right block w-full">Monto</span>,
       cell: ({ cell }) => {
         const spending = cell.row.original
 
         return (
-          <div className="flex items-center gap-3">
-            <SpendingIcon type={spending.category as SpendingTypes} className="text-muted-foreground/80" />
-            {spending.category}
+          <div className="text-right">
+            <span className="font-mono text-sm">{formatMoney(spending.amount)}</span>
+            {spending.hasDebt && (
+              <span className="mt-0.5 block text-xs text-destructive">Debés</span>
+            )}
+            {spending.someoneOwesYou && (
+              <span className="mt-0.5 block text-xs text-success">Te deben</span>
+            )}
           </div>
         )
       }
-    },
-    {
-      accessorKey: 'date',
-      header: () => <p>Fecha</p>,
-      cell: ({ cell }) => formatDate(cell.row.original.date)
-    },
-    {
-      accessorKey: 'hasDebt',
-      header: () => <p>Estado</p>,
-      cell: ({ cell }) => {
-        const spending = cell.row.original
-
-        if (spending.hasDebt) return <Badge variant="destructive" className="w-max">Debés</Badge>
-        if (spending.someoneOwesYou) return <Badge variant="secondary" className="w-max">Te deben</Badge>
-        return <span className="text-muted-foreground text-sm">—</span>
-      }
-    },
-    {
-      accessorKey: 'amount',
-      header: () => <p>Monto</p>,
-      cell: ({ cell }) => <span className="font-mono">{formatMoney(cell.row.original.amount)}</span>
     }
   ]
 }

@@ -32,11 +32,11 @@ export async function GroupHome ({ groupId }: { groupId: string }) {
         }
       />
 
-      <div className="flex flex-col gap-4 md:flex-row md:gap-8">
-        <div className="order-2 md:order-1 flex-1">
+      <div className="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] lg:gap-8">
+        <div className="order-2 min-w-0 lg:order-1">
           <Spendings groupId={groupId} />
         </div>
-        <div className="order-1 md:order-2">
+        <div className="order-1 min-w-0 lg:order-2">
           <Debts groupId={groupId} />
         </div>
       </div>
@@ -60,7 +60,7 @@ export const GroupHomeSkeleton = () => {
         <Skeleton className="w-full h-10" />
       </header>
 
-      <div className="flex flex-col gap-4 md:flex-row md:gap-8">
+      <div className="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] lg:gap-8">
         <SpendingsSkeleton />
         <DebtsSkeleton />
       </div>

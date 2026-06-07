@@ -44,26 +44,24 @@ export function GiveAdminForm ({ groupId }: { groupId: string }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
         <FormField
           control={form.control}
           name="userId"
           render={({ field }) => (
-            <FormItem>
-              <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading || isLoadingMembersWithoutAdmin || membersWithoutAdmins?.length === 0}>
+            <FormItem className="grid gap-2 space-y-0">
+              <Select onValueChange={field.onChange} value={field.value} disabled={isLoading || isLoadingMembersWithoutAdmin || membersWithoutAdmins?.length === 0}>
                 <FormControl>
                   <SelectTrigger disabled={isLoading || isLoadingMembersWithoutAdmin || membersWithoutAdmins?.length === 0}>
-                    <SelectValue placeholder={isLoadingMembersWithoutAdmin ? 'Cargando miembros...' : membersWithoutAdmins?.length === 0 ? 'No hay miembros disponibles' : 'Selecciona un miembro'} />
+                    <SelectValue placeholder={isLoadingMembersWithoutAdmin ? 'Cargando…' : membersWithoutAdmins?.length === 0 ? 'Sin miembros disponibles' : 'Elegir miembro'} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                {membersWithoutAdmins && membersWithoutAdmins?.length > 0 && (
-                  membersWithoutAdmins.map((member: any) => (
+                  {membersWithoutAdmins?.map((member: any) => (
                     <SelectItem key={member.id} value={member.id}>
-                      @{member.username}
+                      {member.name ?? member.username}
                     </SelectItem>
-                  ))
-                )}
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -72,10 +70,10 @@ export function GiveAdminForm ({ groupId }: { groupId: string }) {
         />
         <Button
           type="submit"
-          className='mt-2'
+          className="w-full"
           disabled={isLoading || isLoadingMembersWithoutAdmin || membersWithoutAdmins?.length === 0}
         >
-          {isLoading ? <IconLoader2 className='animate-spin' /> : 'Otorgar permisos'}
+          {isLoading ? <IconLoader2 className="animate-spin" /> : 'Confirmar'}
         </Button>
       </form>
     </Form>

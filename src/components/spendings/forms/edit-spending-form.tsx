@@ -2,7 +2,7 @@
 
 import { updateSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
 import { DistributionMode, DistributionModeType } from '@/app/(overview)/groups/[groupId]/spendings/types'
-import { Step, Stepper } from '@/components/ui/stepper'
+import { FormStep, FormStepsProvider } from '@/components/ui/form-steps'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetGroupParticipants } from '@/data/groups'
 import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
@@ -17,7 +17,8 @@ import { z } from 'zod'
 import { DebtersForm } from './contributors-form'
 import { GeneralInfoForm } from './general-info-form'
 import { PayersForm } from './payers-form'
-import { SPENDING_STEPS } from './spending-steps'
+
+const STEP_LABELS = ['Detalle', 'Pago', 'División']
 
 function buildDebtersFromSpending (debts: { debterId: string, amount: number }[]) {
   const map = new Map<string, number>()
@@ -126,8 +127,8 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
   }
 
   return (
-    <Stepper initialStep={0} steps={SPENDING_STEPS} orientation="vertical" className="w-full">
-      <Step {...SPENDING_STEPS[0]} key={SPENDING_STEPS[0].label}>
+    <FormStepsProvider steps={STEP_LABELS}>
+      <FormStep index={0}>
         <GeneralInfoForm
           form={form}
           categories={categories}
@@ -135,8 +136,8 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
           isLoading={isLoadingCategories || isLoadingCurrencies}
           setFinalData={setFinalData}
         />
-      </Step>
-      <Step {...SPENDING_STEPS[1]} key={SPENDING_STEPS[1].label}>
+      </FormStep>
+      <FormStep index={1}>
         <PayersForm
           participants={participants}
           isLoading={isLoadingParticipants}
@@ -144,8 +145,8 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
           setFinalData={setFinalData}
           initialPayers={initialPayers}
         />
-      </Step>
-      <Step {...SPENDING_STEPS[2]} key={SPENDING_STEPS[2].label}>
+      </FormStep>
+      <FormStep index={2}>
         <DebtersForm
           participants={participants}
           isLoading={isLoadingParticipants}
@@ -160,7 +161,7 @@ export const EditSpendingForm = ({ spendId, groupId, callback }: { spendId: stri
           submitLabel="Guardar cambios"
           initialDebters={initialDebters}
         />
-      </Step>
-    </Stepper>
+      </FormStep>
+    </FormStepsProvider>
   )
 }

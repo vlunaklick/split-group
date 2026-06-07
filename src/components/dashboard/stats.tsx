@@ -1,175 +1,88 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useGetMonthlySpent, useGetTotalDebt, useGetTotalRevenue, useGetWeeklySpent } from '@/data/dashboard'
+import { useGetTotalDebt, useGetTotalRevenue } from '@/data/dashboard'
 import { useGetDolarValue } from '@/data/money'
 import { formatMoney } from '@/lib/money'
-import { IconCashBanknote, IconMoneybag, IconTransferIn, IconTransferOut } from '@tabler/icons-react'
+import { cn } from '@/lib/utils'
 
-export const WeeklySpent = () => {
-  const { data: defaultData, isLoading } = useGetWeeklySpent()
-
-  const totalSpentLastWeek = defaultData?.totalSpentLastWeek ?? 0
-  const totalSpentThisWeek = defaultData?.totalSpentThisWeek ?? 0
-
-  const percentageDifference = totalSpentLastWeek !== 0
-    ? ((totalSpentThisWeek - totalSpentLastWeek) / totalSpentLastWeek) * 100
-    : totalSpentThisWeek > 0
-      ? 100
-      : 0
-
-  const { data: dolarValue } = useGetDolarValue()
-
-  const currency = localStorage.getItem('currency') ?? 'Peso Argentino'
-
-  const total = (currency === 'Peso Argentino'
-    ? defaultData?.totalSpentThisWeek
-    : (defaultData?.totalSpentThisWeek / dolarValue?.compra)) ??
-    0
-
-  const value = formatMoney(total)
-
-  if (isLoading) {
-    return <StatCardSkeleton />
-  }
-
+function StatBlock ({
+  label,
+  value,
+  hint,
+  tone
+}: {
+  label: string
+  value: string
+  hint?: string
+  tone?: 'negative' | 'positive'
+}) {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Esta semana</CardTitle>
-        <IconCashBanknote className="h-4 w-4 text-muted-foreground/60" />
-      </CardHeader>
-      <CardContent>
-        <div className="font-mono text-2xl font-normal tracking-tight">{value}</div>
-        <p className="text-xs text-muted-foreground/60">
-          {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde la semana pasada
-        </p>
-      </CardContent>
-    </Card>
-  )
-}
-
-export const MonthlySpent = () => {
-  const { data: defaultData = { totalSpentThisMonth: 0, totalSpentLastMonth: 0 }, isLoading } = useGetMonthlySpent()
-
-  const totalSpentLastMonth = defaultData?.totalSpentLastMonth ?? 0
-  const totalSpentThisMonth = defaultData?.totalSpentThisMonth ?? 0
-
-  const percentageDifference = totalSpentLastMonth !== 0
-    ? ((totalSpentThisMonth - totalSpentLastMonth) / totalSpentLastMonth) * 100
-    : totalSpentThisMonth > 0
-      ? 100
-      : 0
-
-  const { data: dolarValue } = useGetDolarValue()
-
-  const currency = localStorage.getItem('currency') ?? 'Peso Argentino'
-
-  const total = (currency === 'Peso Argentino'
-    ? defaultData?.totalSpentThisMonth
-    : (defaultData?.totalSpentThisMonth / dolarValue?.compra)) ??
-    0
-
-  const value = formatMoney(total)
-
-  if (isLoading) {
-    return <StatCardSkeleton />
-  }
-
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Este mes</CardTitle>
-        <IconMoneybag className="h-4 w-4 text-muted-foreground/60" />
-      </CardHeader>
-      <CardContent>
-        <p className="font-mono text-2xl font-normal tracking-tight">{value}</p>
-        <p className="text-xs text-muted-foreground/60">
-          {percentageDifference > 0 ? '+' : ''}{percentageDifference.toFixed(1)}% desde el mes pasado
-        </p>
-      </CardContent>
-    </Card>
+    <div className="space-y-1 p-5">
+      <p className="section-label">{label}</p>
+      <p className={cn(
+        'font-mono text-2xl tracking-tight',
+        tone === 'negative' && 'text-destructive',
+        tone === 'positive' && 'text-success'
+      )}>
+        {value}
+      </p>
+      {hint && (
+        <p className="text-xs text-muted-foreground">{hint}</p>
+      )}
+    </div>
   )
 }
 
 export const TotalDebt = () => {
   const { data, isLoading } = useGetTotalDebt()
-
   const { data: dolarValue } = useGetDolarValue()
-
   const currency = localStorage.getItem('currency') ?? 'Peso Argentino'
 
   const total = (currency === 'Peso Argentino'
     ? data?.totalDebt
-    : (data?.totalDebt / dolarValue?.compra)) ??
-    0
+    : (data?.totalDebt / dolarValue?.compra)) ?? 0
 
-  const value = formatMoney(total)
-
-  if (isLoading) {
-    return <StatCardSkeleton />
-  }
+  if (isLoading) return <StatBlockSkeleton />
 
   return (
-    <Card className="border-destructive/20">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Debes</CardTitle>
-        <IconTransferOut className="h-4 w-4 text-destructive/70" />
-      </CardHeader>
-      <CardContent>
-        <div className="font-mono text-2xl font-normal tracking-tight text-destructive">{value}</div>
-        <p className="text-xs text-muted-foreground/60">Pendiente de pagar en todos tus grupos</p>
-      </CardContent>
-    </Card>
+    <StatBlock
+      label="Debés"
+      value={formatMoney(total)}
+      hint="Pendiente en todos tus grupos"
+      tone="negative"
+    />
   )
 }
 
 export const TotalRevenue = () => {
   const { data, isLoading } = useGetTotalRevenue()
-
   const { data: dolarValue } = useGetDolarValue()
-
   const currency = localStorage.getItem('currency') ?? 'Peso Argentino'
 
   const total = (currency === 'Peso Argentino'
     ? data?.totalRevenue
-    : (data?.totalRevenue / dolarValue?.compra)) ??
-    0
+    : (data?.totalRevenue / dolarValue?.compra)) ?? 0
 
-  const value = formatMoney(total)
-
-  if (isLoading) {
-    return <StatCardSkeleton />
-  }
+  if (isLoading) return <StatBlockSkeleton />
 
   return (
-    <Card className="border-success/20">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Te deben</CardTitle>
-        <IconTransferIn className="h-4 w-4 text-success/70" />
-      </CardHeader>
-      <CardContent>
-        <div className="font-mono text-2xl font-normal tracking-tight text-success">{value}</div>
-        <p className="text-xs text-muted-foreground/60">Pendiente de cobrar en todos tus grupos</p>
-      </CardContent>
-    </Card>
+    <StatBlock
+      label="Te deben"
+      value={formatMoney(total)}
+      hint="Por cobrar en todos tus grupos"
+      tone="positive"
+    />
   )
 }
 
-export const StatCardSkeleton = () => {
+function StatBlockSkeleton () {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <Skeleton className="h-4 w-4" />
-        <IconCashBanknote className="h-4 w-4 text-muted-foreground/60" />
-      </CardHeader>
-      <CardContent>
-        <div className="animate-pulse space-y-1">
-          <Skeleton className="h-8 w-20" />
-          <Skeleton className="h-3 w-20" />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="space-y-2 p-5">
+      <Skeleton className="h-3 w-12" />
+      <Skeleton className="h-8 w-24" />
+    </div>
   )
 }
+
+export const StatCardSkeleton = StatBlockSkeleton

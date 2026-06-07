@@ -4,13 +4,11 @@ import { DistributionMode, DistributionModeType } from '@/app/(overview)/groups/
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { useStepper } from '@/components/ui/stepper'
+import { useFormSteps } from '@/components/ui/form-steps'
 import { formatMoney } from '@/lib/money'
 import { useEffect, useRef, useState } from 'react'
 import { EqualDistributionForm } from './equal-distribution-form'
 import { CustomDistributionForm } from './custom-distribution-form'
-import { Badge } from '@/components/ui/badge'
 
 export const DebtersForm = ({
   participants,
@@ -39,7 +37,7 @@ export const DebtersForm = ({
   submitLabel?: string
   initialDebters?: { userId: string, amount: number }[]
 }) => {
-  const { prevStep } = useStepper()
+  const { prevStep } = useFormSteps()
   const [error, setError] = useState<string | null>(null)
   const [debters, setDebters] = useState<{ userId: string, amount: number }[]>(initialDebters ?? [])
   const seededDebters = useRef(Boolean(initialDebters?.length))
@@ -123,15 +121,15 @@ export const DebtersForm = ({
 
   return (
     <div className="grid gap-4">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-baseline justify-between gap-2">
         <p className="text-sm text-muted-foreground">A repartir</p>
-        <Badge variant="secondary" className="font-mono">{formatMoney(totalAmount)}</Badge>
+        <p className="font-mono text-sm">{formatMoney(totalAmount)}</p>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <Label className="shrink-0">Modo</Label>
+        <Label className="shrink-0 text-muted-foreground">Modo</Label>
         <Select onValueChange={changeModeSelect} value={mode}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[160px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -140,13 +138,11 @@ export const DebtersForm = ({
           </SelectContent>
         </Select>
         {mode === DistributionMode.EQUAL && (
-          <Button type="button" variant="secondary" size="sm" onClick={selectAllEligible} disabled={isLoading}>
-            Todos excepto quien pagó
+          <Button type="button" variant="ghost" size="sm" onClick={selectAllEligible} disabled={isLoading}>
+            Todos menos quien pagó
           </Button>
         )}
       </div>
-
-      <Separator />
 
       {mode === DistributionMode.EQUAL && (
         <EqualDistributionForm

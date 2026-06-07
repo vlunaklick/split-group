@@ -5,7 +5,7 @@ import { useGetSpendingsTable } from '@/data/spendings'
 import { MobileSpendingTable, SpendingTable } from '../tables/spending-table'
 import { GetSpendingsSchema } from '@/lib/validations'
 import { useEffect } from 'react'
-import { DataTableSkeleton } from '@/components/data-table/data-table-skeleton'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export const SpendingsList = ({ groupId, searchParams }: { groupId: string, searchParams: GetSpendingsSchema }) => {
   const { data, error, mutate, isLoading } = useGetSpendingsTable({ groupId, searchParams })
@@ -18,22 +18,27 @@ export const SpendingsList = ({ groupId, searchParams }: { groupId: string, sear
 
   if (isLoading || !data) {
     return (
-      <DataTableSkeleton
-        columnCount={5}
-        rowCount={10}
-        searchableColumnCount={1}
-        showViewOptions
-        cellWidths={['auto', 'auto', 'auto', 'auto', 'auto']}
-        withPagination
-        shrinkZero
-      />
+      <div className="grid gap-3">
+        <Skeleton className="h-9 w-full max-w-xs" />
+        <ul className="divide-y divide-border rounded-lg border border-border">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <li key={i} className="flex items-center gap-3 px-4 py-3">
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+              <Skeleton className="h-4 w-16" />
+            </li>
+          ))}
+        </ul>
+      </div>
     )
   }
 
   if (data.data?.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed py-12 text-center">
-        <p className="text-muted-foreground">No hay gastos que coincidan</p>
+      <div className="flex flex-col items-start gap-3 py-8">
+        <p className="text-sm text-muted-foreground">No hay gastos todavía.</p>
         <CreateSpendingSheet groupId={groupId} variant="default" />
       </div>
     )

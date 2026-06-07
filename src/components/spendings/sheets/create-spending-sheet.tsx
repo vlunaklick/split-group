@@ -2,17 +2,21 @@
 
 import { Button } from '@/components/ui/button'
 import { ResponsiveSheet } from '@/components/responsive-sheet'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { CreateSpendingForm } from '../forms/create-spending-form'
 
 export function CreateSpendingSheet ({
   groupId,
   className,
-  variant = 'outline'
+  variant = 'outline',
+  label = 'Crear gasto',
+  icon
 }: {
   groupId: string
   className?: string
   variant?: 'outline' | 'default'
+  label?: string
+  icon?: ReactNode
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [formKey, setFormKey] = useState(0)
@@ -32,10 +36,10 @@ export function CreateSpendingSheet ({
       open={isOpen}
       onOpenChange={handleOpenChange}
       title="Crear gasto"
-      description="Nombre, monto y quién pagó — listo en tres pasos."
+      description="Nombre, monto y quién pagó."
       trigger={
-        <Button variant={variant} className={className}>
-          Crear gasto
+        <Button variant={variant} className={className} aria-label={label || 'Crear gasto'}>
+          {icon ?? label}
         </Button>
       }
     >

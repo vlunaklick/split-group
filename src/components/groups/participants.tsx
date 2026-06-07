@@ -20,6 +20,7 @@ export async function Participants ({ groupId }: { groupId: string }) {
         groupId={groupId}
         groupName={data.group?.name ?? ''}
         title="Participantes"
+        description="Miembros del grupo y quién puede administrarlo."
         actions={
           <>
             {!data.isOwner && (
@@ -32,9 +33,17 @@ export async function Participants ({ groupId }: { groupId: string }) {
         }
       />
 
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <ParticipantsList groupId={groupId} isOwner={data.isOwner} isAdmin={data.isAdmin ?? false} userId={data.userId ?? ''} />
-        <AdminsList groupId={groupId} isOwner={data.isOwner} userId={data.userId ?? ''} />
+      <div className="w-full max-w-3xl">
+        <div className="surface-panel overflow-hidden">
+          <ParticipantsList
+            embedded
+            groupId={groupId}
+            isOwner={data.isOwner}
+            isAdmin={data.isAdmin ?? false}
+            userId={data.userId ?? ''}
+          />
+          <AdminsList embedded groupId={groupId} isOwner={data.isOwner} userId={data.userId ?? ''} />
+        </div>
       </div>
     </>
   )
@@ -48,9 +57,11 @@ export const ParticipantsSkeleton = () => {
         <Skeleton className="w-full h-10" />
       </header>
 
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <ParticipantsListSkeleton />
-        <AdminsListSkeleton />
+      <div className="w-full max-w-3xl">
+        <div className="surface-panel overflow-hidden">
+          <ParticipantsListSkeleton embedded />
+          <AdminsListSkeleton embedded />
+        </div>
       </div>
     </>
   )

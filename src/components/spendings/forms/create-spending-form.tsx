@@ -2,7 +2,7 @@
 
 import { createSpending } from '@/app/(overview)/groups/[groupId]/spendings/actions'
 import { DistributionModeType } from '@/app/(overview)/groups/[groupId]/spendings/types'
-import { Step, Stepper } from '@/components/ui/stepper'
+import { FormStep, FormStepsProvider } from '@/components/ui/form-steps'
 import { useGetGroupParticipants } from '@/data/groups'
 import { useGetAvailableCurrencies, useGetCategories } from '@/data/settings'
 import { createSpendingSchema } from '@/lib/form'
@@ -15,7 +15,8 @@ import { z } from 'zod'
 import { DebtersForm } from './contributors-form'
 import { GeneralInfoForm } from './general-info-form'
 import { PayersForm } from './payers-form'
-import { SPENDING_STEPS } from './spending-steps'
+
+const STEP_LABELS = ['Detalle', 'Pago', 'División']
 
 export const CreateSpendingForm = ({
   groupId,
@@ -65,9 +66,36 @@ export const CreateSpendingForm = ({
     }
   }
 
+  const handleExpressSubmit = async (spendingData: any) => {
+    if (!participants?.length || mode !== 'equal') {
+      setFinalData((prev: any) => ({ ...prev, ...spendingData }))
+      return false
+    }
+
+    const payers = spendingData.payers ?? []
+    if (payers.length !== 1 || payers[0].amount !== spendingData.amount) {
+      setFinalData((prev: any) => ({ ...prev, ...spendingData }))
+      return false
+    }
+
+    const payerIds = new Set(payers.map((p: { userId: string }) => p.userId))
+    const eligible = participants.filter((p: { id: string }) => !payerIds.has(p.id))
+
+    if (eligible.length === 0) {
+      setFinalData((prev: any) => ({ ...prev, ...spendingData }))
+      return false
+    }
+
+    await createSpendingFinalStep({
+      ...spendingData,
+      debters: eligible.map((p: { id: string }) => ({ userId: p.id, amount: 0 }))
+    })
+    return true
+  }
+
   return (
-    <Stepper initialStep={0} steps={SPENDING_STEPS} orientation='vertical'>
-      <Step {...SPENDING_STEPS[0]} key={SPENDING_STEPS[0].label}>
+    <FormStepsProvider steps={STEP_LABELS}>
+      <FormStep index={0}>
         <GeneralInfoForm
           form={form}
           categories={categories}
@@ -75,16 +103,19 @@ export const CreateSpendingForm = ({
           isLoading={isLoadingCategories || isLoadingCurrencies}
           setFinalData={setFinalData}
         />
-      </Step>
-      <Step {...SPENDING_STEPS[1]} key={SPENDING_STEPS[1].label}>
+      </FormStep>
+      <FormStep index={1}>
         <PayersForm
           participants={participants}
           isLoading={isLoadingParticipants}
           totalAmount={finalData.amount}
+          finalData={finalData}
           setFinalData={setFinalData}
+          onExpressSubmit={handleExpressSubmit}
+          isSubmitting={isLoading}
         />
-      </Step>
-      <Step {...SPENDING_STEPS[2]} key={SPENDING_STEPS[2].label}>
+      </FormStep>
+      <FormStep index={2}>
         <DebtersForm
           participants={participants}
           isLoading={isLoadingParticipants}
@@ -98,7 +129,7 @@ export const CreateSpendingForm = ({
           isSubmitting={isLoading}
           submitLabel="Crear gasto"
         />
-      </Step>
-    </Stepper>
+      </FormStep>
+    </FormStepsProvider>
   )
 }

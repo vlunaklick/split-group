@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { SheetSection } from '@/components/ui/form-steps'
 import { ResponsiveSheet } from '@/components/responsive-sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { GenerateInviteForm } from '../forms/generate-invite-form'
@@ -12,7 +13,8 @@ export function InvitesSheet ({ className, groupId }: { className?: string, grou
   return (
     <ResponsiveSheet
       title="Invitaciones"
-      description="Invita por email o comparte un enlace."
+      description="Sumá gente por email o compartí un enlace."
+      sheetWidth="32rem"
       trigger={
         <Button variant="outline" className={className}>
           Invitaciones
@@ -24,16 +26,19 @@ export function InvitesSheet ({ className, groupId }: { className?: string, grou
           <TabsTrigger value="invite">Por email</TabsTrigger>
           <TabsTrigger value="link">Enlace</TabsTrigger>
         </TabsList>
-        <TabsContent value="invite" className="mt-4">
+        <TabsContent value="invite" className="mt-5 space-y-6">
           <InviteMemberForm groupId={groupId} />
+          <SheetSection title="Invitaciones enviadas">
+            <MembersInvitedList groupId={groupId} embedded />
+          </SheetSection>
         </TabsContent>
-        <TabsContent value="link" className="mt-4">
+        <TabsContent value="link" className="mt-5 space-y-6">
           <GenerateInviteForm groupId={groupId} />
+          <SheetSection title="Enlaces activos">
+            <GeneratedInvitesList groupId={groupId} embedded />
+          </SheetSection>
         </TabsContent>
       </Tabs>
-
-      <MembersInvitedList groupId={groupId} />
-      <GeneratedInvitesList groupId={groupId} />
     </ResponsiveSheet>
   )
 }

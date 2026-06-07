@@ -24,7 +24,7 @@ export function ThemeSwitcher ({ className }: { className?: string }) {
       onClick={toggleTheme}
       variant="ghost"
       size="icon"
-      className={cn(className)}
+      className={cn('size-8 shrink-0 text-muted-foreground focus-visible:ring-1 focus-visible:ring-offset-0', className)}
       aria-label={isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
     >
       {!mounted

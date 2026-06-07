@@ -19,7 +19,7 @@ export const UserNav = async ({ className }: { className?: string }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="secondary" size="icon" className={cn('rounded-full', className)}>
+        <Button variant="ghost" size="icon" className={cn('size-8 shrink-0 text-muted-foreground focus-visible:ring-1 focus-visible:ring-offset-0', className)}>
           <span>
             {session?.user?.name[0].toUpperCase()}
           </span>
@@ -60,7 +60,7 @@ export const UserNav = async ({ className }: { className?: string }) => {
 
 export const UserNavSkeleton = () => {
   return (
-    <Button variant="secondary" size="icon" className="rounded-full ml-auto animate-pulse">
+    <Button variant="ghost" size="icon" className="rounded-full ml-auto animate-pulse">
       <span className="sr-only">Alternar menú de usuario</span>
     </Button>
   )

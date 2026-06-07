@@ -47,7 +47,7 @@ export function ResponsiveSheet ({
   children,
   open,
   onOpenChange,
-  sheetWidth = '550px',
+  sheetWidth = '28rem',
   sheetClassName,
   contentClassName,
   headerExtra,
@@ -64,17 +64,24 @@ export function ResponsiveSheet ({
           {trigger}
         </SheetTrigger>
         <SheetContent
-          style={{ width: sheetWidth }}
-          className={cn('flex flex-col gap-4', sheetClassName)}
+          style={{ width: sheetWidth, maxWidth: '100vw' }}
+          className={cn('flex h-full flex-col gap-0 p-0 sm:max-w-lg', sheetClassName)}
         >
-          <SheetHeader className={cn(headerExtra && 'flex flex-row items-center justify-between space-y-0')}>
-            <div className="space-y-1.5">
-              <SheetTitle>{title}</SheetTitle>
-              {description && <SheetDescription>{description}</SheetDescription>}
+          <SheetHeader
+            className={cn(
+              'shrink-0 space-y-1 border-b border-border px-6 py-5 pr-14 text-left',
+              headerExtra && 'flex flex-row items-start justify-between space-y-0'
+            )}
+          >
+            <div className="space-y-1">
+              <SheetTitle className="text-base font-medium leading-snug">{title}</SheetTitle>
+              {description && (
+                <SheetDescription className="text-sm leading-relaxed">{description}</SheetDescription>
+              )}
             </div>
             {headerExtra}
           </SheetHeader>
-          <div className={cn('overflow-y-auto flex flex-col gap-4 flex-1', contentClassName)}>
+          <div className={cn('min-h-0 flex-1 overflow-y-auto bg-canvas-soft/40 px-6 py-5', contentClassName)}>
             {children}
           </div>
         </SheetContent>
@@ -87,22 +94,27 @@ export function ResponsiveSheet ({
       <DrawerTrigger asChild>
         {trigger}
       </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader className={cn('text-left', headerExtra && 'flex flex-row items-start justify-between')}>
+      <DrawerContent className="max-h-[92dvh]">
+        <DrawerHeader
+          className={cn(
+            'border-b border-border px-4 pb-4 pt-2 text-left',
+            headerExtra && 'flex flex-row items-start justify-between'
+          )}
+        >
           <div>
-            <DrawerTitle>{title}</DrawerTitle>
+            <DrawerTitle className="text-base font-medium">{title}</DrawerTitle>
             {description && <DrawerDescription>{description}</DrawerDescription>}
           </div>
           {headerExtra}
         </DrawerHeader>
         <div
-          className={cn('px-4 overflow-y-auto flex flex-col gap-4', contentClassName)}
+          className={cn('overflow-y-auto px-4 py-5', contentClassName)}
           style={{ maxHeight: drawerMaxHeight }}
         >
           {children}
         </div>
         {showMobileCancel && (
-          <DrawerFooter>
+          <DrawerFooter className="border-t border-border pt-3">
             <DrawerClose asChild>
               <Button variant="outline" className="w-full">{mobileCancelLabel}</Button>
             </DrawerClose>

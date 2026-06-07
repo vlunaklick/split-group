@@ -24,7 +24,7 @@
     --muted-foreground: 44 6% 48%;
 
     /* UI */
-    --secondary: 0 0% 100%;
+    --secondary: 60 20% 98%;
     --secondary-foreground: 48 8% 13%;
     --accent: 60 20% 98%;
     --accent-foreground: 48 8% 13%;
@@ -111,5 +111,23 @@
 
   h1, h2, h3, h4 {
     @apply font-normal tracking-tight text-foreground;
+  }
+}
+
+@layer utilities {
+  .surface-panel {
+    @apply rounded-lg border border-border bg-card;
+  }
+
+  .surface-minimal {
+    @apply rounded-lg border border-border bg-card/60;
+  }
+
+  .list-row {
+    @apply flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/50;
+  }
+
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-wider text-muted-foreground;
   }
 }

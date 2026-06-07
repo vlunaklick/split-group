@@ -1,11 +1,7 @@
-import { SpendingIcon } from '@/components/spending-icons'
-import { buttonVariants } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getLatestSpendings } from '@/data/apis/dashboard'
 import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
-import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { SpendingWithOwnerAndGroup } from '../../app/(overview)/dashboard/types'
 
@@ -13,27 +9,23 @@ export const LatestsSpendings = async () => {
   const latestSpendings = await getLatestSpendings()
 
   return (
-    <Card className='xl:col-span-2 h-min'>
-      <CardHeader>
-        <CardTitle>Últimos gastos</CardTitle>
-        <CardDescription>
-          Tocá un gasto para ver el detalle
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {latestSpendings?.length === 0 && (
-          <p className="text-sm text-muted-foreground/50">No hay gastos registrados</p>
-        )}
+    <section className="grid gap-3">
+      <h2 className="section-label">Reciente</h2>
 
-        {latestSpendings && latestSpendings?.length > 0 && (
-          <div className="grid gap-4">
-            {latestSpendings?.map(spending => (
-              <SpendingItem key={spending.id} spending={spending} />
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      {!latestSpendings?.length && (
+        <p className="text-sm text-muted-foreground">Sin gastos todavía.</p>
+      )}
+
+      {latestSpendings && latestSpendings.length > 0 && (
+        <ul className="surface-panel divide-y divide-border">
+          {latestSpendings.map((spending) => (
+            <li key={spending.id}>
+              <SpendingItem spending={spending} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   )
 }
 
@@ -41,57 +33,34 @@ const SpendingItem = ({ spending }: { spending: SpendingWithOwnerAndGroup }) => 
   return (
     <Link
       href={`/groups/${spending.groupId}/spendings/${spending.id}`}
-      className="flex items-center gap-4 rounded-md p-2 -mx-2 transition-colors hover:bg-muted/50"
+      className="list-row px-4"
     >
-      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full shrink-0')}>
-        <SpendingIcon type={spending.category.name as 'Comida' | 'Transporte' | 'Entretenimiento' | 'Salud' | 'Educación' | 'Otros'} />
-      </div>
-      <div className="grid gap-1 min-w-0">
-        <p className="text-sm font-medium leading-none truncate">
-          {spending.name}
-        </p>
-        <p className="text-sm text-muted-foreground/50">
-          {formatDate(spending.createdAt)} · {spending.group.name}
+      <div className="min-w-0 flex-1 grid gap-0.5">
+        <p className="truncate text-sm font-medium">{spending.name}</p>
+        <p className="truncate text-xs text-muted-foreground">
+          {spending.group.name} · {formatDate(spending.createdAt)}
         </p>
       </div>
-      <div className="ml-auto font-medium shrink-0">{formatMoney(spending.value)}</div>
+      <span className="shrink-0 font-mono text-sm">{formatMoney(spending.value)}</span>
     </Link>
-  )
-}
-
-const SpendingItemSkeleton = () => {
-  return (
-    <div className="flex items-center gap-4">
-      <div className={cn(buttonVariants({ variant: 'secondary', size: 'icon' }), 'rounded-full shrink-0')}>
-        <Skeleton className="w-8 h-8 rounded-full" />
-      </div>
-      <div className="grid gap-1">
-        <Skeleton className="w-20 h-4" />
-        <Skeleton className="w-20 h-4" />
-      </div>
-      <div className="ml-auto font-medium">
-        <Skeleton className="w-8 h-4" />
-      </div>
-    </div>
   )
 }
 
 export function LatestsSpendingsSkeleton () {
   return (
-    <Card className='xl:col-span-2 h-min'>
-      <CardHeader>
-        <CardTitle>Últimos gastos</CardTitle>
-        <CardDescription>
-          Tocá un gasto para ver el detalle
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-4">
-          <SpendingItemSkeleton />
-          <SpendingItemSkeleton />
-          <SpendingItemSkeleton />
-        </div>
-      </CardContent>
-    </Card>
+    <section className="grid gap-3">
+      <Skeleton className="h-3 w-16" />
+      <ul className="surface-panel divide-y divide-border">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <li key={i} className="flex items-center gap-3 px-4 py-3">
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-24" />
+            </div>
+            <Skeleton className="h-4 w-16" />
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }

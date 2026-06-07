@@ -20,6 +20,7 @@ export async function Spendings ({ groupId, searchParams }: { groupId: string, s
         groupId={groupId}
         groupName={data.group.name}
         title="Gastos"
+        description="Historial completo del grupo. Tocá un gasto para ver el detalle."
         actions={<CreateSpendingSheet groupId={groupId} variant="default" />}
       />
 
@@ -39,11 +40,11 @@ export const SpendingsPageSkeleton = () => {
       </header>
 
       <DataTableSkeleton
-        columnCount={5}
-        rowCount={10}
+        columnCount={4}
+        rowCount={8}
         searchableColumnCount={1}
-        showViewOptions
-        cellWidths={['auto', 'auto', 'auto', 'auto', 'auto']}
+        showViewOptions={false}
+        cellWidths={['auto', 'auto', 'auto']}
         withPagination
         shrinkZero
       />

@@ -15,11 +15,13 @@ interface DataTableToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   table: Table<TData>
   filterFields?: DataTableFilterField<TData>[]
+  showViewOptions?: boolean
 }
 
 export function DataTableToolbar<TData> ({
   table,
   filterFields = [],
+  showViewOptions = true,
   children,
   className,
   ...props
@@ -36,7 +38,7 @@ export function DataTableToolbar<TData> ({
   return (
     <div
       className={cn(
-        'flex w-full items-center justify-between space-x-2 overflow-auto p-1',
+        'flex w-full items-center justify-between gap-2 overflow-auto',
         className
       )}
       {...props}
@@ -59,7 +61,7 @@ export function DataTableToolbar<TData> ({
                       .getColumn(String(column.value))
                       ?.setFilterValue(event.target.value)
                   }
-                  className="h-8 w-40 lg:w-64"
+                  className="h-9 w-full max-w-sm"
                 />
               )
           )}
@@ -91,7 +93,7 @@ export function DataTableToolbar<TData> ({
       </div>
       <div className="flex items-center gap-2">
         {children}
-        <DataTableViewOptions table={table} />
+        {showViewOptions && <DataTableViewOptions table={table} />}
       </div>
     </div>
   )

@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useStepper } from '@/components/ui/stepper'
+import { useFormSteps } from '@/components/ui/form-steps'
 import { formatDate } from '@/lib/dates'
 import { spendingSchema } from '@/lib/form'
 import { cn } from '@/lib/utils'
@@ -25,8 +25,9 @@ interface ExpenseInfoFormProps {
 }
 
 export function GeneralInfoForm ({ categories, currencies, isLoading, setFinalData, form }: ExpenseInfoFormProps) {
-  const { nextStep } = useStepper()
+  const { nextStep } = useFormSteps()
   const [showDescription, setShowDescription] = useState(false)
+  const [showDate, setShowDate] = useState(false)
   const singleCurrency = currencies?.length === 1
 
   useEffect(() => {
@@ -149,38 +150,46 @@ export function GeneralInfoForm ({ categories, currencies, isLoading, setFinalDa
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="date"
-          render={({ field }: any) => (
-            <FormItem className="flex flex-col w-full">
-              <FormLabel>Fecha</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      className={cn('w-full pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
-                    >
-                      {field.value ? formatDate(field.value) : 'Hoy'}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) => date > new Date() || date < new Date('2021-01-01')}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {showDate
+          ? (
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }: any) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel>Fecha</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn('w-full pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
+                        >
+                          {field.value ? formatDate(field.value) : 'Hoy'}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date > new Date() || date < new Date('2021-01-01')}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            )
+          : (
+            <Button type="button" variant="link" className="h-auto justify-start p-0 text-muted-foreground" onClick={() => setShowDate(true)}>
+              + Cambiar fecha
+            </Button>
+            )}
 
         <FormField
           control={form.control}
@@ -197,8 +206,8 @@ export function GeneralInfoForm ({ categories, currencies, isLoading, setFinalDa
                 </FormItem>
                 )
               : (
-                <Button type="button" variant="link" className="h-auto justify-start p-0" onClick={() => setShowDescription(true)}>
-                  + Agregar nota
+                <Button type="button" variant="link" className="h-auto justify-start p-0 text-muted-foreground" onClick={() => setShowDescription(true)}>
+                  + Nota
                 </Button>
                 )
           )}

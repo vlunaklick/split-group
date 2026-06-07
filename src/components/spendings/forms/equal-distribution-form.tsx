@@ -1,8 +1,8 @@
 'use client'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { formatMoney } from '@/lib/money'
 import { User } from '@prisma/client'
 
 interface EqualDistributionFormProps {
@@ -28,14 +28,14 @@ export function EqualDistributionForm ({
   const participantLabel = (participant: User) => participant.name ?? participant.username
 
   return (
-    <>
+    <div className="grid gap-4">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="flex gap-2 w-full" disabled={isLoading}>
-            Seleccionar participantes
+          <Button variant="outline" className="w-full justify-between font-normal" disabled={isLoading}>
+            {debters.length > 0 ? `${debters.length} participante${debters.length > 1 ? 's' : ''}` : 'Elegir participantes'}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-full max-w-[320px]" onCloseAutoFocus={(e) => e.preventDefault()}>
+        <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" onCloseAutoFocus={(e) => e.preventDefault()}>
           <DropdownMenuLabel>Participantes</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {participants?.map((participant: User) => {
@@ -58,27 +58,22 @@ export function EqualDistributionForm ({
       </DropdownMenu>
 
       {debters.length > 0 && (
-        <div className="grid gap-4 mt-4">
+        <ul className="surface-panel divide-y divide-border">
           {debters.map((debter: any) => {
             const participant = participants?.find((p: User) => p.id === debter.userId)
             const label = participant ? participantLabel(participant) : '?'
 
             return (
-              <div key={debter.userId} className="flex gap-4 items-center p-2">
-                <Avatar>
-                  <AvatarFallback>{(label || '?')[0]}</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-1 flex-1">
-                  <span>{label}</span>
-                  <span className="text-sm text-muted-foreground">
-                    ${debter.amount} de ${totalAmount}
-                  </span>
-                </div>
-              </div>
+              <li key={debter.userId} className="flex items-center justify-between gap-3 px-4 py-3">
+                <span className="truncate text-sm">{label}</span>
+                <span className="shrink-0 font-mono text-sm text-muted-foreground">
+                  {formatMoney(debter.amount)}
+                </span>
+              </li>
             )
           })}
-        </div>
+        </ul>
       )}
-    </>
+    </div>
   )
 }

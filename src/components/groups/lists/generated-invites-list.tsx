@@ -1,5 +1,6 @@
 import { removeInvitationLink } from '@/app/(overview)/groups/[groupId]/participants/actions'
 import { useGetInvitationLink } from '@/data/groups'
+import { cn } from '@/lib/utils'
 import { displayToast } from '@/utils/toast-display'
 import { CheckCircle, Copy, X } from 'lucide-react'
 import { useState } from 'react'
@@ -8,10 +9,10 @@ import { Button } from '../../ui/button'
 import { Progress } from '../../ui/progress'
 import { Skeleton } from '../../ui/skeleton'
 
-export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
+export function GeneratedInvitesList ({ groupId, embedded = false }: { groupId: string, embedded?: boolean }) {
   const [isLoading, setIsLoading] = useState(false)
   const { mutate } = useSWRConfig()
-  const [copiedLink, setCopiedLink] = useState<string | null>(null)
+  const [copiedCode, setCopiedCode] = useState<string | null>(null)
 
   const { data: invitations, isLoading: isLoadingMembers } = useGetInvitationLink({ groupId })
 
@@ -20,113 +21,94 @@ export function GeneratedInvitesList ({ groupId }: { groupId: string }) {
     try {
       await removeInvitationLink(code, groupId)
       mutate(['/api/groups/invitation-link', groupId])
+      displayToast('Enlace eliminado', 'success')
     } catch (error) {
-      displayToast('Hubo un error al enviar la invitación al miembro.', 'error')
-      return
+      displayToast('No se pudo eliminar el enlace', 'error')
+    } finally {
+      setIsLoading(false)
     }
-
-    displayToast('Invitación eliminada correctamente.', 'success')
-    setIsLoading(false)
   }
 
   const handleCopyLink = async (code: string) => {
     try {
       const url = `${window.location.origin}/join/${code}`
       await navigator.clipboard.writeText(url)
-      displayToast('Enlace copiado al portapapeles.', 'success')
-      setCopiedLink(url)
-      setTimeout(() => {
-        setCopiedLink(null)
-      }, 3000)
+      displayToast('Enlace copiado', 'success')
+      setCopiedCode(code)
+      setTimeout(() => setCopiedCode(null), 3000)
     } catch (error) {
-      displayToast('Hubo un error al copiar el enlace al portapapeles.', 'error')
+      displayToast('No se pudo copiar el enlace', 'error')
     }
   }
 
+  const listClassName = cn(
+    'divide-y divide-border',
+    embedded ? 'overflow-hidden rounded-md border border-border bg-card' : 'surface-panel'
+  )
+
+  if (isLoadingMembers) {
+    return (
+      <ul className={listClassName}>
+        <RowSkeleton />
+      </ul>
+    )
+  }
+
+  if (invitations?.length === 0) {
+    return <p className="text-sm text-muted-foreground">No hay enlaces generados.</p>
+  }
+
   return (
-    <article>
-      <header>
-        <h3 className="text-lg font-medium">Enlaces de invitación generados</h3>
-        <p className="text-sm text-muted-foreground mb-2">
-          Estos son los enlaces de invitación que has generado para que otros miembros se unan a este grupo
-        </p>
-      </header>
-        {isLoadingMembers && (
-          <ul className='space-y-2'>
-            <RowSkeleton />
-            <RowSkeleton />
-            <RowSkeleton />
-          </ul>
-        )}
-        {invitations?.length === 0 && (
-          <p className='text-sm text-muted-foreground/50'>No has generado ningún enlace de invitación para este grupo.</p>
-        )}
-        {invitations?.length > 0 && (
-          <ul className='space-y-2'>
-            {invitations?.map((invitation: any) => (
-              <li key={invitation.code} className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="truncate mr-2">{invitation.code.slice(0, 6) + '...' + invitation.code.slice(-5)}</span>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleCopyLink(invitation.code)}
-                      disabled={isLoading}
-                    >
-                      {copiedLink === invitation.link
-                        ? (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                          )
-                        : (
-                        <Copy className="h-4 w-4" />
-                          )}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDeleteLink(invitation.code)}
-                      disabled={isLoading}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {invitation.uses} de {invitation.maxUses} usos
-                  </span>
-                  <Progress
-                    value={(invitation.uses / invitation.maxUses) * 100}
-                    className="w-1/2"
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-    </article>
+    <ul className={listClassName}>
+      {invitations?.map((invitation: any) => (
+        <li key={invitation.code} className="grid gap-3 px-4 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <code className="truncate text-xs text-muted-foreground">
+              …{invitation.code.slice(-8)}
+            </code>
+            <div className="flex shrink-0 gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => handleCopyLink(invitation.code)}
+                disabled={isLoading}
+                aria-label="Copiar enlace"
+              >
+                {copiedCode === invitation.code
+                  ? <CheckCircle className="h-4 w-4 text-success" />
+                  : <Copy className="h-4 w-4" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => handleDeleteLink(invitation.code)}
+                disabled={isLoading}
+                aria-label="Eliminar enlace"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Progress
+              value={(invitation.uses / invitation.maxUses) * 100}
+              className="flex-1"
+            />
+            <span className="shrink-0 text-xs text-muted-foreground">
+              {invitation.uses}/{invitation.maxUses}
+            </span>
+          </div>
+        </li>
+      ))}
+    </ul>
   )
 }
 
-const RowSkeleton = () => {
-  return (
-    <li className="space-y-2">
-      <div className="flex items-center justify-between text-sm">
-        <Skeleton className="h-4 w-24 mr-2" />
-        <div className="flex gap-2">
-          <Button variant="ghost" size="icon" disabled>
-            <Copy className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" disabled>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-      <div className="flex items-center justify-between text-sm">
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-4 w-1/2" />
-      </div>
-    </li>
-  )
-}
+const RowSkeleton = () => (
+  <li className="grid gap-3 px-4 py-3">
+    <Skeleton className="h-4 w-full" />
+    <Skeleton className="h-2 w-full" />
+  </li>
+)

@@ -1,14 +1,13 @@
 import { removeUserInvitation } from '@/app/(overview)/groups/[groupId]/participants/actions'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetUsersInvitedToGroup } from '@/data/groups'
+import { cn } from '@/lib/utils'
 import { displayToast } from '@/utils/toast-display'
-import { X } from 'lucide-react'
 import { useState } from 'react'
 import { useSWRConfig } from 'swr'
 
-export function MembersInvitedList ({ groupId }: { groupId: string }) {
+export function MembersInvitedList ({ groupId, embedded = false }: { groupId: string, embedded?: boolean }) {
   const [isLoading, setIsLoading] = useState(false)
   const { mutate } = useSWRConfig()
 
@@ -19,73 +18,65 @@ export function MembersInvitedList ({ groupId }: { groupId: string }) {
     try {
       await removeUserInvitation(userId, groupId)
       mutate(['/api/groups/members/invited', groupId])
+      displayToast('Invitación cancelada', 'success')
     } catch (error) {
-      displayToast('Hubo un error al remover la invitación al miembro.', 'error')
-      return
+      displayToast('No se pudo cancelar la invitación', 'error')
+    } finally {
+      setIsLoading(false)
     }
+  }
 
-    displayToast('Invitación removida correctamente.', 'success')
-    setIsLoading(false)
+  const listClassName = cn(
+    'divide-y divide-border',
+    embedded ? 'overflow-hidden rounded-md border border-border bg-card' : 'surface-panel'
+  )
+
+  if (isLoadingMembers) {
+    return (
+      <ul className={listClassName}>
+        <RowSkeleton />
+        <RowSkeleton />
+      </ul>
+    )
+  }
+
+  if (invitations?.length === 0) {
+    return <p className="text-sm text-muted-foreground">Nadie invitado por email todavía.</p>
   }
 
   return (
-    <article>
-      <header>
-        <h3 className="text-lg font-medium">Miembros invitados</h3>
-        <p className="text-sm text-muted-foreground mb-2">
-          Estos son los miembros que has invitado a unirse a este grupo.
-        </p>
-      </header>
-
-      {isLoadingMembers && (
-        <ul className="space-y-2">
-          <RowSkeleton />
-          <RowSkeleton />
-          <RowSkeleton />
-        </ul>
-      )}
-
-      {invitations?.length === 0 && <p className="text-sm text-muted-foreground">No has invitado a ningún miembro a unirse a este grupo.</p>}
-
-      {invitations?.length > 0 && (
-        <ul className="space-y-2">
-          {invitations?.map((invitation: any) => (
-            <li key={invitation.user.id} className="flex items-center gap-4 w-full">
-              <Avatar>
-                <AvatarFallback>{invitation.user.name?.charAt(0) ?? 'U'}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium">{invitation.user.name}</p>
-                <p className="text-xs text-muted-foreground">{invitation.user.email}</p>
-              </div>
-              <div className="ml-auto">
-                <Button variant="ghost" size='icon' onClick={() => onRemove(invitation.user.id)} disabled={isLoading}>
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </article>
+    <ul className={listClassName}>
+      {invitations?.map((invitation: any) => (
+        <li key={invitation.user.id} className="flex items-center gap-3 px-4 py-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium">
+            {invitation.user.name?.charAt(0)?.toUpperCase() ?? 'U'}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium">{invitation.user.name}</p>
+            <p className="truncate text-xs text-muted-foreground">{invitation.user.email}</p>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 shrink-0 px-2 text-xs"
+            onClick={() => onRemove(invitation.user.id)}
+            disabled={isLoading}
+          >
+            Cancelar
+          </Button>
+        </li>
+      ))}
+    </ul>
   )
 }
 
-const RowSkeleton = () => {
-  return (
-    <li className="flex items-center gap-4 w-full">
-      <Avatar>
-        <AvatarFallback>U</AvatarFallback>
-      </Avatar>
-      <div>
-        <Skeleton className="h-4 w-24 mb-1" />
-        <Skeleton className="h-3 w-32" />
-      </div>
-      <div className="ml-auto">
-        <Button variant="ghost" size="icon" disabled>
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-    </li>
-  )
-}
+const RowSkeleton = () => (
+  <li className="flex items-center gap-3 px-4 py-3">
+    <Skeleton className="h-9 w-9 rounded-full" />
+    <div className="flex-1 space-y-2">
+      <Skeleton className="h-4 w-28" />
+      <Skeleton className="h-3 w-36" />
+    </div>
+    <Skeleton className="h-8 w-16" />
+  </li>
+)

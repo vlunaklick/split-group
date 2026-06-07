@@ -6,9 +6,9 @@ export function AppShell ({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <div className="flex w-full flex-col">
+      <div className="flex w-full min-w-0 flex-col">
         <Header />
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+        <main className="flex w-full min-w-0 flex-1 flex-col gap-6 p-5 lg:gap-8 lg:px-8 lg:py-8">
           {children}
         </main>
       </div>

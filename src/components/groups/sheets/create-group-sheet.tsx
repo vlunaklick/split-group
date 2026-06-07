@@ -16,7 +16,7 @@ export function CreateGroupSheet ({ className }: { className?: string }) {
       title="Crear grupo"
       description="Elige un nombre y empieza a dividir gastos con tu gente."
       trigger={
-        <Button variant="outline" className={className}>
+        <Button variant="ghost" className={className}>
           <IconCirclePlus className="h-4 w-4" />
           <span className="group-data-[collapsible=icon]:hidden">Crear grupo</span>
         </Button>

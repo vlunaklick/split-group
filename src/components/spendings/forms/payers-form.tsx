@@ -1,26 +1,27 @@
 'use client'
 
 import { NumberField, NumberFieldDecrement, NumberFieldGroup, NumberFieldIncrement, NumberFieldInput } from '@/components/number-field'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
-import { useStepper } from '@/components/ui/stepper'
+import { useFormSteps } from '@/components/ui/form-steps'
 import { useGetSession } from '@/data/session'
 import { formatMoney } from '@/lib/money'
 import { User } from '@prisma/client'
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
-export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData, initialPayers }: {
+export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData, initialPayers, finalData, onExpressSubmit, isSubmitting }: {
   participants?: any[]
   isLoading: boolean
   totalAmount: number
   setFinalData: (data: any) => void
   initialPayers?: { userId: string, amount: number }[]
+  finalData?: any
+  onExpressSubmit?: (data: any) => Promise<boolean>
+  isSubmitting?: boolean
 }) => {
-  const { nextStep, prevStep } = useStepper()
+  const { nextStep, prevStep } = useFormSteps()
   const { data: session } = useGetSession()
   const [error, setError] = useState<string | null>(null)
   const [payers, setPayers] = useState<{ userId: string, amount: number }[]>(initialPayers ?? [])
@@ -72,7 +73,7 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData,
     setError(null)
   }
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     setError(null)
 
     if (payers.length === 0) {
@@ -87,24 +88,36 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData,
       return
     }
 
+    const spendingData = { ...(finalData ?? {}), payers }
+
+    if (onExpressSubmit) {
+      const handled = await onExpressSubmit(spendingData)
+      if (handled) return
+    }
+
     setFinalData((prev: any) => ({ ...prev, payers }))
     nextStep()
   }
+
+  const canExpress =
+    payers.length === 1 &&
+    payers[0]?.amount === totalAmount &&
+    totalAmount > 0
 
   const participantLabel = (participant: User) => participant.name ?? participant.username
 
   return (
     <div className="grid gap-4">
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-sm text-muted-foreground">Total del gasto</p>
-        <Badge variant="secondary" className="font-mono">{formatMoney(totalAmount)}</Badge>
+      <div className="flex items-baseline justify-between gap-2">
+        <p className="text-sm text-muted-foreground">Total</p>
+        <p className="font-mono text-sm">{formatMoney(totalAmount)}</p>
       </div>
 
       <div className="flex flex-wrap gap-2">
         {currentUserId && (
           <Button
             type="button"
-            variant={payers.length === 1 && payers[0]?.userId === currentUserId ? 'default' : 'secondary'}
+            variant={payers.length === 1 && payers[0]?.userId === currentUserId ? 'default' : 'ghost'}
             size="sm"
             onClick={handlePayAllMyself}
             disabled={isLoading}
@@ -113,7 +126,7 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData,
           </Button>
         )}
         {payers.length > 1 && (
-          <Button type="button" variant="secondary" size="sm" onClick={handleSplitEqually}>
+          <Button type="button" variant="ghost" size="sm" onClick={handleSplitEqually}>
             Repartir el pago
           </Button>
         )}
@@ -121,8 +134,8 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData,
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="w-full" disabled={isLoading}>
-            {payers.length > 0 ? `${payers.length} pagador${payers.length > 1 ? 'es' : ''}` : 'Elegir quién pagó'}
+          <Button variant="outline" className="w-full justify-between font-normal" disabled={isLoading}>
+            {payers.length > 0 ? `${payers.length} pagador${payers.length > 1 ? 'es' : ''}` : 'Elegir pagadores'}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-full max-w-[320px]" onCloseAutoFocus={(e) => e.preventDefault()}>
@@ -141,10 +154,8 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData,
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Separator />
-
       {payers.length === 0 && (
-        <p className="text-sm text-muted-foreground">Usá &quot;Yo pagué todo&quot; o elegí pagadores</p>
+        <p className="text-sm text-muted-foreground">Usá &quot;Yo pagué todo&quot; para el caso más común.</p>
       )}
 
       {payers.map((payer) => (
@@ -169,10 +180,10 @@ export const PayersForm = ({ participants, isLoading, totalAmount, setFinalData,
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 
-      <Button variant="default" className="w-full" onClick={handleNextStep} disabled={payers.length === 0}>
-        Continuar
+      <Button variant="default" className="w-full" onClick={handleNextStep} disabled={payers.length === 0 || isSubmitting}>
+        {isSubmitting ? 'Guardando…' : canExpress ? 'Crear gasto' : 'Continuar'}
       </Button>
-      <Button variant="ghost" className="w-full" onClick={prevStep}>Atrás</Button>
+      <Button variant="ghost" className="w-full" onClick={prevStep} disabled={isSubmitting}>Atrás</Button>
     </div>
   )
 }

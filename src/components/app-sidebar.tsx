@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Logo } from './logo'
 import { NotificationsAmount } from './notifications-amount'
 import { SideGroupNav } from './side-nav'
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar'
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar'
 import { CreateGroupSheet } from './groups/sheets/create-group-sheet'
 
 export function AppSidebar () {
@@ -14,29 +14,27 @@ export function AppSidebar () {
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
-              className='hover:bg-transparent bg-transparent active:bg-transparent focus-visible:ring-2 ring-transparent'
+              className='hover:bg-sidebar-accent/60 bg-transparent active:bg-transparent'
+              asChild
             >
-              <Link className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground" href="/dashboard">
-                <Logo />
+              <Link href="/dashboard" className="flex items-center gap-2">
+                <div className="flex aspect-square size-8 items-center justify-center">
+                  <Logo />
+                </div>
+                <span className="truncate font-medium">Split Group</span>
+                <NotificationsAmount />
               </Link>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  Split Group
-                </span>
-              </div>
-              <NotificationsAmount />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup title='General'>
-          <SidebarGroupLabel>General</SidebarGroupLabel>
+        <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Panel" asChild>
+                <SidebarMenuButton tooltip="Inicio" asChild>
                   <Link href="/dashboard">
                     <IconLayoutDashboard className="h-4 w-4" />
                     <span>Inicio</span>
@@ -45,7 +43,7 @@ export function AppSidebar () {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton tooltip="Crear grupo" asChild>
-                  <CreateGroupSheet />
+                  <CreateGroupSheet className="w-full justify-start bg-transparent shadow-none hover:bg-sidebar-accent/60" />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

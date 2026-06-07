@@ -19,14 +19,14 @@ export function GroupNav ({ groupId }: { groupId: string }) {
   }
 
   return (
-    <nav className="flex gap-1 overflow-x-auto border-b border-border pb-px">
+    <nav className="flex gap-6 overflow-x-auto border-b border-border">
       {tabs(groupId).map((tab) => (
         <Link
           key={tab.href}
           href={tab.href}
           className={cn(
-            'shrink-0 px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground',
-            isActive(tab.href, tab.exact) && 'border-b-2 border-primary text-foreground'
+            '-mb-px shrink-0 border-b-2 border-transparent pb-3 text-sm text-muted-foreground transition-colors hover:text-foreground',
+            isActive(tab.href, tab.exact) && 'border-primary text-foreground'
           )}
         >
           {tab.label}

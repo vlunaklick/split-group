@@ -1,84 +1,94 @@
 'use client'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
 import { useGetGroupAdmins } from '@/data/groups'
 import { GiveAdminDialog } from '../dialogs/give-admin-dialog'
 import { RemoveAdminForm } from '../forms/remove-admin-form'
 
-export function AdminsList ({ groupId, userId, isOwner }: { groupId: string, userId: string, isOwner: boolean }) {
+export function AdminsList ({
+  groupId,
+  userId,
+  isOwner,
+  embedded = false
+}: {
+  groupId: string
+  userId: string
+  isOwner: boolean
+  embedded?: boolean
+}) {
   const { data: admins, isLoading: isLoadingAdmins } = useGetGroupAdmins({ groupId })
+  const count = admins?.length ?? 0
 
   return (
-    <Card className='md:max-w-[526px] w-full h-max'>
-      <CardHeader className='flex items-center gap-4 flex-row justify-between'>
-        <div className='flex flex-col space-y-1.5'>
-          <CardTitle>Administradores</CardTitle>
-          <CardDescription>Listado de administradores del grupo</CardDescription>
-        </div>
-        {isOwner && (
-          <GiveAdminDialog groupId={groupId} />
-        )}
-      </CardHeader>
+    <section className={cn('grid w-full min-w-0', embedded ? 'gap-0 border-t border-border' : 'gap-3')}>
+      <div className={cn(
+        'flex items-center justify-between gap-4',
+        embedded ? 'px-5 pb-3 pt-4' : ''
+      )}>
+        <h2 className="section-label">Administradores</h2>
+        {isOwner && <GiveAdminDialog groupId={groupId} />}
+      </div>
 
-      <CardContent className='space-y-4'>
+      <ul className={cn(
+        'divide-y divide-border',
+        embedded ? 'border-t border-border' : 'surface-panel'
+      )}>
         {isLoadingAdmins && (
           <>
-            <RowSkeleton />
-            <RowSkeleton />
-            <RowSkeleton />
+            <RowSkeleton embedded={embedded} />
+            <RowSkeleton embedded={embedded} />
           </>
         )}
 
         {admins?.map((admin: any) => (
-          <div key={admin.id} className='flex items-center gap-4'>
-            <Avatar>
-              <AvatarFallback>{admin.name.charAt(0) ?? 'U'}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h2 className='text-lg font-semibold'>{admin.name}</h2>
-              <p className='text-sm text-muted-foreground/60'>{admin.email}</p>
+          <li key={admin.id} className={cn('flex items-center gap-3', embedded ? 'px-5 py-3' : 'px-4 py-3')}>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium">
+              {admin.name?.charAt(0)?.toUpperCase() ?? 'U'}
             </div>
-            <div className='ml-auto'>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium">{admin.name}</p>
+              <p className="truncate text-xs text-muted-foreground">{admin.email}</p>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
               {admin.id === userId && (
-                <span className='text-sm text-muted-foreground/60'>Tú</span>
+                <span className="text-xs text-muted-foreground">Tú</span>
               )}
               {admin.id !== userId && isOwner && (
                 <RemoveAdminForm userId={admin.id} groupId={groupId} />
               )}
             </div>
-          </div>
+          </li>
         ))}
-      </CardContent>
-    </Card>
+
+        {!isLoadingAdmins && count === 0 && (
+          <li className={cn('py-8 text-center text-sm text-muted-foreground', embedded ? 'px-5' : 'px-4')}>
+            Sin administradores asignados
+          </li>
+        )}
+      </ul>
+    </section>
   )
 }
 
-const RowSkeleton = () => {
-  return (
-    <div className='flex items-center gap-4 animate-pulse'>
-      <Skeleton className='h-12 w-12' />
-      <div className='flex gap-2 flex-1 flex-col'>
-        <Skeleton className='h-6 w-1/2' />
-        <Skeleton className='h-4 w-1/4' />
-      </div>
+const RowSkeleton = ({ embedded = false }: { embedded?: boolean }) => (
+  <li className={cn('flex items-center gap-3', embedded ? 'px-5 py-3' : 'px-4 py-3')}>
+    <Skeleton className="h-9 w-9 rounded-full" />
+    <div className="flex-1 space-y-2">
+      <Skeleton className="h-4 w-32" />
+      <Skeleton className="h-3 w-40" />
     </div>
-  )
-}
+  </li>
+)
 
-export const AdminsListSkeleton = () => {
+export const AdminsListSkeleton = ({ embedded = false }: { embedded?: boolean }) => {
   return (
-    <Card className='md:max-w-[526px] w-full'>
-      <CardHeader>
-        <CardTitle>Administradores</CardTitle>
-        <CardDescription>Listado de administradores del grupo</CardDescription>
-      </CardHeader>
-      <CardContent className='space-y-4'>
-        <RowSkeleton />
-        <RowSkeleton />
-        <RowSkeleton />
-      </CardContent>
-    </Card>
+    <section className={cn('grid w-full min-w-0', embedded ? 'gap-0 border-t border-border' : 'gap-3')}>
+      <Skeleton className={cn('h-3 w-28', embedded && 'mx-5 mt-4')} />
+      <ul className={cn('divide-y divide-border', embedded ? 'border-t border-border' : 'surface-panel')}>
+        <RowSkeleton embedded={embedded} />
+        <RowSkeleton embedded={embedded} />
+      </ul>
+    </section>
   )
 }

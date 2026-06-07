@@ -27,9 +27,9 @@ export const SideGroupNav = () => {
   }
 
   return (
-    <SidebarGroup title='Grupos'>
-      <SidebarGroupLabel>Grupos</SidebarGroupLabel>
-      <SidebarGroupContent className='list-none gap-2 flex flex-col'>
+    <SidebarGroup>
+      <SidebarGroupLabel className="text-xs">Grupos</SidebarGroupLabel>
+      <SidebarGroupContent className='list-none flex flex-col gap-1'>
         {isLoading && <GroupSkeleton />}
 
         {groups?.map((group: any) => (
@@ -40,7 +40,7 @@ export const SideGroupNav = () => {
                   <Icon type={group.icon} />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
+                  <span className="truncate font-medium">
                     {group.name}
                   </span>
                 </div>

@@ -15,18 +15,14 @@ export function GroupPageHeader ({
   actions?: ReactNode
 }) {
   const heading = title ?? groupName
-  const showGroupName = title != null
 
   return (
-    <header className="flex flex-col gap-4">
+    <header className="flex flex-col gap-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div className="flex flex-1 flex-col gap-1">
-          {showGroupName && (
-            <p className="text-sm text-muted-foreground">{groupName}</p>
-          )}
-          <h1 className="text-display-sm">{heading}</h1>
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <h1 className="truncate text-display-sm">{heading}</h1>
           {description && (
-            <p className="text-balance text-muted-foreground">{description}</p>
+            <p className="max-w-2xl text-sm text-muted-foreground">{description}</p>
           )}
         </div>
         {actions && (
