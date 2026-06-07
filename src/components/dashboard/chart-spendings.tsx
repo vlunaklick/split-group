@@ -30,8 +30,8 @@ export const StatsChart = () => {
   const { data = defaultData } = useGetMontlySpentGraph()
 
   return (
-    <div className="surface-panel p-4 sm:p-5">
-      <ChartContainer config={chartConfig} className="aspect-[3/1] min-h-[200px] w-full">
+    <div className="surface-panel min-w-0 max-w-full p-4 sm:p-5">
+      <ChartContainer config={chartConfig} className="aspect-[3/1] min-h-[200px] w-full min-w-0 max-w-full">
         <AreaChart
           accessibilityLayer
           data={data}

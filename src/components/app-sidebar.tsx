@@ -44,9 +44,7 @@ export function AppSidebar () {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Crear grupo" asChild>
-                  <CreateGroupSheet className="w-full justify-start bg-transparent shadow-none hover:bg-sidebar-accent/60" />
-                </SidebarMenuButton>
+                <CreateGroupSheet className="w-full justify-start bg-transparent shadow-none hover:bg-sidebar-accent/60" />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

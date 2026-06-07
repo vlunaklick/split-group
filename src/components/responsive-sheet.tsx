@@ -55,7 +55,16 @@ export function ResponsiveSheet ({
   mobileCancelLabel = 'Cancelar',
   drawerMaxHeight = '85dvh'
 }: ResponsiveSheetProps) {
+  const [mounted, setMounted] = React.useState(false)
   const isDesktop = useMediaQuery('(min-width: 768px)')
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return <>{trigger}</>
+  }
 
   if (isDesktop) {
     return (

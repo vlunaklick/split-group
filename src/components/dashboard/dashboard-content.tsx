@@ -13,27 +13,24 @@ function StatCell ({
   label,
   value,
   hint,
-  tone,
-  compact
+  tone
 }: {
   label: string
   value: string
   hint?: string
   tone?: 'positive' | 'negative' | 'neutral'
-  compact?: boolean
 }) {
   return (
-    <div className={cn('grid gap-0.5', compact ? 'p-3' : 'p-4 sm:p-5')}>
-      <p className="section-label text-[10px] sm:text-xs">{label}</p>
+    <div className="grid gap-0.5 bg-card p-4">
+      <p className="section-label">{label}</p>
       <p className={cn(
-        'font-mono tracking-tight',
-        compact ? 'text-lg' : 'text-xl sm:text-2xl',
+        'font-mono text-xl tracking-tight',
         tone === 'positive' && 'text-success',
         tone === 'negative' && 'text-destructive'
       )}>
         {value}
       </p>
-      {hint && <p className="text-[11px] leading-snug text-muted-foreground sm:text-xs">{hint}</p>}
+      {hint && <p className="text-xs leading-snug text-muted-foreground">{hint}</p>}
     </div>
   )
 }
@@ -54,11 +51,15 @@ function balanceClassName (tone: 'positive' | 'negative' | 'neutral') {
   )
 }
 
+function groupBalanceText (net: number) {
+  if (net > 0) return { text: `+${formatMoney(net)}`, tone: 'positive' as const }
+  if (net < 0) return { text: formatMoney(net), tone: 'negative' as const }
+  return { text: 'Al día', tone: 'neutral' as const }
+}
+
 function GroupLastSpending ({
-  groupId,
   lastSpending
 }: {
-  groupId: string
   lastSpending: { name: string, createdAt: Date, value: number } | null
 }) {
   if (!lastSpending) {
@@ -66,22 +67,59 @@ function GroupLastSpending ({
   }
 
   return (
-    <Link
-      href={`/groups/${groupId}`}
-      className="block min-w-0 hover:opacity-80"
-    >
+    <>
       <p className="truncate text-sm">{lastSpending.name}</p>
       <p className="truncate text-xs text-muted-foreground">
         {formatDate(lastSpending.createdAt)} · {formatMoney(lastSpending.value)}
       </p>
-    </Link>
+    </>
   )
 }
 
-function groupBalanceText (net: number) {
-  if (net > 0) return { text: `+${formatMoney(net)}`, tone: 'positive' as const }
-  if (net < 0) return { text: formatMoney(net), tone: 'negative' as const }
-  return { text: 'Al día', tone: 'neutral' as const }
+function MobileGroupRow ({
+  group,
+  balance
+}: {
+  group: {
+    id: string
+    name: string
+    icon: string | null
+    memberCount: number
+    spendingCount: number
+    lastSpending: { name: string, createdAt: Date, value: number } | null
+  }
+  balance: ReturnType<typeof groupBalanceText>
+}) {
+  return (
+    <div className="px-4 py-3">
+      <div className="flex items-start gap-3">
+        <Link href={`/groups/${group.id}`} className="flex min-w-0 flex-1 items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
+            <Icon type={group.icon ?? 'award'} />
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium">{group.name}</p>
+            <p className="text-xs text-muted-foreground">
+              {group.memberCount} miembros · {group.spendingCount} gastos
+            </p>
+          </div>
+        </Link>
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          <span className={balanceClassName(balance.tone)}>{balance.text}</span>
+          <CreateSpendingSheet
+            groupId={group.id}
+            variant="outline"
+            label=""
+            className="h-8 w-8 p-0"
+            icon={<Plus className="h-4 w-4" />}
+          />
+        </div>
+      </div>
+      <div className="mt-2 min-w-0 pl-12">
+        <GroupLastSpending lastSpending={group.lastSpending} />
+      </div>
+    </div>
+  )
 }
 
 export async function DashboardContent () {
@@ -112,10 +150,9 @@ export async function DashboardContent () {
       : 'neutral'
 
   return (
-    <div className="grid min-w-0 gap-6 sm:gap-8">
-      <section className="surface-panel grid min-w-0 grid-cols-2 divide-x divide-y divide-border overflow-hidden lg:grid-cols-4 lg:divide-y-0">
+    <div className="flex w-full min-w-0 flex-col gap-6 sm:gap-8">
+      <section className="surface-panel grid w-full grid-cols-1 gap-px overflow-hidden bg-border sm:grid-cols-2 lg:grid-cols-4">
         <StatCell
-          compact
           label="Balance neto"
           value={`${overview.netBalance >= 0 ? '+' : ''}${formatMoney(overview.netBalance)}`}
           hint={overview.netBalance === 0
@@ -124,7 +161,6 @@ export async function DashboardContent () {
           tone={netTone}
         />
         <StatCell
-          compact
           label="Te deben"
           value={formatMoney(overview.totalRevenue)}
           hint={stats.openDebtsCount > 0
@@ -133,31 +169,29 @@ export async function DashboardContent () {
           tone={overview.totalRevenue > 0 ? 'positive' : 'neutral'}
         />
         <StatCell
-          compact
           label="Debés"
           value={formatMoney(overview.totalDebt)}
           hint={overview.totalDebt > 0 ? 'Pendiente de pago' : 'Nada pendiente'}
           tone={overview.totalDebt > 0 ? 'negative' : 'neutral'}
         />
         <StatCell
-          compact
           label="Tu parte este mes"
           value={formatMoney(stats.monthlySpent)}
           hint={trendHint(stats.monthlySpent, stats.monthlySpentPrev, 'mes')}
         />
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] xl:gap-8">
-        <section className="grid min-w-0 gap-3">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+      <div className="flex w-full min-w-0 flex-col gap-6 xl:flex-row xl:gap-8">
+        <section className="min-w-0 flex-1">
+          <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
             <h2 className="section-label">Grupos</h2>
-            <p className="text-xs text-muted-foreground sm:text-right">
+            <p className="text-xs text-muted-foreground">
               {stats.totalSpendings} gastos · {formatMoney(stats.weeklySpent)} esta semana
             </p>
           </div>
 
-          <div className="surface-panel min-w-0 overflow-hidden">
-            <div className="hidden border-b border-border bg-muted/20 px-4 py-2.5 text-xs text-muted-foreground md:grid md:grid-cols-[minmax(0,1.4fr)_72px_72px_96px_minmax(0,1fr)_40px] md:gap-3">
+          <div className="surface-panel overflow-hidden">
+            <div className="hidden border-b border-border bg-muted/20 px-4 py-2.5 text-xs text-muted-foreground xl:grid xl:grid-cols-[minmax(0,1.4fr)_72px_72px_96px_minmax(0,1fr)_40px] xl:gap-3">
               <span>Grupo</span>
               <span className="text-center">Miembros</span>
               <span className="text-center">Gastos</span>
@@ -166,45 +200,17 @@ export async function DashboardContent () {
               <span />
             </div>
 
-            <ul className="min-w-0 divide-y divide-border">
+            <ul className="divide-y divide-border">
               {overview.groups.map((group) => {
                 const balance = groupBalanceText(group.netBalance)
 
                 return (
-                  <li key={group.id} className="min-w-0">
-                    <div className="px-4 py-3 md:hidden">
-                      <div className="flex min-w-0 items-start gap-3">
-                        <Link
-                          href={`/groups/${group.id}`}
-                          className="flex min-w-0 flex-1 items-center gap-3"
-                        >
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
-                            <Icon type={group.icon ?? 'award'} />
-                          </div>
-                          <div className="min-w-0 grid gap-0.5">
-                            <p className="truncate text-sm font-medium">{group.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {group.memberCount} miembros · {group.spendingCount} gastos
-                            </p>
-                          </div>
-                        </Link>
-                        <div className="flex shrink-0 flex-col items-end gap-2">
-                          <span className={balanceClassName(balance.tone)}>{balance.text}</span>
-                          <CreateSpendingSheet
-                            groupId={group.id}
-                            variant="outline"
-                            label=""
-                            className="h-8 w-8 p-0"
-                            icon={<Plus className="h-4 w-4" />}
-                          />
-                        </div>
-                      </div>
-                      <div className="mt-2 min-w-0 pl-12">
-                        <GroupLastSpending groupId={group.id} lastSpending={group.lastSpending} />
-                      </div>
+                  <li key={group.id}>
+                    <div className="xl:hidden">
+                      <MobileGroupRow group={group} balance={balance} />
                     </div>
 
-                    <div className="hidden min-w-0 px-4 py-3 md:grid md:grid-cols-[minmax(0,1.4fr)_72px_72px_96px_minmax(0,1fr)_40px] md:items-center md:gap-3">
+                    <div className="hidden px-4 py-3 xl:grid xl:grid-cols-[minmax(0,1.4fr)_72px_72px_96px_minmax(0,1fr)_40px] xl:items-center xl:gap-3">
                       <Link href={`/groups/${group.id}`} className="flex min-w-0 items-center gap-3">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
                           <Icon type={group.icon ?? 'award'} />
@@ -212,18 +218,12 @@ export async function DashboardContent () {
                         <p className="truncate text-sm font-medium">{group.name}</p>
                       </Link>
 
-                      <p className="text-center text-sm text-muted-foreground">
-                        {group.memberCount}
-                      </p>
-                      <p className="text-center text-sm text-muted-foreground">
-                        {group.spendingCount}
-                      </p>
-                      <p className={cn('text-right', balanceClassName(balance.tone))}>
-                        {balance.text}
-                      </p>
+                      <p className="text-center text-sm text-muted-foreground">{group.memberCount}</p>
+                      <p className="text-center text-sm text-muted-foreground">{group.spendingCount}</p>
+                      <p className={cn('text-right', balanceClassName(balance.tone))}>{balance.text}</p>
 
                       <div className="min-w-0">
-                        <GroupLastSpending groupId={group.id} lastSpending={group.lastSpending} />
+                        <GroupLastSpending lastSpending={group.lastSpending} />
                       </div>
 
                       <CreateSpendingSheet
@@ -241,12 +241,12 @@ export async function DashboardContent () {
           </div>
         </section>
 
-        <aside className="grid gap-6">
-          <section className="grid gap-3">
-            <h2 className="section-label">Por saldar</h2>
+        <aside className="flex w-full min-w-0 shrink-0 flex-col gap-6 xl:w-80">
+          <section>
+            <h2 className="section-label mb-3">Por saldar</h2>
             {overview.pending.length === 0
               ? (
-                <div className="surface-panel px-4 py-8 text-center text-sm text-muted-foreground">
+                <div className="surface-panel px-4 py-8 text-center text-sm text-balance text-muted-foreground">
                   No hay deudas abiertas entre vos y otros miembros.
                 </div>
                 )
@@ -309,11 +309,11 @@ export async function DashboardContent () {
         </aside>
       </div>
 
-      <section className="grid gap-3">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+      <section className="min-w-0">
+        <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
           <h2 className="section-label">Últimos gastos</h2>
           {(latestSpendings?.length ?? 0) > 0 && (
-            <p className="text-xs text-muted-foreground sm:text-right">
+            <p className="text-xs text-muted-foreground">
               {latestSpendings!.length} movimientos recientes
             </p>
           )}
@@ -327,49 +327,44 @@ export async function DashboardContent () {
 
         {latestSpendings && latestSpendings.length > 0 && (
           <div className="surface-panel overflow-hidden">
-            <div className="hidden border-b border-border bg-muted/20 px-4 py-2.5 text-xs text-muted-foreground lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.8fr)_100px_100px_96px] lg:gap-4">
-              <span>Gasto</span>
-              <span>Grupo</span>
-              <span>Pagó</span>
-              <span>Categoría</span>
-              <span>Fecha</span>
-              <span className="text-right">Monto</span>
-            </div>
             <ul className="divide-y divide-border">
               {latestSpendings.map((spending) => (
                 <li key={spending.id}>
                   <Link
                     href={`/groups/${spending.groupId}/spendings/${spending.id}`}
-                    className="block px-4 py-3 transition-colors hover:bg-accent/50 lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.8fr)_100px_100px_96px] lg:items-center lg:gap-4"
+                    className="flex items-start gap-3 px-4 py-3 transition-colors hover:bg-accent/50 lg:hidden"
                   >
-                    <div className="flex min-w-0 items-start justify-between gap-3 lg:contents">
-                      <p className="min-w-0 truncate text-sm font-medium">{spending.name}</p>
-                      <p className="shrink-0 font-mono text-sm lg:text-right">
-                        {formatMoney(spending.value)}
+                    <div className="min-w-0 flex-1 grid gap-0.5">
+                      <p className="truncate text-sm font-medium">{spending.name}</p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {spending.group.name}
+                        {' · '}
+                        {spending.owner.name ?? spending.owner.username ?? '—'}
+                        {' · '}
+                        {formatDate(spending.date ?? spending.createdAt)}
                       </p>
                     </div>
-                    <p className="mt-1 truncate text-xs text-muted-foreground lg:hidden">
-                      {spending.group.name}
-                      {' · '}
+                    <span className="shrink-0 font-mono text-sm">
+                      {formatMoney(spending.value)}
+                    </span>
+                  </Link>
+
+                  <Link
+                    href={`/groups/${spending.groupId}/spendings/${spending.id}`}
+                    className="hidden px-4 py-3 transition-colors hover:bg-accent/50 lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.8fr)_100px_100px_96px] lg:items-center lg:gap-4"
+                  >
+                    <p className="truncate text-sm font-medium">{spending.name}</p>
+                    <p className="truncate text-sm text-muted-foreground">{spending.group.name}</p>
+                    <p className="truncate text-sm text-muted-foreground">
                       {spending.owner.name ?? spending.owner.username ?? '—'}
-                      {' · '}
-                      {formatDate(spending.date ?? spending.createdAt)}
                     </p>
-                    <p className="hidden truncate text-sm text-muted-foreground lg:block">
-                      {spending.group.name}
-                    </p>
-                    <p className="hidden truncate text-sm text-muted-foreground lg:block">
-                      {spending.owner.name ?? spending.owner.username ?? '—'}
-                    </p>
-                    <p className="hidden truncate text-xs text-muted-foreground lg:block lg:text-sm">
+                    <p className="truncate text-sm text-muted-foreground">
                       {spending.category?.name ?? '—'}
                     </p>
-                    <p className="hidden text-xs text-muted-foreground lg:block lg:text-sm">
+                    <p className="text-sm text-muted-foreground">
                       {formatDate(spending.date ?? spending.createdAt)}
                     </p>
-                    <p className="hidden font-mono text-sm lg:block lg:text-right">
-                      {formatMoney(spending.value)}
-                    </p>
+                    <p className="font-mono text-sm lg:text-right">{formatMoney(spending.value)}</p>
                   </Link>
                 </li>
               ))}
@@ -385,11 +380,11 @@ export async function DashboardContent () {
 
 export function DashboardContentSkeleton () {
   return (
-    <div className="grid gap-8">
+    <div className="flex w-full min-w-0 flex-col gap-6 sm:gap-8">
       <div className="surface-panel h-28 animate-pulse bg-muted/20" />
-      <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
-        <div className="surface-panel h-64 animate-pulse bg-muted/20" />
-        <div className="surface-panel h-64 animate-pulse bg-muted/20" />
+      <div className="flex flex-col gap-6 xl:flex-row">
+        <div className="surface-panel h-64 flex-1 animate-pulse bg-muted/20" />
+        <div className="surface-panel h-64 w-full animate-pulse bg-muted/20 xl:w-80" />
       </div>
       <div className="surface-panel h-48 animate-pulse bg-muted/20" />
     </div>
