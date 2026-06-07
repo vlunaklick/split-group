@@ -20,7 +20,7 @@ export const ActionButtons = ({ code, groupId }: { code: string, groupId: string
       await joinInvitation(code)
       displayToast('Te uniste al grupo', 'success')
       mutate('user-groups')
-      router.push(`/groups/${groupId}`)
+      router.push(`/groups/${groupId}?joined=1`)
     } catch (error) {
       const message = error instanceof Error ? error.message : 'No se pudo unir al grupo'
       displayToast(message, 'error')

@@ -1,11 +1,20 @@
 import { getGroup } from '@/data/apis/groups'
 import { notFound } from 'next/navigation'
+import { GroupWelcomeBanner } from './group-welcome-banner'
 import { HeaderButtons, HeaderButtonsMobile, HeaderButtonsSkeletons } from './home-header-buttons'
 import { Spendings, SpendingsSkeleton } from './spendings'
 import { Debts, DebtsSkeleton } from './debts'
 import { GroupPageHeader } from './group-page-header'
 import { Skeleton } from '../ui/skeleton'
 import { Suspense } from 'react'
+
+function WelcomeBanner ({ groupId }: { groupId: string }) {
+  return (
+    <Suspense fallback={null}>
+      <GroupWelcomeBanner groupId={groupId} />
+    </Suspense>
+  )
+}
 
 export async function GroupHome ({ groupId }: { groupId: string }) {
   const data = await getGroup(groupId)
@@ -31,6 +40,8 @@ export async function GroupHome ({ groupId }: { groupId: string }) {
           </>
         }
       />
+
+      <WelcomeBanner groupId={groupId} />
 
       <div className="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] lg:gap-8">
         <div className="order-2 min-w-0 lg:order-1">
