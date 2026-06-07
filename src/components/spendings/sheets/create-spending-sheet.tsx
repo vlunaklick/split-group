@@ -10,25 +10,35 @@ export function CreateSpendingSheet ({
   className,
   variant = 'outline',
   label = 'Crear gasto',
-  icon
+  icon,
+  open: openProp,
+  onOpenChange: onOpenChangeProp,
+  hideTrigger = false
 }: {
   groupId: string
   className?: string
   variant?: 'outline' | 'default'
   label?: string
   icon?: ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  hideTrigger?: boolean
 }) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
   const [formKey, setFormKey] = useState(0)
+  const isOpen = openProp ?? internalOpen
 
   const handleOpenChange = (open: boolean) => {
-    setIsOpen(open)
+    if (onOpenChangeProp) {
+      onOpenChangeProp(open)
+    } else {
+      setInternalOpen(open)
+    }
     if (!open) setFormKey((k) => k + 1)
   }
 
   const handleSuccess = () => {
-    setIsOpen(false)
-    setFormKey((k) => k + 1)
+    handleOpenChange(false)
   }
 
   return (
@@ -38,9 +48,13 @@ export function CreateSpendingSheet ({
       title="Crear gasto"
       description="Nombre, monto y quién pagó."
       trigger={
-        <Button variant={variant} className={className} aria-label={label || 'Crear gasto'}>
-          {icon ?? label}
-        </Button>
+        hideTrigger
+          ? <span className="sr-only" aria-hidden />
+          : (
+            <Button variant={variant} className={className} aria-label={label || 'Crear gasto'}>
+              {icon ?? label}
+            </Button>
+            )
       }
     >
       <CreateSpendingForm key={formKey} groupId={groupId} onSuccess={handleSuccess} />
