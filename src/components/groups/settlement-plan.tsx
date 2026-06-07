@@ -58,7 +58,7 @@ export function SettlementPlan ({ groupId }: { groupId: string }) {
   }
 
   return (
-    <section className="grid gap-3">
+    <section id="group-settlement" className="grid gap-3 scroll-mt-24">
       <div className="flex items-start justify-between gap-3">
         <div className="grid gap-1">
           <h2 className="section-label">Liquidación simplificada</h2>

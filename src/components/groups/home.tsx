@@ -1,5 +1,7 @@
 import { getGroup } from '@/data/apis/groups'
 import { notFound } from 'next/navigation'
+import { GroupOnboardingChecklist } from './group-onboarding-checklist'
+import { GroupStatusBanner } from './group-status-banner'
 import { GroupWelcomeBanner } from './group-welcome-banner'
 import { HeaderButtons, HeaderButtonsMobile, HeaderButtonsSkeletons } from './home-header-buttons'
 import { Spendings, SpendingsSkeleton } from './spendings'
@@ -7,6 +9,14 @@ import { Debts, DebtsSkeleton } from './debts'
 import { GroupPageHeader } from './group-page-header'
 import { Skeleton } from '../ui/skeleton'
 import { Suspense } from 'react'
+
+function OnboardingChecklist ({ groupId }: { groupId: string }) {
+  return (
+    <Suspense fallback={null}>
+      <GroupOnboardingChecklist groupId={groupId} />
+    </Suspense>
+  )
+}
 
 function WelcomeBanner ({ groupId }: { groupId: string }) {
   return (
@@ -42,6 +52,8 @@ export async function GroupHome ({ groupId }: { groupId: string }) {
       />
 
       <WelcomeBanner groupId={groupId} />
+      <OnboardingChecklist groupId={groupId} />
+      <GroupStatusBanner groupId={groupId} />
 
       <div className="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] lg:gap-8">
         <div className="order-2 min-w-0 lg:order-1">

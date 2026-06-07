@@ -43,6 +43,7 @@ export function CreateGroupForm ({ callback }: CreateGroupFormProps) {
     try {
       const group = await createGroup(values)
       mutate(['user-groups'])
+      mutate('user-onboarding')
       displayToast('Grupo creado', 'success')
       form.reset()
       callback?.()

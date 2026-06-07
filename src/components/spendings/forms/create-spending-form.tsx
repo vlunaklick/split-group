@@ -91,6 +91,8 @@ export const CreateSpendingForm = ({
     mutate(['debts', groupId])
     mutate(['group-settlement', groupId])
     mutate(['spendings-table', groupId])
+    mutate('user-onboarding')
+    mutate(['group-onboarding', groupId])
   }
 
   const createSpendingFinalStep = async (spendingData: any) => {

@@ -8,11 +8,15 @@ import { CreateGroupForm } from '../forms/create-group-form'
 
 export function CreateGroupSheet ({
   className,
+  triggerVariant = 'ghost',
+  triggerLabel = 'Crear grupo',
   open: openProp,
   onOpenChange: onOpenChangeProp,
   hideTrigger = false
 }: {
   className?: string
+  triggerVariant?: 'ghost' | 'outline' | 'default'
+  triggerLabel?: string
   open?: boolean
   onOpenChange?: (open: boolean) => void
   hideTrigger?: boolean
@@ -31,9 +35,9 @@ export function CreateGroupSheet ({
         hideTrigger
           ? <span className="sr-only" aria-hidden />
           : (
-            <Button variant="ghost" className={className}>
+            <Button variant={triggerVariant} className={className}>
               <IconCirclePlus className="h-4 w-4" />
-              <span className="group-data-[collapsible=icon]:hidden">Crear grupo</span>
+              <span className="group-data-[collapsible=icon]:hidden">{triggerLabel}</span>
             </Button>
             )
       }

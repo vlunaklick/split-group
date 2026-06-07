@@ -1,4 +1,5 @@
 import { DashboardContent, DashboardContentSkeleton } from '@/components/dashboard/dashboard-content'
+import { UserOnboardingChecklist } from '@/components/onboarding/user-onboarding-checklist'
 import { Suspense } from 'react'
 
 export default async function HomeDashboard () {
@@ -10,6 +11,8 @@ export default async function HomeDashboard () {
           Balance, actividad por grupo y movimientos recientes.
         </p>
       </header>
+
+      <UserOnboardingChecklist />
 
       <Suspense fallback={<DashboardContentSkeleton />}>
         <DashboardContent />
