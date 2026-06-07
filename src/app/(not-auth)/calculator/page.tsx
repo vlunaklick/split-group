@@ -5,7 +5,7 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Calculadora de gastos',
-  description: 'Divide un monto en partes iguales sin crear cuenta'
+  description: 'Calculá quién pagó, cómo se reparte y quién le debe a quién — sin crear cuenta'
 }
 
 export default function CalculatorPage () {
